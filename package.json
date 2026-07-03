@@ -14,6 +14,7 @@
     "tauri:android:build": "tauri android build",
     "tauri:ios:dev": "tauri ios dev",
     "tauri:ios:build": "tauri ios build",
+    "test:tauri-dev": "node scripts/tauri-dev-launch-smoke.mjs",
     "test:tauri-launch": "node scripts/tauri-desktop-launch-smoke.mjs",
     "test:tauri-install": "node scripts/tauri-windows-install-smoke.mjs",
     "test": "node --test",

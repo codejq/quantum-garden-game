@@ -481,10 +481,10 @@
   - [x] Phase 9 depends on Phase 1 headless stepping and Phase 5 stable seeded IDs/layouts.
   - [x] Phase 9 tests: `observe()` schema, raw movement action, high-level target action, `plantNearest()`, reset by seed, and deterministic stepped evaluation.
   - [x] Phase 9 exit gate: an external harness can reset, observe, act, step, and complete basic objectives without direct DOM or WebGL control.
-- [ ] Phase 10: Add Tauri desktop project.
-  - [ ] Phase 10 depends on Phase 2 offline build and v0.1 web stability.
-  - [ ] Phase 10 tests: Tauri dev launch, desktop build launch, offline launch after install where practical, and exit behavior.
-  - [ ] Phase 10 exit gate: Windows desktop build launches offline from packaged local assets.
+- [x] Phase 10: Add Tauri desktop project.
+  - [x] Phase 10 depends on Phase 2 offline build and v0.1 web stability.
+  - [x] Phase 10 tests: Tauri dev launch, desktop build launch, offline launch after install where practical, and exit behavior.
+  - [x] Phase 10 exit gate: Windows desktop build launches offline from packaged local assets.
 - [ ] Phase 11: Add Android and iOS Tauri setup.
   - [ ] Phase 11 depends on Phase 10 Tauri configuration and available mobile toolchains.
   - [ ] Phase 11 tests: Android emulator/device smoke test, iOS simulator/device smoke test when Mac/Xcode/signing are available.

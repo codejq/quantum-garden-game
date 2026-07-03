@@ -25,7 +25,15 @@ test('Tauri bundle declares platform icon assets', () => {
 });
 
 test('Tauri desktop launch smoke script is available', () => {
+  assert.equal(packageJson.scripts['test:tauri-dev'], 'node scripts/tauri-dev-launch-smoke.mjs');
   assert.equal(packageJson.scripts['test:tauri-launch'], 'node scripts/tauri-desktop-launch-smoke.mjs');
+  const devSmokeSource = readFileSync(join(root, 'scripts/tauri-dev-launch-smoke.mjs'), 'utf8');
+
+  assert.match(devSmokeSource, /cmd\.exe/);
+  assert.match(devSmokeSource, /\['\/c', 'npm', 'run', 'tauri:dev'\]/);
+  assert.match(devSmokeSource, /taskkill/);
+  assert.match(devSmokeSource, /\/T/);
+  assert.match(devSmokeSource, /tauri:dev/);
 });
 
 test('Tauri Windows install smoke script is available and scoped to target temp files', () => {
