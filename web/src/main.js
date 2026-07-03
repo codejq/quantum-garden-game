@@ -786,8 +786,9 @@ function recordBestTime(level,seconds){
 buildDecorativeWorld();
 
 /* ---------------- Game state ---------------- */
-const Game={
-  status:'menu',running:false,level:1,score:0,trees:0,lifetimeTrees:0,trashGot:0,
+function createActiveGameRuntime(state){
+return {
+  state,status:'menu',running:false,level:1,score:0,trees:0,lifetimeTrees:0,trashGot:0,
   quota:0,spawned:0,converted:0,spawnTimer:0,nearPatch:null,plantCd:0,bossDelay:0,elapsed:0,seed:activeSeed,
 
   setStatus(status){
@@ -837,7 +838,7 @@ const Game={
     this.spawnedBoss=false;
     this.bossDelay=4;
     this.polMax=nTrash*3+nPatch*6+18;
-    activeState.player.pos.set(6,0,6);activeState.player.vel.set(0,0,0);
+    this.state.player.pos.set(6,0,6);this.state.player.vel.set(0,0,0);
     $('uiLevel').textContent=n;$('uiTrees').textContent=this.trees;
     note(tr('levelStart',n),true,3200);
     this.updateMission();
@@ -870,17 +871,17 @@ const Game={
   addScore(v,pos){this.score+=v;$('uiScore').textContent=this.score;if(pos)popText(pos,'+'+v);},
 
   pollution(){
-    const total=activeState.trash.length*3+activeState.villains.length*9+activeState.patches.filter(p=>!p.planted).length*6;
+    const total=this.state.trash.length*3+this.state.villains.length*9+this.state.patches.filter(p=>!p.planted).length*6;
     this.polMax=Math.max(this.polMax||60,total,1);
     return clamp(total/(this.polMax||60)*100,0,100);},
 
   updateMission(){
     $('missionCard').innerHTML=renderActiveMissionHtml(activeObjectiveRows(activeObjectives,activeMissionState()));
   },
-  bossDefeated(){return this.spawnedBoss&&(!activeState.mtermish);},
+  bossDefeated(){return this.spawnedBoss&&(!this.state.mtermish);},
 
   checkWin(){
-    if(activeState.trash.length===0&&activeState.patches.every(p=>p.planted)&&
+    if(this.state.trash.length===0&&this.state.patches.every(p=>p.planted)&&
        this.converted>=this.quota&&this.spawned>=this.quota&&this.bossDefeated()){
       this.complete();
       Snd.fanfare();confetti();
@@ -896,7 +897,8 @@ const Game={
       $('lvlOverlay').style.display='flex';
     }
   }
-};
+};}
+const Game=createActiveGameRuntime(activeState);
 
 /* ---------------- Update loop ---------------- */
 const clock=new THREE.Clock();

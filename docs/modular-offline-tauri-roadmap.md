@@ -93,7 +93,7 @@
 - [x] Recalculate or redesign pollution denominator so spawned trash during a level does not make the meter misleading.
 - [x] Remove `maximum-scale=1.0` and `user-scalable=no` unless a platform-specific reason requires them.
 - [x] Add accessible labels for emoji-only buttons.
-- [ ] Replace global singleton assumptions with instantiable game/session objects.
+- [x] Replace global singleton assumptions with instantiable game/session objects.
 - [x] Support creating a fresh `GameSession({ mode, levelId, seed })` for tests, LLM evaluation, retries, and races.
 
 ## Target Project Structure

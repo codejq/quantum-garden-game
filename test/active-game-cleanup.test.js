@@ -99,6 +99,17 @@ test('active browser does not keep authoritative interaction positions only on m
   assert.doesNotMatch(source, /nearestList\(villains,'villain',v=>v\.mesh\.position/);
 });
 
+test('active browser runtime is created from an instantiable state owner', () => {
+  assert.match(source, /function createActiveGameRuntime\(state\)\{/);
+  assert.match(source, /return \{\s*state,status:'menu',running:false/);
+  assert.match(source, /const Game=createActiveGameRuntime\(activeState\)/);
+  assert.doesNotMatch(source, /const Game=\{/);
+  assert.match(source, /this\.state\.player\.pos\.set\(6,0,6\)/);
+  assert.match(source, /const total=this\.state\.trash\.length\*3\+this\.state\.villains\.length\*9\+this\.state\.patches\.filter/);
+  assert.match(source, /bossDefeated\(\)\{return this\.spawnedBoss&&\(!this\.state\.mtermish\);\}/);
+  assert.match(source, /if\(this\.state\.trash\.length===0&&this\.state\.patches\.every/);
+});
+
 test('active browser syncs mesh transforms from gameplay data in one render step', () => {
   const syncSource = source.slice(source.indexOf('function syncGameplayMeshes'));
   const playerUpdateSource = source.slice(source.indexOf('function playerUpdate'), source.indexOf('function villainsUpdate'));
