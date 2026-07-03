@@ -15,7 +15,7 @@
     "tauri:ios:dev": "tauri ios dev",
     "tauri:ios:build": "tauri ios build",
     "test": "node --test",
-    "test:offline-build": "npm run build && node scripts/verify-offline-build.mjs && node scripts/offline-load-smoke.mjs && node scripts/visual-viewport-smoke.mjs && node scripts/localized-viewport-smoke.mjs",
+    "test:offline-build": "npm run build && node scripts/verify-offline-build.mjs && node scripts/offline-load-smoke.mjs && node scripts/visual-viewport-smoke.mjs && node scripts/localized-viewport-smoke.mjs && node scripts/camera-view-smoke.mjs",
     "snapshot:baseline": "node scripts/baseline-snapshot.mjs"
   },
   "devDependencies": {

@@ -62,12 +62,24 @@
   #pauseBtn:active,#exitBtn:active,#viewBtn:active,#resetViewBtn:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.25)}
 
   @media (max-width:640px) and (orientation:portrait){
+    #pauseBtn,#exitBtn,#viewBtn,#resetViewBtn{font-size:12px;padding:4px 8px}
+    #exitBtn{inset-inline-start:8px}
+    #pauseBtn{inset-inline-start:62px}
+    #viewBtn{inset-inline-start:122px}
+    #resetViewBtn{inset-inline-start:176px}
+    #missionCard{top:96px}
     #joy{width:112px;height:112px;bottom:max(18px,env(safe-area-inset-bottom));inset-inline-end:max(18px,env(safe-area-inset-right))}
     #actBtn{width:78px;height:78px;bottom:max(34px,calc(env(safe-area-inset-bottom) + 16px));inset-inline-start:max(18px,env(safe-area-inset-left))}
     #prompt{bottom:132px}
   }
 
   @media (max-height:480px) and (orientation:landscape){
+    #pauseBtn,#exitBtn,#viewBtn,#resetViewBtn{font-size:12px;padding:3px 8px}
+    #exitBtn{inset-inline-start:8px}
+    #pauseBtn{inset-inline-start:62px}
+    #viewBtn{inset-inline-start:122px}
+    #resetViewBtn{inset-inline-start:176px}
+    #missionCard{top:54px;max-width:190px}
     #joy{width:104px;height:104px;bottom:max(14px,env(safe-area-inset-bottom));inset-inline-end:max(14px,env(safe-area-inset-right))}
     #actBtn{width:72px;height:72px;bottom:max(28px,calc(env(safe-area-inset-bottom) + 12px));inset-inline-start:max(18px,env(safe-area-inset-left))}
     #prompt{bottom:112px}

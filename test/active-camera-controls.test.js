@@ -14,6 +14,15 @@ test('active HUD exposes camera view and reset controls', () => {
   assert.match(mainSource, /\$\('resetViewBtn'\)\.onclick=\(\)=>resetCameraView\(\)/);
 });
 
+test('camera controls use compact mobile placement away from mission and touch controls', () => {
+  assert.match(cssSource, /@media \(max-width:640px\) and \(orientation:portrait\)/);
+  assert.match(cssSource, /#pauseBtn,#exitBtn,#viewBtn,#resetViewBtn\{font-size:12px;padding:4px 8px\}/);
+  assert.match(cssSource, /#resetViewBtn\{inset-inline-start:176px\}/);
+  assert.match(cssSource, /#missionCard\{top:96px\}/);
+  assert.match(cssSource, /@media \(max-height:480px\) and \(orientation:landscape\)/);
+  assert.match(cssSource, /#missionCard\{top:54px;max-width:190px\}/);
+});
+
 test('active game supports mouse camera and click planting controls', () => {
   assert.match(mainSource, /renderer\.domElement\.addEventListener\('pointerdown'/);
   assert.match(mainSource, /renderer\.domElement\.addEventListener\('pointermove'/);
