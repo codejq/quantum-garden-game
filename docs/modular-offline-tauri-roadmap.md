@@ -58,7 +58,7 @@
 - [ ] Do not store authoritative gameplay state only on Three.js meshes.
 - [ ] Make rendering read simulation state and sync mesh transforms each frame.
 - [x] Add a fixed simulation tick such as `1/60` or `1/30` seconds.
-- [ ] Use an accumulator in the visual loop so rendering can run at any frame rate while simulation advances deterministically.
+- [x] Use an accumulator in the visual loop so rendering can run at any frame rate while simulation advances deterministically.
 - [x] Allow tests and LLM agents to call `step()` without creating a WebGL renderer.
 - [ ] Use a seeded random generator for all gameplay and cosmetic generation.
 - [ ] Use fully seeded world generation for reproducible LLM evaluation and bug reports.
@@ -102,7 +102,7 @@
 - [ ] Create `web/src/core/game.js` for game lifecycle, state transitions, scoring, win checks, and pause/resume.
 - [x] Create `web/src/core/session.js` for instantiable `GameSession` creation, reset, retry, and teardown.
 - [x] Create `web/src/core/simulation.js` for the renderer-independent fixed-timestep simulation.
-- [ ] Create `web/src/core/loop.js` for the render/update loop.
+- [x] Create `web/src/core/loop.js` for the render/update loop.
 - [x] Create `web/src/core/events.js` for a small internal event bus.
 - [x] Create `web/src/core/random.js` for seeded random generation.
 - [x] Create `web/src/core/storage.js` for local save data, settings, and best times.
