@@ -201,35 +201,39 @@ function makeFlower(){
   return g;}
 
 function scatter(n,maker,rMin=6,rMax=WORLD_R+6,collect){
+  const created=[];
   for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,r=rand(rMin,rMax);
     const o=maker();o.position.set(Math.cos(a)*r,o.position.y,Math.sin(a)*r);
-    o.rotation.y=Math.random()*Math.PI*2;scene.add(o);if(collect)collect.push(o);}}
+    o.rotation.y=Math.random()*Math.PI*2;scene.add(o);created.push(o);if(collect)collect.push(o);}
+  return created;
+}
 
-// rocks
-scatter(14,()=>{const s=rand(.5,1.6);
-  const m=new THREE.Mesh(new THREE.DodecahedronGeometry(s,0),mat(0x9aa0a6));
-  m.position.y=s*.5;m.castShadow=m.receiveShadow=true;m.scale.y=.7;return m;});
-// flowers (enhanced) — kept in array for sway
 const flowers=[];
-scatter(70,makeFlower,5,WORLD_R+4,flowers);
-// bushes
-scatter(16,()=>{const g=new THREE.Group();
-  for(let i=0;i<3;i++){const s=rand(.5,.9);
-    const b=new THREE.Mesh(new THREE.SphereGeometry(s,8,8),leafMat(pick(GREEN_MID)));
-    b.position.set(rand(-.5,.5),s*.7,rand(-.5,.5));b.castShadow=true;g.add(b);}return g;},8);
-// decorative full-grown trees scattered around the island
-scatter(10,makeTree,20,WORLD_R+5);
-// clouds
 const clouds=[];
-for(let i=0;i<7;i++){const g=new THREE.Group();
-  for(let j=0;j<4;j++){const s=rand(1.4,3);
-    const c=new THREE.Mesh(new THREE.SphereGeometry(s,8,8),
-      new THREE.MeshStandardMaterial({color:0xffffff,roughness:1,transparent:true,opacity:.9}));
-    c.position.set(j*2.2-3+rand(-.5,.5),rand(-.4,.4),rand(-1,1));g.add(c);}
-  g.position.set(rand(-70,70),rand(22,32),rand(-70,70));
-  g.userData.spd=rand(.5,1.2);scene.add(g);clouds.push(g);}
-// big landmark tree (the "grandma tree") — enhanced broadleaf, scaled up
-(function(){const g=makeBroadleaf();g.scale.setScalar(2.4);g.position.set(0,0,0);scene.add(g);})();
+const worldObjects=[];
+
+function buildDecorativeWorld(){
+  flowers.length=0;
+  clouds.length=0;
+  worldObjects.push(...scatter(14,()=>{const s=rand(.5,1.6);
+    const m=new THREE.Mesh(new THREE.DodecahedronGeometry(s,0),mat(0x9aa0a6));
+    m.position.y=s*.5;m.castShadow=m.receiveShadow=true;m.scale.y=.7;return m;}));
+  worldObjects.push(...scatter(70,makeFlower,5,WORLD_R+4,flowers));
+  worldObjects.push(...scatter(16,()=>{const g=new THREE.Group();
+    for(let i=0;i<3;i++){const s=rand(.5,.9);
+      const b=new THREE.Mesh(new THREE.SphereGeometry(s,8,8),leafMat(pick(GREEN_MID)));
+      b.position.set(rand(-.5,.5),s*.7,rand(-.5,.5));b.castShadow=true;g.add(b);}return g;},8));
+  worldObjects.push(...scatter(10,makeTree,20,WORLD_R+5));
+  for(let i=0;i<7;i++){const g=new THREE.Group();
+    for(let j=0;j<4;j++){const s=rand(1.4,3);
+      const c=new THREE.Mesh(new THREE.SphereGeometry(s,8,8),
+        new THREE.MeshStandardMaterial({color:0xffffff,roughness:1,transparent:true,opacity:.9}));
+      c.position.set(j*2.2-3+rand(-.5,.5),rand(-.4,.4),rand(-1,1));g.add(c);}
+    g.position.set(rand(-70,70),rand(22,32),rand(-70,70));
+    g.userData.spd=rand(.5,1.2);scene.add(g);clouds.push(g);worldObjects.push(g);}
+  const landmark=makeBroadleaf();
+  landmark.scale.setScalar(2.4);landmark.position.set(0,0,0);scene.add(landmark);worldObjects.push(landmark);
+}
 
 /* ---------------- Character builders ---------------- */
 function makeEyes(g,y,z,spread=.16,r=.09){
@@ -538,6 +542,12 @@ function cleanupLevelAttempt(){
   patches.length=0;
   mtermish=null;
 }
+function cleanupDecorativeWorld(){
+  worldObjects.forEach(removeAttemptObject);
+  worldObjects.length=0;
+  flowers.length=0;
+  clouds.length=0;
+}
 function formatTime(seconds){
   const safe=Math.max(0,seconds||0);
   const minutes=Math.floor(safe/60);
@@ -559,6 +569,7 @@ function recordBestTime(level,seconds){
   }
   return { best:prev, isNew:false, previous:prev };
 }
+buildDecorativeWorld();
 
 /* ---------------- Game state ---------------- */
 const Game={
@@ -572,6 +583,8 @@ const Game={
   startLevel(n){
     this.clearTimers();
     cleanupLevelAttempt();
+    cleanupDecorativeWorld();
+    buildDecorativeWorld();
     this.level=n;this.converted=0;this.spawned=0;this.spawnTimer=2;this.trees=0;this.nearPatch=null;this.plantCd=0;this.elapsed=0;
     const nTrash=9+n*3, nPatch=2+Math.min(n,5);
     for(let i=0;i<nTrash;i++)spawnTrash();

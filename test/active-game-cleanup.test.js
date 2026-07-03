@@ -9,7 +9,7 @@ test('active level start tears down previous gameplay objects', () => {
   assert.match(source, /trash\.forEach\(t=>removeAttemptObject\(t\.mesh\)\)/);
   assert.match(source, /villains\.forEach\(v=>removeAttemptObject\(v\.mesh\)\)/);
   assert.match(source, /patches\.forEach\(p=>\{\s*removeAttemptObject\(p\.tree\);\s*removeAttemptObject\(p\.mesh\);/);
-  assert.match(source, /cleanupLevelAttempt\(\);\s*this\.level=n/);
+  assert.match(source, /cleanupLevelAttempt\(\);\s*cleanupDecorativeWorld\(\);\s*buildDecorativeWorld\(\);\s*this\.level=n/);
 });
 
 test('active game keeps level tree count separate from lifetime count', () => {

@@ -71,14 +71,14 @@
 
 ## Prototype Cleanup And Known Issues
 
-- [ ] Fix cumulative world state across levels.
-- [ ] Move decorative world generation into the level-attempt lifecycle instead of running it only once at module load.
+- [x] Fix cumulative world state across levels.
+- [x] Move decorative world generation into the level-attempt lifecycle instead of running it only once at module load.
 - [x] Clear old planted patches and planted trees when starting a new level attempt unless a future mode explicitly needs persistent progression.
 - [x] Reset per-level patch counts so the mission card does not show trees from previous levels.
 - [x] Decide whether `Game.trees` is lifetime total, per-level total, or both.
 - [x] If lifetime and per-level tree counts are both needed, track them as separate fields.
 - [x] Add a level-attempt cleanup function that removes all gameplay objects.
-- [ ] Add a world cleanup function that removes all decorative objects created for the attempt.
+- [x] Add a world cleanup function that removes all decorative objects created for the attempt.
 - [x] Dispose geometries, materials, and textures for removed objects.
 - [x] Review the shared material cache and define which materials are global and which are attempt-scoped.
 - [x] Avoid silent trash spawn failure when the trash cap is reached.
@@ -230,11 +230,11 @@
 - [ ] Show or log the seed for debugging.
 - [ ] Replace all `Math.random()` calls with seeded random helpers.
 - [ ] Route mesh builder variation such as tree type, bark color, petal count, petal color, trash type, and cloud placement through seeded random helpers.
-- [ ] Rebuild the full gameplay and decorative scene for each level attempt.
-- [ ] Do not let authored or generated level attempts inherit stale objects from previous attempts.
+- [x] Rebuild the full gameplay and decorative scene for each level attempt.
+- [x] Do not let authored or generated level attempts inherit stale objects from previous attempts.
 - [ ] Randomize trash placement each attempt.
 - [ ] Randomize planting patch placement each attempt.
-- [ ] Randomize decorative flowers, rocks, trees, clouds, and scene details each attempt.
+- [x] Randomize decorative flowers, rocks, trees, clouds, and scene details each attempt.
 - [ ] Randomize villain spawn timing within level-defined limits.
 - [x] Randomize player starting position within valid spawn zones.
 - [ ] Prevent random placement from blocking objectives.
@@ -244,8 +244,8 @@
 - [ ] Limit regeneration attempts and report a clear layout-generation error if no valid seed/layout can be found.
 - [ ] Add deterministic replay support by reusing a saved seed.
 - [ ] Add seeded layout snapshots for debugging failed tests or bug reports.
-- [ ] Add explicit cleanup before loading a new level attempt.
-- [ ] Dispose removed Three.js geometries, materials, textures, and generated objects to avoid GPU memory leaks.
+- [x] Add explicit cleanup before loading a new level attempt.
+- [x] Dispose removed Three.js geometries, materials, textures, and generated objects to avoid GPU memory leaks.
 
 ## Single Player Mode
 
@@ -511,7 +511,7 @@
 - [ ] New modes can be added by registering a new game mode.
 - [ ] Scene layout changes each attempt unless the same seed is reused.
 - [ ] Same seed produces the same gameplay and decorative layout.
-- [ ] Level unload disposes generated Three.js resources.
+- [x] Level unload disposes generated Three.js resources.
 - [x] Single-player mode records completion time.
 - [ ] Two-player race mode declares the faster player.
 - [ ] The game enters full-screen or viewport-filling play mode.
