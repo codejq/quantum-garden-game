@@ -97,9 +97,9 @@
 
 ## Target Project Structure
 
-- [ ] Create `web/index.html` as the minimal document shell.
-- [ ] Create `web/styles/main.css` for global layout, HUD, overlays, controls, and responsive behavior.
-- [ ] Create `web/src/main.js` as the browser entry point.
+- [x] Create `web/index.html` as the minimal document shell.
+- [x] Create `web/styles/main.css` for global layout, HUD, overlays, controls, and responsive behavior.
+- [x] Create `web/src/main.js` as the browser entry point.
 - [x] Create `web/src/core/game.js` for game lifecycle, state transitions, scoring, win checks, and pause/resume.
 - [x] Create `web/src/core/session.js` for instantiable `GameSession` creation, reset, retry, and teardown.
 - [x] Create `web/src/core/simulation.js` for the renderer-independent fixed-timestep simulation.
@@ -495,8 +495,8 @@
 
 ## Acceptance Criteria
 
-- [ ] `web/index.html` has no inline game logic.
-- [ ] `web/index.html` has no inline CSS.
+- [x] `web/index.html` has no inline game logic.
+- [x] `web/index.html` has no inline CSS.
 - [ ] Gameplay simulation can run headlessly without WebGL.
 - [ ] Rendering syncs to simulation state instead of owning authoritative gameplay state.
 - [ ] Simulation uses a fixed timestep.
