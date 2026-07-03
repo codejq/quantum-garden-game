@@ -294,12 +294,12 @@
 - [x] Add mouse wheel support for zooming the camera in and out.
 - [ ] Add optional click-to-move support if it feels good during playtesting.
 - [x] Add click/tap support for menu and overlay controls.
-- [ ] Keep touch joystick for movement.
-- [ ] Keep touch action button for planting.
+- [x] Keep touch joystick for movement.
+- [x] Keep touch action button for planting.
 - [ ] Add touch drag support for changing camera view on mobile if it does not conflict with joystick controls.
 - [ ] Add pinch zoom support for mobile camera zoom if playtesting confirms it is comfortable.
 - [ ] Add responsive placement for joystick and action button in portrait and landscape.
-- [ ] Add pointer events support so one input layer works across mouse, pen, and touch where practical.
+- [x] Add pointer events support so one input layer works across mouse, pen, and touch where practical.
 - [x] Add input abstraction so keyboard, mouse, touch, and LLM all emit the same actions.
 - [ ] Add accessibility labels for controls.
 - [x] Test desktop Chrome or Edge.

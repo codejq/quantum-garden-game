@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { isPlantKey, keyboardVector } from '../web/src/input/keyboard.js';
 import { createMouseInput } from '../web/src/input/mouse.js';
-import { joystickVector } from '../web/src/input/touch.js';
+import { createTouchInput, joystickVector } from '../web/src/input/touch.js';
 
 function target() {
   const listeners = new Map();
@@ -15,6 +15,9 @@ function target() {
     },
     emit(type, event = {}) {
       listeners.get(type)?.(event);
+    },
+    getBoundingClientRect() {
+      return { left: 0, top: 0, width: 100, height: 100 };
     },
     listenerCount() {
       return listeners.size;
@@ -60,3 +63,33 @@ test('joystickVector clamps touch position inside joystick bounds', () => {
   assert.equal(Number(Math.hypot(vector.x, vector.z).toFixed(3)), 1);
 });
 
+test('touch input emits joystick movement and plant actions with pointer events', () => {
+  const joystick = target();
+  const actionButton = target();
+  const events = [];
+  const dispose = createTouchInput(
+    { joystick, actionButton },
+    {
+      move: (vector) => events.push(['move', Number(vector.x.toFixed(3)), Number(vector.z.toFixed(3))]),
+      knob: (pos) => events.push(['knob', Math.round(pos.x), Math.round(pos.y)]),
+      plant: () => events.push(['plant']),
+    },
+  );
+
+  joystick.emit('pointerdown', { pointerId: 1, clientX: 80, clientY: 50 });
+  joystick.emit('pointermove', { pointerId: 1, clientX: 50, clientY: 80 });
+  joystick.emit('pointerup', { pointerId: 1 });
+  actionButton.emit('pointerdown', {});
+  dispose();
+
+  assert.deepEqual(events, [
+    ['move', 0.75, 0],
+    ['knob', 30, 0],
+    ['move', 0, 0.75],
+    ['knob', 0, 30],
+    ['move', 0, 0],
+    ['plant'],
+  ]);
+  assert.equal(joystick.listenerCount(), 0);
+  assert.equal(actionButton.listenerCount(), 0);
+});
