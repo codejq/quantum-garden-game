@@ -591,9 +591,12 @@ function line(group){
 const player={mesh:buildNaqi(),pos:new THREE.Vector3(6,0,6),vel:new THREE.Vector3(),yaw:0,anim:0};
 scene.add(player.mesh);
 const trash=[];
+const trashMeshes=new WeakMap();
 const patches=[];
 const villains=[];
 let mtermish=null;
+function setTrashMesh(item,mesh){trashMeshes.set(item,mesh);return item;}
+function trashMesh(item){return trashMeshes.get(item);}
 
 function spawnTrash(pos){
   if(trash.length>=45)return { spawned:false, reason:'cap' };
@@ -605,7 +608,8 @@ function spawnTrash(pos){
     trashPos.set(Math.cos(a)*r,m.position.y,Math.sin(a)*r);}
   m.position.copy(trashPos);
   m.rotation.y=random()*Math.PI*2;
-  scene.add(m);trash.push({pos:trashPos,mesh:m});
+  const item=setTrashMesh({pos:trashPos,spin:m.rotation.y},m);
+  scene.add(m);trash.push(item);
   return { spawned:true, mesh:m };
 }
 
@@ -655,7 +659,7 @@ function removeAttemptObject(obj){
   disposeAttemptObject(obj);
 }
 function cleanupLevelAttempt(){
-  trash.forEach(t=>removeAttemptObject(t.mesh));
+  trash.forEach(t=>removeAttemptObject(trashMesh(t)));
   trash.length=0;
   villains.forEach(v=>removeAttemptObject(v.mesh));
   villains.length=0;
@@ -925,7 +929,7 @@ function trashUpdate(dt){
       Game.trashGot++;$('uiTrash').textContent=Game.trashGot;
       Game.addScore(10,t.pos.clone().setY(1.4));
       if(random()<.3)note(line('pickup'),true,1500);
-      scene.remove(t.mesh);trash.splice(i,1);
+      scene.remove(trashMesh(t));trash.splice(i,1);
       Game.updateMission();Game.checkWin();
     }}}
 
@@ -965,8 +969,10 @@ function syncGameplayMeshes(dt,time){
   }
 
   for(const t of trash){
-    t.mesh.position.copy(t.pos);
-    t.mesh.rotation.y=t.spin||0;
+    const mesh=trashMesh(t);
+    if(!mesh)continue;
+    mesh.position.copy(t.pos);
+    mesh.rotation.y=t.spin||0;
   }
 
   for(const p of patches){
