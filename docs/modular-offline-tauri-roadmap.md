@@ -216,7 +216,7 @@
 - [ ] Keep mode state separate from rendering state.
 - [ ] Keep scoring rules inside each mode.
 - [ ] Make the HUD read mode-provided objectives instead of hard-coded mission rows.
-- [ ] Add clear extension docs for adding a new mode.
+- [x] Add clear extension docs for adding a new mode.
 
 ## Level System
 
