@@ -66,7 +66,7 @@
 - [ ] Add stable object IDs for all interactive objects.
 - [ ] Add teardown/disposal rules for every scene object created during a level attempt.
 - [x] Vendor current Three.js r128 locally first to remove CDN usage without changing behavior.
-- [ ] Treat upgrading Three.js as a separate future migration after the modular/offline baseline is stable.
+- [x] Treat upgrading Three.js as a separate future migration after the modular/offline baseline is stable.
 - [x] Make two-player race v1 a sequential same-seed time trial.
 - [x] Gate iOS and macOS release work behind access to macOS, Xcode, signing certificates, and Apple Developer account.
 
@@ -139,7 +139,7 @@
 - [x] Create `web/src/levels/solvability.js` for spawn validation, reachability checks, and layout rejection.
 - [x] Create `web/assets/fonts/` for offline fonts.
 - [x] Create `web/assets/vendor/` for offline third-party browser libraries.
-- [ ] Create `web/assets/audio/` only if generated synth audio is replaced by fixed assets.
+- [x] Create `web/assets/audio/` only if generated synth audio is replaced by fixed assets.
 
 ## Build Tooling
 

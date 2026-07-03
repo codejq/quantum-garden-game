@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readdirSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { test } from 'node:test';
 import { fileURLToPath } from 'node:url';
@@ -32,7 +32,15 @@ test('active audio remains generated with WebAudio instead of bundled media file
   const mainSource = readFileSync(new URL('../web/src/main.js', import.meta.url), 'utf8');
   assert.match(mainSource, /AudioContext/);
   assert.match(mainSource, /createOscillator/);
+  assert.equal(existsSync(join(root, 'web/assets/audio')), false);
   for (const file of activeRuntimeFiles()) {
     assert.doesNotMatch(readFileSync(file, 'utf8'), audioAssetPattern, file);
   }
+});
+
+test('Three.js remains vendored r128 instead of upgraded through npm', () => {
+  const packageJson = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
+  assert.equal(existsSync(join(root, 'web/assets/vendor/three.r128.min.js')), true);
+  assert.equal(packageJson.dependencies?.three, undefined);
+  assert.equal(packageJson.devDependencies?.three, undefined);
 });
