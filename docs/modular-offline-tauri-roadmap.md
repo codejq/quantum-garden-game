@@ -173,7 +173,7 @@
 
 ## Simulation And Rendering Separation
 
-- [ ] Replace module-global gameplay singletons with session-owned state.
+- [x] Replace module-global gameplay singletons with session-owned state.
 - [x] Move player position, velocity, yaw, animation time, and input state into plain simulation data.
 - [x] Move trash positions, IDs, collected state, and scoring values into plain simulation data.
 - [x] Move patch positions, IDs, planted state, tree growth state, and interaction radius into plain simulation data.
