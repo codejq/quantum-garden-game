@@ -385,12 +385,12 @@
 - [ ] macOS: build `.dmg` or app bundle.
 - [ ] macOS: test offline launch after install.
 - [ ] macOS: complete signing and notarization for distribution.
-- [ ] Android: configure package id.
+- [x] Android: configure package id.
 - [ ] Android: configure app icons and splash assets.
 - [ ] Android: test on emulator.
 - [ ] Android: test on a physical device.
 - [ ] Android: configure release signing.
-- [ ] iOS: configure bundle id.
+- [x] iOS: configure bundle id.
 - [ ] iOS: configure app icons and launch assets.
 - [ ] iOS: test on simulator.
 - [ ] iOS: test on a physical device.
@@ -536,4 +536,4 @@
 - [ ] Confirm target Tauri version before mobile setup because mobile support requirements can change.
 - [ ] Treat deterministic simulation as the highest-risk part of the refactor because the current code mixes random generation, gameplay state, and rendering.
 - [x] Treat modern Three.js upgrade as out of scope for the first offline milestone unless a blocker requires it.
-- [ ] Track Apple platform work as blocked until required hardware and account access are confirmed.
+- [x] Track Apple platform work as blocked until required hardware and account access are confirmed.
