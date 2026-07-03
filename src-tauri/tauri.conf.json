@@ -15,7 +15,7 @@
         "title": "Clean Garden",
         "width": 1280,
         "height": 800,
-        "fullscreen": false,
+        "fullscreen": true,
         "resizable": true
       }
     ],
@@ -31,4 +31,3 @@
     "longDescription": "Clean Garden is an offline 3D garden cleanup and tree planting game."
   }
 }
-

@@ -349,7 +349,7 @@
 - [x] Avoid network calls during gameplay.
 - [x] Add a test that blocks network and verifies the game loads.
 - [ ] Add a service worker only if the web build must also support installable PWA behavior.
-- [ ] For Tauri builds, load the local static bundle from the app package.
+- [x] For Tauri builds, load the local static bundle from the app package.
 - [x] Confirm no runtime dependency on Google Fonts, CDNJS, or external APIs.
 
 ## Tauri Project
@@ -358,7 +358,7 @@
 - [x] Add `src-tauri/`.
 - [x] Configure Tauri to use the built web output.
 - [x] Set app name, identifier, icons, window title, and default dimensions.
-- [ ] Configure desktop full-screen behavior.
+- [x] Configure desktop full-screen behavior.
 - [x] Add commands for app exit, platform info, and optional file-safe local settings if needed.
 - [x] Keep gameplay logic in web code so all platforms share the same implementation.
 - [x] Add `npm run tauri:dev`.
