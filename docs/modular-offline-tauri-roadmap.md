@@ -135,7 +135,7 @@
 - [ ] Create `web/src/levels/level-registry.js`.
 - [ ] Create `web/src/levels/level-001.js` as the first migrated level definition.
 - [ ] Create `web/src/levels/templates.js` for reusable objective templates.
-- [ ] Create `web/src/levels/solvability.js` for spawn validation, reachability checks, and layout rejection.
+- [x] Create `web/src/levels/solvability.js` for spawn validation, reachability checks, and layout rejection.
 - [ ] Create `web/assets/fonts/` for offline fonts.
 - [ ] Create `web/assets/vendor/` for offline third-party browser libraries.
 - [ ] Create `web/assets/audio/` only if generated synth audio is replaced by fixed assets.
@@ -238,9 +238,9 @@
 - [ ] Randomize villain spawn timing within level-defined limits.
 - [ ] Randomize player starting position within valid spawn zones.
 - [ ] Prevent random placement from blocking objectives.
-- [ ] Add post-placement solvability checks before accepting a generated layout.
-- [ ] Verify the player can reach all required trash, planting patches, villains, and boss interaction zones.
-- [ ] Reject and regenerate layouts that fail reachability or objective constraints.
+- [x] Add post-placement solvability checks before accepting a generated layout.
+- [x] Verify the player can reach all required trash, planting patches, villains, and boss interaction zones.
+- [x] Reject and regenerate layouts that fail reachability or objective constraints.
 - [ ] Limit regeneration attempts and report a clear layout-generation error if no valid seed/layout can be found.
 - [ ] Add deterministic replay support by reusing a saved seed.
 - [ ] Add seeded layout snapshots for debugging failed tests or bug reports.
