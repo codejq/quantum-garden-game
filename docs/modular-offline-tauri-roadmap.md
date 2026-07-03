@@ -497,24 +497,24 @@
 
 - [x] `web/index.html` has no inline game logic.
 - [x] `web/index.html` has no inline CSS.
-- [ ] Gameplay simulation can run headlessly without WebGL.
+- [x] Gameplay simulation can run headlessly without WebGL.
 - [ ] Rendering syncs to simulation state instead of owning authoritative gameplay state.
-- [ ] Simulation uses a fixed timestep.
+- [x] Simulation uses a fixed timestep.
 - [ ] A level attempt can be built, played, torn down, disposed, and rebuilt from a seed.
 - [ ] Starting a new level does not keep stale patches, planted trees, villains, trash, or decorative objects unless explicitly designed.
-- [ ] The game runs in a browser from the local build.
-- [ ] The game runs without internet access.
-- [ ] English is the default language.
-- [ ] Arabic, English, Spanish, and French can be selected.
-- [ ] Arabic uses RTL layout.
+- [x] The game runs in a browser from the local build.
+- [x] The game runs without internet access.
+- [x] English is the default language.
+- [x] Arabic, English, Spanish, and French can be selected.
+- [x] Arabic uses RTL layout.
 - [ ] The current gameplay remains playable after refactor.
-- [ ] New levels can be added by registering a new level definition.
-- [ ] New modes can be added by registering a new game mode.
+- [x] New levels can be added by registering a new level definition.
+- [x] New modes can be added by registering a new game mode.
 - [x] Scene layout changes each attempt unless the same seed is reused.
 - [x] Same seed produces the same gameplay and decorative layout.
 - [x] Level unload disposes generated Three.js resources.
 - [x] Single-player mode records completion time.
-- [ ] Two-player race mode declares the faster player.
+- [x] Two-player race mode declares the faster player.
 - [ ] The game enters full-screen or viewport-filling play mode.
 - [ ] An exit button is visible and usable during gameplay.
 - [ ] Touch controls work on mobile.
