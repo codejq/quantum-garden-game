@@ -1,6 +1,10 @@
 import { singlePlayerMode } from './single-player.js';
+import { twoPlayerRaceMode } from './two-player-race.js';
 
-const modes = new Map([[singlePlayerMode.id, singlePlayerMode]]);
+const modes = new Map([
+  [singlePlayerMode.id, singlePlayerMode],
+  [twoPlayerRaceMode.id, twoPlayerRaceMode],
+]);
 
 export function registerMode(mode) {
   if (!mode?.id) throw new Error('Mode must include an id');
@@ -16,4 +20,3 @@ export function getMode(id = singlePlayerMode.id) {
 export function listModes() {
   return [...modes.values()];
 }
-

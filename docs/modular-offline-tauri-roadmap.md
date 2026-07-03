@@ -26,7 +26,7 @@
 - [ ] Make the game full screen during play and provide an in-game exit button.
 - [ ] Support mobile touch and desktop keyboard/mouse input.
 - [ ] Add single-player mode.
-- [ ] Add two-player race mode where players compete for fastest completion time.
+- [x] Add two-player race mode where players compete for fastest completion time.
 - [ ] Randomize level start conditions and scene layout each time a level is played.
 - [ ] Add an LLM-playable interface so an external model can observe game state and send actions.
 
@@ -66,7 +66,7 @@
 - [ ] Add teardown/disposal rules for every scene object created during a level attempt.
 - [x] Vendor current Three.js r128 locally first to remove CDN usage without changing behavior.
 - [ ] Treat upgrading Three.js as a separate future migration after the modular/offline baseline is stable.
-- [ ] Make two-player race v1 a sequential same-seed time trial.
+- [x] Make two-player race v1 a sequential same-seed time trial.
 - [ ] Gate iOS and macOS release work behind access to macOS, Xcode, signing certificates, and Apple Developer account.
 
 ## Prototype Cleanup And Known Issues
@@ -131,7 +131,7 @@
 - [x] Create `web/src/i18n/locales/es.json`.
 - [x] Create `web/src/i18n/locales/fr.json`.
 - [x] Create `web/src/modes/single-player.js`.
-- [ ] Create `web/src/modes/two-player-race.js`.
+- [x] Create `web/src/modes/two-player-race.js`.
 - [x] Create `web/src/levels/level-registry.js`.
 - [x] Create `web/src/levels/level-001.js` as the first migrated level definition.
 - [x] Create `web/src/levels/templates.js` for reusable objective templates.
@@ -259,14 +259,14 @@
 
 ## Two Player Race Mode
 
-- [ ] Implement the first version as local sequential same-seed time trial.
-- [ ] For sequential race, let Player 1 complete the level, then Player 2 plays the same level seed.
-- [ ] Add a handoff screen between players so Player 2 does not watch Player 1's route on the same seed.
-- [ ] Add a ready button before Player 2 starts.
-- [ ] Compare completion times.
-- [ ] Show winner and time difference.
-- [ ] Save both player results locally until the race summary is dismissed.
-- [ ] Add optional player names.
+- [x] Implement the first version as local sequential same-seed time trial.
+- [x] For sequential race, let Player 1 complete the level, then Player 2 plays the same level seed.
+- [x] Add a handoff screen between players so Player 2 does not watch Player 1's route on the same seed.
+- [x] Add a ready button before Player 2 starts.
+- [x] Compare completion times.
+- [x] Show winner and time difference.
+- [x] Save both player results locally until the race summary is dismissed.
+- [x] Add optional player names.
 - [ ] For future real-time race, define separate input maps for Player 1 and Player 2.
 - [ ] For future real-time race, support separate entities, independent collision checks, and shared objective ownership.
 - [ ] Treat real-time split-screen or same-arena competition as a later mode after the simulation/render split is stable.
@@ -430,7 +430,7 @@
 - [x] Add tests proving simulation results do not change with render frame rate.
 - [x] Add tests that two runs with different seeds produce different layouts.
 - [ ] Add tests for single-player win conditions.
-- [ ] Add tests for two-player race result comparison.
+- [x] Add tests for two-player race result comparison.
 - [x] Add tests for LLM `observe()` schema.
 - [x] Add tests for LLM raw movement and planting actions.
 - [x] Add tests for LLM high-level actions such as `moveToward(targetId)` and `plantNearest()`.
