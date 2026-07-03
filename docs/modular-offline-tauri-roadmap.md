@@ -86,7 +86,7 @@
 - [x] Make villain litter behavior react to failed trash spawns instead of pretending trash was dropped.
 - [x] Replace bare boss `setTimeout()` scheduling with simulation-owned timers.
 - [x] Store and clear any remaining browser timer handles during pause, retry, exit, or level transition.
-- [ ] Ensure pause freezes gameplay timers, boss spawn timing, villain drops, elapsed time, and input effects.
+- [x] Ensure pause freezes gameplay timers, boss spawn timing, villain drops, elapsed time, and input effects.
 - [ ] Ensure visual-only animations can continue during pause only if intentionally allowed.
 - [x] Recalculate or redesign pollution denominator so spawned trash during a level does not make the meter misleading.
 - [x] Remove `maximum-scale=1.0` and `user-scalable=no` unless a platform-specific reason requires them.
@@ -250,8 +250,8 @@
 ## Single Player Mode
 
 - [ ] Preserve current single-player objective set: collect trash, plant trees, convert minions, defeat boss.
-- [ ] Add elapsed-time tracking.
-- [ ] Add best-time tracking per level and seed type.
+- [x] Add elapsed-time tracking.
+- [x] Add best-time tracking per level and seed type.
 - [x] Add pause/resume.
 - [x] Add retry level.
 - [x] Add return-to-menu.
@@ -512,7 +512,7 @@
 - [ ] Scene layout changes each attempt unless the same seed is reused.
 - [ ] Same seed produces the same gameplay and decorative layout.
 - [ ] Level unload disposes generated Three.js resources.
-- [ ] Single-player mode records completion time.
+- [x] Single-player mode records completion time.
 - [ ] Two-player race mode declares the faster player.
 - [ ] The game enters full-screen or viewport-filling play mode.
 - [ ] An exit button is visible and usable during gameplay.
