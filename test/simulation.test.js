@@ -76,6 +76,48 @@ test('same seed preserves serialized interactive ids', () => {
   );
 });
 
+test('attempt lifecycle records spawn, update, complete, remove, and dispose events', () => {
+  const attempt = createAttempt({ level: 1, seed: 'lifecycle-events', spawnRules: { trash: 1, patches: 1, minionQuota: 1 } });
+  const liveEvents = [];
+  attempt.events.on('spawn', (event) => liveEvents.push(event));
+  attempt.events.on('update', (event) => liveEvents.push(event));
+  attempt.events.on('complete', (event) => liveEvents.push(event));
+
+  assert.ok(attempt.lifecycle.some((event) => event.type === 'spawn' && event.id === 'player-001'));
+  assert.ok(attempt.lifecycle.some((event) => event.type === 'spawn' && event.id === 'trash-001'));
+
+  startAttempt(attempt);
+  attempt.bossSpawnTimer = 0;
+  attempt.spawnTimer = 0;
+  attempt.player.pos.x = attempt.trash[0].pos.x;
+  attempt.player.pos.z = attempt.trash[0].pos.z;
+  stepAttempt(attempt, 1 / 60);
+
+  assert.ok(liveEvents.some((event) => event.type === 'spawn' && event.id === 'boss-001'));
+  assert.ok(liveEvents.some((event) => event.type === 'spawn' && event.id === 'villain-001'));
+  assert.ok(liveEvents.some((event) => event.type === 'update' && event.id === 'player-001'));
+  assert.ok(attempt.lifecycle.some((event) => event.type === 'remove' && event.id === 'trash-001'));
+
+  attempt.trash = [];
+  attempt.patches.forEach((patch) => {
+    patch.planted = true;
+  });
+  attempt.treesLevel = attempt.patches.length;
+  attempt.converted = attempt.quota;
+  attempt.spawned = attempt.quota;
+  attempt.bossSpawned = true;
+  attempt.boss = null;
+  attempt.villains = [];
+  stepAttempt(attempt, 1 / 60);
+
+  assert.equal(attempt.status, 'complete');
+  assert.ok(attempt.lifecycle.some((event) => event.type === 'complete' && event.kind === 'attempt'));
+
+  const removed = teardownAttempt(attempt);
+  assert.ok(removed.includes('patch-001'));
+  assert.ok(attempt.lifecycle.some((event) => event.type === 'dispose' && event.id === 'patch-001'));
+});
+
 test('simulation can step without DOM, canvas, or WebGL', () => {
   const session = new GameSession({ level: 1, seed: 'headless' });
   session.start();

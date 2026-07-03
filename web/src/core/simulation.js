@@ -1,4 +1,5 @@
 import { SeededRandom } from './random.js';
+import { EventBus } from './events.js';
 import { createPlayer, updatePlayer as updatePlayerEntity } from '../entities/player.js';
 import { collectTrashItems, spawnTrashItem } from '../entities/trash.js';
 import { plantNearestPatch, updatePatchGrowth } from '../entities/patch.js';
@@ -15,6 +16,16 @@ function len2(x, z) {
 
 function targetFrom(rng) {
   return randomPoint(rng, 5, WORLD_RADIUS - 3);
+}
+
+function emitLifecycle(attempt, type, payload = {}) {
+  const event = {
+    type,
+    ...payload,
+  };
+  attempt.lifecycle.push(event);
+  attempt.events.emit(type, event);
+  return event;
 }
 
 export function createAttempt({ level = 1, seed = `level-${level}`, spawnRules = {} } = {}) {
@@ -54,10 +65,12 @@ export function createAttempt({ level = 1, seed = `level-${level}`, spawnRules =
     });
   }
 
-  return {
+  const attempt = {
     level,
     seed,
     rng,
+    events: new EventBus(),
+    lifecycle: [],
     status: 'ready',
     elapsed: 0,
     score: 0,
@@ -83,6 +96,11 @@ export function createAttempt({ level = 1, seed = `level-${level}`, spawnRules =
     decor,
     removed: [],
   };
+  emitLifecycle(attempt, 'spawn', { id: attempt.player.id, kind: 'player' });
+  for (const item of trash) emitLifecycle(attempt, 'spawn', { id: item.id, kind: 'trash' });
+  for (const item of patches) emitLifecycle(attempt, 'spawn', { id: item.id, kind: 'patch' });
+  for (const item of decor) emitLifecycle(attempt, 'spawn', { id: item.id, kind: 'decor' });
+  return attempt;
 }
 
 export const buildAttempt = createAttempt;
@@ -159,13 +177,27 @@ export function exitAttempt(attempt) {
 }
 
 export function teardownAttempt(attempt) {
-  const removed = [
-    ...attempt.trash.map((item) => item.id),
-    ...attempt.patches.map((item) => item.id),
-    ...attempt.villains.map((item) => item.id),
-    ...attempt.decor.map((item) => item.id),
-  ];
-  if (attempt.boss) removed.push(attempt.boss.id);
+  const removed = [];
+  for (const item of attempt.trash) {
+    removed.push(item.id);
+    emitLifecycle(attempt, 'dispose', { id: item.id, kind: 'trash' });
+  }
+  for (const item of attempt.patches) {
+    removed.push(item.id);
+    emitLifecycle(attempt, 'dispose', { id: item.id, kind: 'patch' });
+  }
+  for (const item of attempt.villains) {
+    removed.push(item.id);
+    emitLifecycle(attempt, 'dispose', { id: item.id, kind: item.boss ? 'boss' : 'villain' });
+  }
+  for (const item of attempt.decor) {
+    removed.push(item.id);
+    emitLifecycle(attempt, 'dispose', { id: item.id, kind: 'decor' });
+  }
+  if (attempt.boss && !removed.includes(attempt.boss.id)) {
+    removed.push(attempt.boss.id);
+    emitLifecycle(attempt, 'dispose', { id: attempt.boss.id, kind: 'boss' });
+  }
   attempt.status = 'disposed';
   attempt.trash = [];
   attempt.patches = [];
@@ -209,12 +241,14 @@ function spawnVillain(attempt, boss = false) {
     attempt.spawned += 1;
   }
   attempt.villains.push(villain);
+  emitLifecycle(attempt, 'spawn', { id: villain.id, kind: boss ? 'boss' : 'villain' });
 }
 
 function collectTrash(attempt) {
   const result = collectTrashItems(attempt.trash, attempt.player.pos);
   attempt.trash = result.remaining;
   attempt.trashGot += result.collected.length;
+  for (const item of result.collected) emitLifecycle(attempt, 'remove', { id: item.id, kind: 'trash', reason: 'collected' });
   addScore(attempt, result.collected.length * 10);
 }
 
@@ -230,6 +264,7 @@ function plantNearPatch(attempt) {
 
 function updatePlayer(attempt, dt) {
   updatePlayerEntity(attempt.player, attempt.input, dt);
+  emitLifecycle(attempt, 'update', { id: attempt.player.id, kind: 'player', dt });
 }
 
 function updateVillains(attempt, dt) {
@@ -271,7 +306,10 @@ function updateVillains(attempt, dt) {
 
   attempt.villains = attempt.villains.filter((villain) => {
     const keep = villain.state !== 'converted';
-    if (!keep && villain.boss) attempt.boss = null;
+    if (!keep) {
+      if (villain.boss) attempt.boss = null;
+      emitLifecycle(attempt, 'remove', { id: villain.id, kind: villain.boss ? 'boss' : 'villain', reason: 'converted' });
+    }
     return keep;
   });
 }
@@ -291,6 +329,7 @@ function updateWin(attempt) {
   if (complete) {
     attempt.status = 'complete';
     addScore(attempt, 50 + attempt.level * 10);
+    emitLifecycle(attempt, 'complete', { id: `level-${attempt.level}`, kind: 'attempt' });
   }
 }
 

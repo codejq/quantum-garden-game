@@ -64,7 +64,7 @@
 - [x] Use a seeded random generator for all gameplay and cosmetic generation.
 - [x] Use fully seeded world generation for reproducible LLM evaluation and bug reports.
 - [x] Add stable object IDs for all interactive objects.
-- [ ] Add teardown/disposal rules for every scene object created during a level attempt.
+- [x] Add teardown/disposal rules for every scene object created during a level attempt.
 - [x] Vendor current Three.js r128 locally first to remove CDN usage without changing behavior.
 - [x] Treat upgrading Three.js as a separate future migration after the modular/offline baseline is stable.
 - [x] Make two-player race v1 a sequential same-seed time trial.
@@ -185,7 +185,7 @@
 - [ ] Ensure `Game.running`, pause, and level completion are simulation states, not only UI flags.
 - [ ] Keep environment animation that is purely visual in the render layer.
 - [x] Keep gameplay-affecting timers in the simulation layer.
-- [ ] Add object lifecycle hooks for spawn, update, complete, remove, and dispose.
+- [x] Add object lifecycle hooks for spawn, update, complete, remove, and dispose.
 - [x] Add level-attempt lifecycle hooks: `buildAttempt(seed)`, `startAttempt()`, `pauseAttempt()`, `completeAttempt()`, `exitAttempt()`, and `teardownAttempt()`.
 - [ ] Verify the browser game still behaves like the original prototype after the separation.
 
