@@ -44,3 +44,18 @@ test('active patch gameplay reads plain position data instead of mesh-owned stat
   assert.match(source, /if\(p\.pos\.distanceTo\(player\.pos\)<2\.2\)Game\.nearPatch=p/);
   assert.match(source, /patches:nearestList\(patches,'patch',p=>p\.pos/);
 });
+
+test('active villain gameplay reads plain position data instead of mesh-owned state', () => {
+  assert.match(source, /const villainPos=new THREE\.Vector3\(Math\.cos\(a\)\*r,0,Math\.sin\(a\)\*r\)/);
+  assert.match(source, /const v=\{pos:villainPos,mesh:m,boss,hp:boss\?3:1,state:'walk'/);
+  assert.match(source, /const toP=player\.pos\.clone\(\)\.sub\(v\.pos\)/);
+  assert.match(source, /const dir=v\.target\.clone\(\)\.sub\(v\.pos\);dir\.y=0/);
+  assert.match(source, /v\.pos\.addScaledVector\(dir,v\.speed\*dt\)/);
+  assert.match(source, /v\.mesh\.position\.copy\(v\.pos\)/);
+  assert.match(source, /const dropResult=inD<WORLD_R\?spawnTrash\(v\.pos\)/);
+  assert.match(source, /const dist=v\.pos\.distanceTo\(player\.pos\)/);
+  assert.match(source, /burst\(v\.pos\.clone\(\)\.setY\(1\.2\)/);
+  assert.match(source, /Game\.addScore\(100,v\.pos\.clone\(\)\.setY\(2\.5\)\)/);
+  assert.match(source, /v\.target\.copy\(v\.pos\)\.add\(away\)/);
+  assert.match(source, /villains:nearestList\(villains,'villain',v=>v\.pos/);
+});

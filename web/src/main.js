@@ -624,9 +624,10 @@ function spawnPatch(){
 function spawnVillain(boss=false){
   const m=boss?buildMtermish():buildMinion();
   const a=random()*Math.PI*2,r=WORLD_R+4;
-  m.position.set(Math.cos(a)*r,0,Math.sin(a)*r);
+  const villainPos=new THREE.Vector3(Math.cos(a)*r,0,Math.sin(a)*r);
+  m.position.copy(villainPos);
   scene.add(m);
-  const v={mesh:m,boss,hp:boss?3:1,state:'walk',t:0,
+  const v={pos:villainPos,mesh:m,boss,hp:boss?3:1,state:'walk',t:0,
     target:new THREE.Vector3(),drop:rand(2.5,5),hitCd:0,speed:boss?3.4:rand(1.8,2.6)};
   newTarget(v);villains.push(v);
   if(boss){mtermish=v;note(line('mtermishTaunt'));Snd.laugh();}
@@ -874,45 +875,47 @@ function villainsUpdate(dt){
   for(let i=villains.length-1;i>=0;i--){
     const v=villains[i];v.t+=dt;v.hitCd-=dt;
     if(v.state==='walk'){
-      if(v.boss){const toP=player.pos.clone().sub(v.mesh.position);
-        if(toP.length()<8){v.target.copy(v.mesh.position).sub(toP.setY(0).normalize().multiplyScalar(12));
+      if(v.boss){const toP=player.pos.clone().sub(v.pos);
+        if(toP.length()<8){v.target.copy(v.pos).sub(toP.setY(0).normalize().multiplyScalar(12));
           const dT=Math.hypot(v.target.x,v.target.z);
           if(dT>WORLD_R-3){const s=(WORLD_R-3)/dT;v.target.x*=s;v.target.z*=s;}}}
-      const dir=v.target.clone().sub(v.mesh.position);dir.y=0;
+      const dir=v.target.clone().sub(v.pos);dir.y=0;
       if(dir.length()<1){newTarget(v);}
       else{dir.normalize();
-        v.mesh.position.addScaledVector(dir,v.speed*dt);
+        v.pos.addScaledVector(dir,v.speed*dt);
         v.mesh.rotation.y=Math.atan2(dir.x,dir.z);}
+      v.mesh.position.copy(v.pos);
       v.mesh.position.y=Math.abs(Math.sin(v.t*8))*.12;
       v.mesh.rotation.z=Math.sin(v.t*8)*.08;
       v.drop-=dt;
       if(v.drop<=0){v.drop=v.boss?rand(2,3.5):rand(3.5,6.5);
-        const inD=Math.hypot(v.mesh.position.x,v.mesh.position.z);
-        const dropResult=inD<WORLD_R?spawnTrash(v.mesh.position):{ spawned:false, reason:'outside-world' };
+        const inD=Math.hypot(v.pos.x,v.pos.z);
+        const dropResult=inD<WORLD_R?spawnTrash(v.pos):{ spawned:false, reason:'outside-world' };
         if(dropResult.spawned&&random()<.25)note(line('mtermishTaunt'),false,1800);
         if(dropResult.spawned)Game.updateMission();}
       if(v.hitCd<=0){
-        const dist=v.mesh.position.distanceTo(player.pos);
+        const dist=v.pos.distanceTo(player.pos);
         if(dist<(v.boss?2.2:1.5)){
           v.hitCd=.9;v.hp--;
-          burst(v.mesh.position.clone().setY(1.2),v.boss?0xc084fc:0xffd166,16,4.5);
+          burst(v.pos.clone().setY(1.2),v.boss?0xc084fc:0xffd166,16,4.5);
           if(v.hp<=0){
             v.state='convert';v.t=0;Snd.convert();
             v.mesh.traverse(o=>{if(o.isMesh&&o.material===mat(0x9c6bd6))o.material=mat(0x51cf66);});
-            if(v.boss){note(line('mtermishDown'),true,3000);Game.addScore(100,v.mesh.position.clone().setY(2.5));}
-            else{note(line('minion'),true);Game.addScore(30,v.mesh.position.clone().setY(2));}
+            if(v.boss){note(line('mtermishDown'),true,3000);Game.addScore(100,v.pos.clone().setY(2.5));}
+            else{note(line('minion'),true);Game.addScore(30,v.pos.clone().setY(2));}
           }else{Snd.bonk();note(line('mtermishHit'),false,2000);
-            Game.addScore(15,v.mesh.position.clone().setY(2.5));
-            const away=v.mesh.position.clone().sub(player.pos).setY(0).normalize().multiplyScalar(9);
-            v.target.copy(v.mesh.position).add(away);}
+            Game.addScore(15,v.pos.clone().setY(2.5));
+            const away=v.pos.clone().sub(player.pos).setY(0).normalize().multiplyScalar(9);
+            v.target.copy(v.pos).add(away);}
         }}
     }else if(v.state==='convert'){
       v.mesh.rotation.y+=dt*14;
+      v.mesh.position.copy(v.pos);
       v.mesh.position.y=Math.abs(Math.sin(v.t*9))*.6;
       const s=Math.max(.01,1-(v.t-.7)*2)* (v.boss?1.7:1);
       if(v.t>.7)v.mesh.scale.setScalar(s);
       if(v.t>1.2){
-        burst(v.mesh.position.clone().setY(1),0x51cf66,20,5);
+        burst(v.pos.clone().setY(1),0x51cf66,20,5);
         scene.remove(v.mesh);villains.splice(i,1);
         if(v.boss)mtermish=null;else Game.converted++;
         Game.updateMission();Game.checkWin();
@@ -1160,7 +1163,7 @@ function observeAgent(){
     nearest:{
       trash:nearestList(trash,'trash',t=>t.pos,()=>({})),
       patches:nearestList(patches,'patch',p=>p.pos,p=>({ planted:!!p.planted })),
-      villains:nearestList(villains,'villain',v=>v.mesh.position,v=>({
+      villains:nearestList(villains,'villain',v=>v.pos,v=>({
         boss:!!v.boss,
         hp:v.hp,
         state:v.state
