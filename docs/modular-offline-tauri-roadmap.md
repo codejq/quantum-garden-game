@@ -205,8 +205,8 @@
 - [x] Add a language selector on the start/pause/settings screen.
 - [x] Save the selected language locally for offline reuse.
 - [x] Fall back to English for missing keys.
-- [ ] Verify Arabic layout does not overlap in RTL.
-- [ ] Verify English, Spanish, and French text fits in buttons, HUD chips, and overlays.
+- [x] Verify Arabic layout does not overlap in RTL.
+- [x] Verify English, Spanish, and French text fits in buttons, HUD chips, and overlays.
 
 ## Modular Game Modes
 
