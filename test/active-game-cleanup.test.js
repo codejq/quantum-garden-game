@@ -12,6 +12,13 @@ test('active level start tears down previous gameplay objects', () => {
   assert.match(source, /cleanupLevelAttempt\(\);\s*cleanupDecorativeWorld\(\);\s*buildDecorativeWorld\(\);\s*this\.level=n/);
 });
 
+test('active gameplay disposes collected and converted objects when they leave play', () => {
+  assert.match(source, /removeAttemptObject\(trashMesh\(t\)\);trash\.splice\(i,1\)/);
+  assert.match(source, /removeAttemptObject\(villainView\(v\)\?\.mesh\);villains\.splice\(i,1\)/);
+  assert.doesNotMatch(source, /scene\.remove\(trashMesh\(t\)\);trash\.splice\(i,1\)/);
+  assert.doesNotMatch(source, /scene\.remove\(villainView\(v\)\?\.mesh\);villains\.splice\(i,1\)/);
+});
+
 test('active game keeps level tree count separate from lifetime count', () => {
   assert.match(source, /trees:0,lifetimeTrees:0/);
   assert.match(source, /this\.trees=0/);

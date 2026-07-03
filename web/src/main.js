@@ -964,7 +964,7 @@ function villainsUpdate(dt){
       if(v.t>.7)v.visualScale=s;
       if(v.t>1.2){
         burst(v.pos.clone().setY(1),0x51cf66,20,5);
-        scene.remove(villainView(v)?.mesh);villains.splice(i,1);
+        removeAttemptObject(villainView(v)?.mesh);villains.splice(i,1);
         if(v.boss)mtermish=null;else Game.converted++;
         Game.updateMission();Game.checkWin();
       }
@@ -986,7 +986,7 @@ function trashUpdate(dt){
       Game.trashGot++;$('uiTrash').textContent=Game.trashGot;
       Game.addScore(10,t.pos.clone().setY(1.4));
       if(random()<.3)note(line('pickup'),true,1500);
-      scene.remove(trashMesh(t));trash.splice(i,1);
+      removeAttemptObject(trashMesh(t));trash.splice(i,1);
       Game.updateMission();Game.checkWin();
     }}}
 
