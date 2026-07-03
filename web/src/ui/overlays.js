@@ -21,3 +21,13 @@ export function levelSummary({ score, trees, trash, elapsed, bestTime }) {
   };
 }
 
+export function bindQualitySelect(select, { readQuality, writeQuality, applyQuality }) {
+  if (!select) return () => {};
+  select.value = readQuality();
+  const change = () => {
+    const save = writeQuality(select.value);
+    applyQuality?.(save.quality);
+  };
+  select.addEventListener('change', change);
+  return () => select.removeEventListener('change', change);
+}

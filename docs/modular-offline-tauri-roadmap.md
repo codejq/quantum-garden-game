@@ -311,7 +311,7 @@
 
 - [x] Add a quality setting with at least `low` and `high` presets.
 - [x] Default mobile devices to a conservative quality preset when needed.
-- [ ] Allow users to change quality from settings.
+- [x] Allow users to change quality from settings.
 - [x] Reduce or disable expensive shadows on low quality.
 - [x] Reduce decorative flower, particle, cloud, and object counts on low quality.
 - [x] Lower pixel ratio on low quality if needed.

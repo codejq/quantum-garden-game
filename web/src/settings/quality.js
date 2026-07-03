@@ -15,6 +15,10 @@ export const QUALITY_PRESETS = {
   },
 };
 
+export function isQualityName(name) {
+  return Object.hasOwn(QUALITY_PRESETS, name);
+}
+
 export function chooseDefaultQuality({ isMobile = false, devicePixelRatio = 1 } = {}) {
   return isMobile || devicePixelRatio > 2 ? 'low' : 'high';
 }
@@ -34,3 +38,15 @@ export function prefersReducedMotion(matchMedia = globalThis.matchMedia) {
   return Boolean(matchMedia?.('(prefers-reduced-motion: reduce)')?.matches);
 }
 
+export function readQualitySetting(save, fallback = 'high') {
+  return isQualityName(save?.quality) ? save.quality : fallback;
+}
+
+export function writeQualitySetting(storage, qualityName, { loadSave, saveGame } = {}) {
+  if (!isQualityName(qualityName)) throw new Error(`Unknown quality preset: ${qualityName}`);
+  if (typeof loadSave !== 'function' || typeof saveGame !== 'function') {
+    throw new Error('writeQualitySetting requires loadSave and saveGame helpers');
+  }
+  const save = loadSave(storage);
+  return saveGame(storage, { ...save, quality: qualityName });
+}

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { cleanlinessPercent, meterGradient, missionRows, objectiveRows, renderMissionHtml } from '../web/src/ui/hud.js';
-import { hide, levelSummary, setText, show } from '../web/src/ui/overlays.js';
+import { bindQualitySelect, hide, levelSummary, setText, show } from '../web/src/ui/overlays.js';
 
 test('missionRows and renderMissionHtml create localized mission output', () => {
   const rows = missionRows(
@@ -50,6 +50,34 @@ test('overlay helpers update element-like objects', () => {
   assert.equal(element.style.display, 'none');
   setText(element, 'Paused');
   assert.equal(element.textContent, 'Paused');
+});
+
+test('bindQualitySelect persists and applies settings changes', () => {
+  const listeners = new Map();
+  const select = {
+    value: '',
+    addEventListener: (type, fn) => listeners.set(type, fn),
+    removeEventListener: (type) => listeners.delete(type),
+  };
+  const writes = [];
+  const applied = [];
+  const dispose = bindQualitySelect(select, {
+    readQuality: () => 'high',
+    writeQuality: (quality) => {
+      writes.push(quality);
+      return { quality };
+    },
+    applyQuality: (quality) => applied.push(quality),
+  });
+
+  assert.equal(select.value, 'high');
+  select.value = 'low';
+  listeners.get('change')();
+  dispose();
+
+  assert.deepEqual(writes, ['low']);
+  assert.deepEqual(applied, ['low']);
+  assert.equal(listeners.size, 0);
 });
 
 test('levelSummary identifies best times', () => {
