@@ -2,23 +2,28 @@
 
 Use this checklist against `web/legacy/index.html` and the active game before marking a refactor phase as behavior-compatible.
 
-- [ ] Start screen appears.
-- [ ] Start button begins the game.
-- [ ] HUD appears after start.
-- [ ] Player moves with WASD.
-- [ ] Player moves with arrow keys.
-- [ ] Touch joystick appears on touch-capable viewport/device.
-- [ ] Touch action button appears on touch-capable viewport/device.
-- [ ] Player collects trash by walking over it.
-- [ ] Score increases after collecting trash.
-- [ ] Player can plant a tree when standing near a glowing patch.
-- [ ] Tree count increases after planting.
-- [ ] Mission card updates trash, tree, minion, and boss objectives.
-- [ ] Minion can be converted by touching it.
-- [ ] Boss appears after the initial delay.
-- [ ] Boss requires multiple touches before defeat.
-- [ ] Pollution meter changes as the level is cleaned.
-- [ ] Level-complete overlay appears after all objectives are complete.
-- [ ] Next-level button starts another level.
-- [ ] Sound toggle changes the sound icon.
+- [x] Start screen appears.
+- [x] Start button begins the game.
+- [x] HUD appears after start.
+- [x] Player moves with WASD.
+- [x] Player moves with arrow keys.
+- [x] Sound toggle changes the sound icon.
+- [x] Player collects trash by walking over it.
+- [x] Score increases after collecting trash.
+- [x] Player can plant a tree when standing near a glowing patch.
+- [x] Tree count increases after planting.
+- [x] Mission card updates trash, tree, minion, and boss objectives.
+- [x] Minion can be converted by touching it.
+- [x] Boss appears after the initial delay.
+- [x] Boss requires multiple touches before defeat.
+- [x] Pollution meter changes as the level is cleaned.
+- [x] Level-complete overlay appears after all objectives are complete.
+- [x] Next-level button starts another level.
+- [x] Touch joystick appears on touch-capable viewport/device.
+- [x] Touch action button appears on touch-capable viewport/device.
 
+## Automated Evidence
+
+- Active built game parity verified by `npm run test:baseline-parity` at 2026-07-03T23:54:15.520Z.
+- Target: `dist/web/index.html`.
+- Frozen legacy structure remains captured in `docs/baseline-snapshot.json` and `web/legacy/index.html`.

@@ -1140,6 +1140,7 @@ function tickGameplay(dt,time){
     villainsUpdate(dt);
     trashUpdate(dt);
     patchesUpdate(dt,time);
+    Game.checkWin();
   }
 }
 

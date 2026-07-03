@@ -6,6 +6,7 @@ const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.me
 const scriptSource = readFileSync(new URL('../scripts/visual-viewport-smoke.mjs', import.meta.url), 'utf8');
 const cameraScriptSource = readFileSync(new URL('../scripts/camera-view-smoke.mjs', import.meta.url), 'utf8');
 const playabilityScriptSource = readFileSync(new URL('../scripts/playability-smoke.mjs', import.meta.url), 'utf8');
+const baselineParitySource = readFileSync(new URL('../scripts/baseline-gameplay-parity.mjs', import.meta.url), 'utf8');
 
 test('offline build verification runs visual viewport smoke', () => {
   assert.match(packageJson.scripts['test:offline-build'], /visual-viewport-smoke\.mjs/);
@@ -53,4 +54,24 @@ test('offline build verification proves active gameplay remains playable', () =>
   assert.match(playabilityScriptSource, /plantNearest/);
   assert.match(playabilityScriptSource, /trashChanged/);
   assert.match(playabilityScriptSource, /treeChanged/);
+});
+
+test('baseline parity script covers the gameplay checklist', () => {
+  assert.equal(packageJson.scripts['test:baseline-parity'], 'npm run build && node scripts/baseline-gameplay-parity.mjs');
+  for (const label of [
+    'Start screen appears',
+    'Player moves with WASD',
+    'Player moves with arrow keys',
+    'Touch joystick appears on touch-capable viewport/device',
+    'Player collects trash by walking over it',
+    'Player can plant a tree when standing near a glowing patch',
+    'Minion can be converted by touching it',
+    'Boss appears after the initial delay',
+    'Boss requires multiple touches before defeat',
+    'Level-complete overlay appears after all objectives are complete',
+    'Next-level button starts another level',
+    'Sound toggle changes the sound icon',
+  ]) {
+    assert.match(baselineParitySource, new RegExp(label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  }
 });

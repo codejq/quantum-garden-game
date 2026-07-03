@@ -19,6 +19,7 @@
     "test:tauri-install": "node scripts/tauri-windows-install-smoke.mjs",
     "test": "node --test",
     "test:offline-build": "npm run build && node scripts/verify-offline-build.mjs && node scripts/offline-load-smoke.mjs && node scripts/visual-viewport-smoke.mjs && node scripts/localized-viewport-smoke.mjs && node scripts/camera-view-smoke.mjs && node scripts/playability-smoke.mjs",
+    "test:baseline-parity": "npm run build && node scripts/baseline-gameplay-parity.mjs",
     "snapshot:baseline": "node scripts/baseline-snapshot.mjs"
   },
   "devDependencies": {

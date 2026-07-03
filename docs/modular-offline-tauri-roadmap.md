@@ -17,7 +17,7 @@
 
 - [x] Protect the current working prototype before large refactors begin.
 - [x] Split the single HTML file into standard HTML, CSS, and JavaScript modules.
-- [ ] Separate simulation from rendering so gameplay state is plain data and Three.js only visualizes that state.
+- [x] Separate simulation from rendering so gameplay state is plain data and Three.js only visualizes that state.
 - [x] Add a fixed-timestep simulation loop so tests, replay, two-player race, and LLM play are deterministic.
 - [x] Support `en`, `ar`, `es`, and `fr`.
 - [x] Make English the default language.
@@ -188,7 +188,7 @@
 - [x] Keep gameplay-affecting timers in the simulation layer.
 - [x] Add object lifecycle hooks for spawn, update, complete, remove, and dispose.
 - [x] Add level-attempt lifecycle hooks: `buildAttempt(seed)`, `startAttempt()`, `pauseAttempt()`, `completeAttempt()`, `exitAttempt()`, and `teardownAttempt()`.
-- [ ] Verify the browser game still behaves like the original prototype after the separation.
+- [x] Verify the browser game still behaves like the original prototype after the separation.
 
 ## Localization
 
@@ -445,10 +445,10 @@
 
 ## Implementation Order
 
-- [ ] Phase 1: Create build tooling, make level attempts self-contained, add teardown/disposal, move the current game into modules, separate simulation from rendering, and add fixed-timestep stepping.
+- [x] Phase 1: Create build tooling, make level attempts self-contained, add teardown/disposal, move the current game into modules, separate simulation from rendering, and add fixed-timestep stepping.
   - [x] Phase 1 depends on Task Zero baseline protection.
   - [x] Phase 1 tests: headless simulation startup, seeded same-layout replay, different-seed different layout, fixed-timestep frame-rate independence, and teardown/disposal smoke test.
-  - [ ] Phase 1 exit gate: gameplay simulation can run without WebGL, rendering syncs from simulation state, a level attempt can build/play/teardown/rebuild from seed, and the legacy parity checklist still passes.
+  - [x] Phase 1 exit gate: gameplay simulation can run without WebGL, rendering syncs from simulation state, a level attempt can build/play/teardown/rebuild from seed, and the legacy parity checklist still passes.
 - [ ] Phase 2: Replace CDN dependencies with offline local dependencies.
   - [x] Phase 2 depends on Phase 1 or an agreed minimal module split.
   - [x] Phase 2 tests: local build loads with network blocked, local Three r128 is used, local font is used, and no external runtime request is required.
