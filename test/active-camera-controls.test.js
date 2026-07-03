@@ -28,7 +28,16 @@ test('active game supports mouse camera and click planting controls', () => {
   assert.match(mainSource, /renderer\.domElement\.addEventListener\('pointermove'/);
   assert.match(mainSource, /renderer\.domElement\.addEventListener\('pointerup'/);
   assert.match(mainSource, /renderer\.domElement\.addEventListener\('wheel'/);
-  assert.match(mainSource, /if\(!cameraState\.moved\)Game\.tryPlant\(\)/);
+  assert.match(mainSource, /else Game\.tryPlant\(\)/);
+});
+
+test('active game supports optional mouse click-to-move controls', () => {
+  assert.match(mainSource, /const mouseMoveTarget=\{active:false,pos:new THREE\.Vector3\(\)\}/);
+  assert.match(mainSource, /function setMouseMoveTarget\(e\)/);
+  assert.match(mainSource, /groundRaycaster\.setFromCamera\(pointerNdc,camera\)/);
+  assert.match(mainSource, /if\(e\.button===2\|\|e\.shiftKey\)setMouseMoveTarget\(e\)/);
+  assert.match(mainSource, /renderer\.domElement\.addEventListener\('contextmenu',e=>e\.preventDefault\(\)\)/);
+  assert.match(mainSource, /if\(ix\|\|iz\)mouseMoveTarget\.active=false/);
 });
 
 test('active camera supports persisted follow and top-down views', () => {

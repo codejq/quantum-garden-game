@@ -443,6 +443,7 @@ addEventListener('keydown',e=>{keys[e.code]=true;
 addEventListener('keyup',e=>keys[e.code]=false);
 const joy={active:false,x:0,y:0,id:null};
 const agentInput={x:0,z:0,until:0};
+const mouseMoveTarget={active:false,pos:new THREE.Vector3()};
 const joyEl=$('joy'),knob=$('joyKnob');
 function joyMove(t){const r=joyEl.getBoundingClientRect();
   let dx=t.clientX-(r.left+r.width/2),dy=t.clientY-(r.top+r.height/2);
@@ -477,8 +478,22 @@ function toggleCameraView(){
   cameraState.mode=cameraState.mode==='follow'?'top':'follow';
   saveCamera();
 }
+const pointerNdc=new THREE.Vector2();
+const groundRaycaster=new THREE.Raycaster();
+const groundPlane=new THREE.Plane(new THREE.Vector3(0,1,0),0);
+const groundHit=new THREE.Vector3();
+function setMouseMoveTarget(e){
+  pointerNdc.set((e.clientX/innerWidth)*2-1,-(e.clientY/innerHeight)*2+1);
+  groundRaycaster.setFromCamera(pointerNdc,camera);
+  if(!groundRaycaster.ray.intersectPlane(groundPlane,groundHit))return false;
+  const d=Math.hypot(groundHit.x,groundHit.z);
+  if(d>WORLD_R+6){const s=(WORLD_R+6)/d;groundHit.x*=s;groundHit.z*=s;}
+  mouseMoveTarget.pos.copy(groundHit);
+  mouseMoveTarget.active=true;
+  return true;
+}
 renderer.domElement.addEventListener('pointerdown',e=>{
-  if(e.pointerType!=='mouse'||e.button!==0)return;
+  if(e.pointerType!=='mouse'||(e.button!==0&&e.button!==2))return;
   cameraState.dragging=true;cameraState.lastX=e.clientX;cameraState.lastY=e.clientY;cameraState.moved=false;
   renderer.domElement.setPointerCapture(e.pointerId);
 });
@@ -493,8 +508,12 @@ renderer.domElement.addEventListener('pointerup',e=>{
   if(!cameraState.dragging)return;
   cameraState.dragging=false;
   renderer.domElement.releasePointerCapture(e.pointerId);
-  if(!cameraState.moved)Game.tryPlant();
+  if(!cameraState.moved){
+    if(e.button===2||e.shiftKey)setMouseMoveTarget(e);
+    else Game.tryPlant();
+  }
 });
+renderer.domElement.addEventListener('contextmenu',e=>e.preventDefault());
 renderer.domElement.addEventListener('wheel',e=>{
   e.preventDefault();
   cameraState.zoom=clamp(cameraState.zoom+Math.sign(e.deltaY)*.08,.65,1.7);
@@ -771,6 +790,13 @@ function playerUpdate(dt){
   ix+=joy.x;iz+=joy.y;
   if(performance.now()<agentInput.until){ix+=agentInput.x;iz+=agentInput.z;}
   else{agentInput.x=0;agentInput.z=0;}
+  if(ix||iz)mouseMoveTarget.active=false;
+  if(mouseMoveTarget.active){
+    const dx=mouseMoveTarget.pos.x-player.pos.x,dz=mouseMoveTarget.pos.z-player.pos.z;
+    const dist=Math.hypot(dx,dz);
+    if(dist<.45)mouseMoveTarget.active=false;
+    else{ix+=dx/dist;iz+=dz/dist;}
+  }
   const L=Math.hypot(ix,iz);
   if(L>1){ix/=L;iz/=L;}
   const SPEED=8;

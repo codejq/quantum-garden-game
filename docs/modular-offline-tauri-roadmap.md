@@ -293,7 +293,7 @@
 - [x] Add mouse click support for planting or interacting when the player is near an actionable object.
 - [x] Add mouse drag support for rotating the camera view.
 - [x] Add mouse wheel support for zooming the camera in and out.
-- [ ] Add optional click-to-move support if it feels good during playtesting.
+- [x] Add optional click-to-move support if it feels good during playtesting.
 - [x] Add click/tap support for menu and overlay controls.
 - [x] Keep touch joystick for movement.
 - [x] Keep touch action button for planting.
