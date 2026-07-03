@@ -27,7 +27,7 @@ test('active game keeps level tree count separate from lifetime count', () => {
 
 test('active trash spawns report cap failures explicitly', () => {
   assert.match(source, /if\(Game.state\.trash\.length>=45\)return \{ spawned:false, reason:'cap' \}/);
-  assert.match(source, /return \{ spawned:true, mesh:m \}/);
+  assert.match(source, /return \{ spawned:true \}/);
   assert.match(source, /dropResult\.spawned/);
 });
 
@@ -35,7 +35,8 @@ test('active trash gameplay reads plain position data instead of mesh-owned stat
   assert.match(source, /const trashPos=plainPos\(\)/);
   assert.match(source, /const trashMeshes=new WeakMap\(\)/);
   assert.match(source, /function setTrashMesh\(item,mesh\)\{trashMeshes\.set\(item,mesh\);return item;\}/);
-  assert.match(source, /const item=setTrashMesh\(\{pos:trashPos,spin:m\.rotation\.y\},m\)/);
+  assert.match(source, /const item=\{pos:trashPos,spin:random\(\)\*Math\.PI\*2\}/);
+  assert.match(source, /createTrashView\(item\)/);
   assert.match(source, /if\(plainDistance\(t\.pos,Game.state\.player\.pos\)<1\.35\)/);
   assert.match(source, /burst\(plainToVector\(t\.pos,\s*\.6\)/);
   assert.match(source, /Game\.addScore\(10,plainToVector\(t\.pos,1\.4\)\)/);
@@ -44,8 +45,9 @@ test('active trash gameplay reads plain position data instead of mesh-owned stat
 
 test('active patch gameplay reads plain position data instead of mesh-owned state', () => {
   assert.match(source, /const patchPos=plainPos\(Math\.cos\(a\)\*r,0,Math\.sin\(a\)\*r\)/);
-  assert.match(source, /const patch=setPatchView\(\{pos:patchPos,planted:false,grow:0\},\{mesh:g,ring,tree:null\}\)/);
-  assert.match(source, /scene\.add\(g\);Game.state\.patches\.push\(patch\)/);
+  assert.match(source, /const patch=\{pos:patchPos,planted:false,grow:0\}/);
+  assert.match(source, /createPatchView\(patch\)/);
+  assert.match(source, /Game.state\.patches\.push\(patch\)/);
   assert.match(source, /function plantPatchView\(patch\)\{/);
   assert.match(source, /plantPatchView\(p\)/);
   assert.match(source, /setObjectPosition\(view\.tree,p\.pos\)/);
@@ -60,7 +62,8 @@ test('active villain gameplay reads plain position data instead of mesh-owned st
   assert.match(source, /const villainPos=plainPos\(Math\.cos\(a\)\*r,0,Math\.sin\(a\)\*r\)/);
   assert.match(source, /const villainViews=new WeakMap\(\)/);
   assert.match(source, /function setVillainView\(villain,view\)\{villainViews\.set\(villain,view\);return villain;\}/);
-  assert.match(source, /const v=setVillainView\(\{pos:villainPos,boss,hp:boss\?3:1,state:'walk'/);
+  assert.match(source, /const v=\{pos:villainPos,boss,hp:boss\?3:1,state:'walk'/);
+  assert.match(source, /createVillainView\(v\)/);
   assert.match(source, /const toPlayerX=Game.state\.player\.pos\.x-v\.pos\.x,toPlayerZ=Game.state\.player\.pos\.z-v\.pos\.z/);
   assert.match(source, /const dirX=v\.target\.x-v\.pos\.x,dirZ=v\.target\.z-v\.pos\.z/);
   assert.match(source, /v\.pos\.x\+=nx\*v\.speed\*dt;v\.pos\.z\+=nz\*v\.speed\*dt/);
@@ -98,6 +101,26 @@ test('active browser does not keep authoritative interaction positions only on m
   assert.doesNotMatch(source, /nearestList\(trash,'trash',t=>t\.mesh\.position/);
   assert.doesNotMatch(source, /nearestList\(patches,'patch',p=>p\.mesh\.position/);
   assert.doesNotMatch(source, /nearestList\(villains,'villain',v=>v\.mesh\.position/);
+});
+
+test('active browser creates Three.js meshes through render view helpers', () => {
+  assert.match(source, /function createTrashView\(item\)\{/);
+  assert.match(source, /function createPatchView\(patch\)\{/);
+  assert.match(source, /function createVillainView\(villain\)\{/);
+  const spawnTrashSource = source.slice(source.indexOf('function spawnTrash'), source.indexOf('function spawnPatch'));
+  const spawnPatchSource = source.slice(source.indexOf('function spawnPatch'), source.indexOf('function spawnVillain'));
+  const spawnVillainSource = source.slice(source.indexOf('function spawnVillain'), source.indexOf('function newTarget'));
+
+  assert.doesNotMatch(spawnTrashSource, /new THREE\.(Mesh|Group|Geometry|Material)/);
+  assert.doesNotMatch(spawnTrashSource, /scene\.add/);
+  assert.match(spawnTrashSource, /createTrashView\(item\)/);
+
+  assert.doesNotMatch(spawnPatchSource, /new THREE\.(Mesh|Group|Geometry|Material)/);
+  assert.doesNotMatch(spawnPatchSource, /scene\.add/);
+  assert.match(spawnPatchSource, /createPatchView\(patch\)/);
+
+  assert.doesNotMatch(spawnVillainSource, /buildMtermish|buildMinion|scene\.add/);
+  assert.match(spawnVillainSource, /createVillainView\(v\)/);
 });
 
 test('active browser runtime is created from an instantiable state owner', () => {

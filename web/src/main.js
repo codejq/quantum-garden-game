@@ -627,8 +627,36 @@ function plantPatchView(patch){
   const view=patchView(patch);
   if(!view)return;
   view.tree=makeTree();view.tree.scale.setScalar(.01);
-  view.tree.position.copy(patch.pos);scene.add(view.tree);
+  setObjectPosition(view.tree,patch.pos);scene.add(view.tree);
   view.ring.visible=false;
+}
+function createTrashView(item){
+  const m=trashBuilders[randi(0,trashBuilders.length-1)]();
+  m.traverse(o=>{if(o.isMesh)o.castShadow=true;});
+  setObjectPosition(m,item.pos);
+  m.rotation.y=item.spin;
+  scene.add(m);
+  setTrashMesh(item,m);
+  return m;
+}
+function createPatchView(patch){
+  const g=new THREE.Group();
+  const soil=new THREE.Mesh(new THREE.CircleGeometry(1.4,20),mat(0x6d4a2f));
+  soil.rotation.x=-Math.PI/2;soil.position.y=.03;g.add(soil);
+  const ring=new THREE.Mesh(new THREE.RingGeometry(1.5,1.75,24),
+    new THREE.MeshBasicMaterial({color:0x9ef01a,transparent:true,opacity:.8,side:THREE.DoubleSide}));
+  ring.rotation.x=-Math.PI/2;ring.position.y=.05;g.add(ring);
+  setObjectPosition(g,patch.pos);
+  scene.add(g);
+  setPatchView(patch,{mesh:g,ring,tree:null});
+  return g;
+}
+function createVillainView(villain){
+  const m=villain.boss?buildMtermish():buildMinion();
+  setObjectPosition(m,villain.pos);
+  scene.add(m);
+  setVillainView(villain,{mesh:m});
+  return m;
 }
 
 const activeObjectives=[
@@ -689,40 +717,29 @@ function renderActiveMissionHtml(rows){
 
 function spawnTrash(pos){
   if(Game.state.trash.length>=45)return { spawned:false, reason:'cap' };
-  const m=trashBuilders[randi(0,trashBuilders.length-1)]();
-  m.traverse(o=>{if(o.isMesh)o.castShadow=true;});
   const trashPos=plainPos();
-  if(pos)setPlainPos(trashPos,pos.x,m.position.y,pos.z);
+  if(pos)setPlainPos(trashPos,pos.x,0,pos.z);
   else{const a=random()*Math.PI*2,r=rand(4,WORLD_R-2);
-    setPlainPos(trashPos,Math.cos(a)*r,m.position.y,Math.sin(a)*r);}
-  setObjectPosition(m,trashPos);
-  m.rotation.y=random()*Math.PI*2;
-  const item=setTrashMesh({pos:trashPos,spin:m.rotation.y},m);
-  scene.add(m);Game.state.trash.push(item);
-  return { spawned:true, mesh:m };
+    setPlainPos(trashPos,Math.cos(a)*r,0,Math.sin(a)*r);}
+  const item={pos:trashPos,spin:random()*Math.PI*2};
+  createTrashView(item);
+  Game.state.trash.push(item);
+  return { spawned:true };
 }
 
 function spawnPatch(){
   const a=random()*Math.PI*2,r=rand(7,WORLD_R-6);
   const patchPos=plainPos(Math.cos(a)*r,0,Math.sin(a)*r);
-  const g=new THREE.Group();
-  const soil=new THREE.Mesh(new THREE.CircleGeometry(1.4,20),mat(0x6d4a2f));
-  soil.rotation.x=-Math.PI/2;soil.position.y=.03;g.add(soil);
-  const ring=new THREE.Mesh(new THREE.RingGeometry(1.5,1.75,24),
-    new THREE.MeshBasicMaterial({color:0x9ef01a,transparent:true,opacity:.8,side:THREE.DoubleSide}));
-  ring.rotation.x=-Math.PI/2;ring.position.y=.05;g.add(ring);
-  setObjectPosition(g,patchPos);
-  const patch=setPatchView({pos:patchPos,planted:false,grow:0},{mesh:g,ring,tree:null});
-  scene.add(g);Game.state.patches.push(patch);}
+  const patch={pos:patchPos,planted:false,grow:0};
+  createPatchView(patch);
+  Game.state.patches.push(patch);}
 
 function spawnVillain(boss=false){
-  const m=boss?buildMtermish():buildMinion();
   const a=random()*Math.PI*2,r=WORLD_R+4;
   const villainPos=plainPos(Math.cos(a)*r,0,Math.sin(a)*r);
-  setObjectPosition(m,villainPos);
-  scene.add(m);
-  const v=setVillainView({pos:villainPos,boss,hp:boss?3:1,state:'walk',t:0,
-    target:plainPos(),drop:rand(2.5,5),hitCd:0,speed:boss?3.4:rand(1.8,2.6)},{mesh:m});
+  const v={pos:villainPos,boss,hp:boss?3:1,state:'walk',t:0,
+    target:plainPos(),drop:rand(2.5,5),hitCd:0,speed:boss?3.4:rand(1.8,2.6)};
+  createVillainView(v);
   newTarget(v);Game.state.villains.push(v);
   if(boss){Game.state.mtermish=v;note(line('mtermishTaunt'));Snd.laugh();}
   return v;}

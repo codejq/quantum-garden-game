@@ -179,7 +179,7 @@
 - [x] Move patch positions, IDs, planted state, tree growth state, and interaction radius into plain simulation data.
 - [x] Move villain positions, IDs, HP, target, behavior state, timers, and boss/minion type into plain simulation data.
 - [x] Move objective progress and win checks into the simulation layer.
-- [ ] Keep Three.js mesh objects inside the render layer only.
+- [x] Keep Three.js mesh objects inside the render layer only.
 - [x] Add a render sync layer that creates, updates, and removes meshes to match simulation entities.
 - [x] Add fixed-timestep simulation stepping.
 - [x] Add headless simulation tests that run without DOM, canvas, or WebGL.
