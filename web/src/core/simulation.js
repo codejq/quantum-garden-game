@@ -104,6 +104,8 @@ export function createAttempt({ level = 1, seed = `level-${level}` } = {}) {
   };
 }
 
+export const buildAttempt = createAttempt;
+
 export function serializeAttempt(attempt) {
   return {
     level: attempt.level,
@@ -161,6 +163,17 @@ export function pauseAttempt(attempt) {
 
 export function resumeAttempt(attempt) {
   if (attempt.status === 'paused') attempt.status = 'running';
+}
+
+export function completeAttempt(attempt) {
+  attempt.status = 'complete';
+}
+
+export function exitAttempt(attempt) {
+  attempt.status = 'exited';
+  attempt.input.moveX = 0;
+  attempt.input.moveZ = 0;
+  attempt.input.plant = false;
 }
 
 export function teardownAttempt(attempt) {
@@ -348,4 +361,3 @@ export function runFixedSteps(attempt, seconds, tick = 1 / 60) {
   const steps = Math.round(seconds / tick);
   for (let i = 0; i < steps; i += 1) stepAttempt(attempt, tick);
 }
-

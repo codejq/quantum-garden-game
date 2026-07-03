@@ -99,7 +99,7 @@
 - [ ] Create `web/index.html` as the minimal document shell.
 - [ ] Create `web/styles/main.css` for global layout, HUD, overlays, controls, and responsive behavior.
 - [ ] Create `web/src/main.js` as the browser entry point.
-- [ ] Create `web/src/core/game.js` for game lifecycle, state transitions, scoring, win checks, and pause/resume.
+- [x] Create `web/src/core/game.js` for game lifecycle, state transitions, scoring, win checks, and pause/resume.
 - [x] Create `web/src/core/session.js` for instantiable `GameSession` creation, reset, retry, and teardown.
 - [x] Create `web/src/core/simulation.js` for the renderer-independent fixed-timestep simulation.
 - [x] Create `web/src/core/loop.js` for the render/update loop.
@@ -185,7 +185,7 @@
 - [ ] Keep environment animation that is purely visual in the render layer.
 - [ ] Keep gameplay-affecting timers in the simulation layer.
 - [ ] Add object lifecycle hooks for spawn, update, complete, remove, and dispose.
-- [ ] Add level-attempt lifecycle hooks: `buildAttempt(seed)`, `startAttempt()`, `pauseAttempt()`, `completeAttempt()`, `exitAttempt()`, and `teardownAttempt()`.
+- [x] Add level-attempt lifecycle hooks: `buildAttempt(seed)`, `startAttempt()`, `pauseAttempt()`, `completeAttempt()`, `exitAttempt()`, and `teardownAttempt()`.
 - [ ] Verify the browser game still behaves like the original prototype after the separation.
 
 ## Localization

@@ -1,7 +1,17 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { GameSession } from '../web/src/core/session.js';
-import { createAttempt, serializeAttempt, startAttempt, stepAttempt, teardownAttempt } from '../web/src/core/simulation.js';
+import {
+  buildAttempt,
+  createAttempt,
+  exitAttempt,
+  pauseAttempt,
+  resumeAttempt,
+  serializeAttempt,
+  startAttempt,
+  stepAttempt,
+  teardownAttempt,
+} from '../web/src/core/simulation.js';
 
 test('same seed creates the same attempt layout', () => {
   const a = serializeAttempt(createAttempt({ level: 2, seed: 'garden-1' }));
@@ -63,4 +73,20 @@ test('GameSession supports levelId and retrying from a new seed', () => {
   assert.equal(session.levelId, 3);
   assert.equal(second.level, 3);
   assert.notDeepEqual(first.trash, second.trash);
+});
+
+test('attempt lifecycle hooks start, pause, resume, exit, and teardown', () => {
+  const attempt = buildAttempt({ level: 1, seed: 'lifecycle' });
+  startAttempt(attempt);
+  assert.equal(attempt.status, 'running');
+  pauseAttempt(attempt);
+  assert.equal(attempt.status, 'paused');
+  resumeAttempt(attempt);
+  assert.equal(attempt.status, 'running');
+  attempt.input.moveX = 1;
+  exitAttempt(attempt);
+  assert.equal(attempt.status, 'exited');
+  assert.equal(attempt.input.moveX, 0);
+  teardownAttempt(attempt);
+  assert.equal(attempt.status, 'disposed');
 });

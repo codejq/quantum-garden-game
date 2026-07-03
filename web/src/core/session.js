@@ -1,5 +1,6 @@
 import {
   createAttempt,
+  exitAttempt,
   pauseAttempt,
   requestPlant,
   resumeAttempt,
@@ -9,6 +10,7 @@ import {
   startAttempt,
   stepAttempt,
   teardownAttempt,
+  completeAttempt,
 } from './simulation.js';
 
 export class GameSession {
@@ -30,6 +32,14 @@ export class GameSession {
 
   resume() {
     resumeAttempt(this.attempt);
+  }
+
+  complete() {
+    completeAttempt(this.attempt);
+  }
+
+  exit() {
+    exitAttempt(this.attempt);
   }
 
   setMove(x, z) {
