@@ -52,12 +52,14 @@
   #actBtn:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.35)}
   #sndBtn{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:8;background:rgba(255,253,245,.85);
     border:3px solid var(--deep);border-radius:14px;font-size:18px;padding:3px 12px;display:none;font-family:inherit}
-  #pauseBtn,#exitBtn{position:absolute;top:10px;z-index:9;pointer-events:auto;background:rgba(255,253,245,.94);
+  #pauseBtn,#exitBtn,#viewBtn,#resetViewBtn{position:absolute;top:10px;z-index:9;pointer-events:auto;background:rgba(255,253,245,.94);
     border:3px solid var(--deep);border-radius:14px;color:var(--ink);font-family:inherit;font-size:15px;font-weight:900;
     padding:5px 14px;box-shadow:0 3px 0 rgba(0,0,0,.25);display:none;cursor:pointer}
   #exitBtn{left:10px}
   #pauseBtn{left:82px}
-  #pauseBtn:active,#exitBtn:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.25)}
+  #viewBtn{left:166px}
+  #resetViewBtn{left:246px}
+  #pauseBtn:active,#exitBtn:active,#viewBtn:active,#resetViewBtn:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.25)}
 
   /* ---------- overlays ---------- */
   .overlay{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;

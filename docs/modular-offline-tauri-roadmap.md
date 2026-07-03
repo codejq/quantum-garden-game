@@ -287,12 +287,12 @@
 
 - [ ] Keep WASD and arrow movement.
 - [ ] Keep Space and E for planting.
-- [ ] Add mouse support for desktop players.
-- [ ] Add mouse click support for planting or interacting when the player is near an actionable object.
-- [ ] Add mouse drag support for rotating the camera view.
-- [ ] Add mouse wheel support for zooming the camera in and out.
+- [x] Add mouse support for desktop players.
+- [x] Add mouse click support for planting or interacting when the player is near an actionable object.
+- [x] Add mouse drag support for rotating the camera view.
+- [x] Add mouse wheel support for zooming the camera in and out.
 - [ ] Add optional click-to-move support if it feels good during playtesting.
-- [ ] Add click/tap support for menu and overlay controls.
+- [x] Add click/tap support for menu and overlay controls.
 - [ ] Keep touch joystick for movement.
 - [ ] Keep touch action button for planting.
 - [ ] Add touch drag support for changing camera view on mobile if it does not conflict with joystick controls.
@@ -325,14 +325,14 @@
 - [x] Preserve the current follow-camera behavior as the default view.
 - [x] Add player-controlled camera rotation.
 - [x] Add player-controlled camera zoom.
-- [ ] Add a reset-view button that returns to the default follow camera.
-- [ ] Add a view toggle button in the HUD or pause/settings screen.
+- [x] Add a reset-view button that returns to the default follow camera.
+- [x] Add a view toggle button in the HUD or pause/settings screen.
 - [x] Support at least two view presets: angled follow view and top-down view.
 - [ ] Consider adding an optional close third-person view after the controller is stable.
-- [ ] Save the selected view preset locally.
-- [ ] Make camera controls work with mouse on desktop.
+- [x] Save the selected view preset locally.
+- [x] Make camera controls work with mouse on desktop.
 - [ ] Make camera controls work with touch gestures on mobile where practical.
-- [ ] Make camera controls available to the LLM API through observation metadata and optional camera actions.
+- [x] Make camera controls available to the LLM API through observation metadata and optional camera actions.
 - [ ] Prevent camera movement from leaving the player, objectives, or action prompts off-screen.
 - [ ] Prevent camera UI from overlapping exit, sound, joystick, action, or mission controls.
 - [ ] Verify all view modes on desktop, mobile portrait, and mobile landscape.
@@ -518,8 +518,8 @@
 - [ ] An exit button is visible and usable during gameplay.
 - [ ] Touch controls work on mobile.
 - [ ] Keyboard controls work on desktop.
-- [ ] Mouse controls work on desktop.
-- [ ] Player can rotate, zoom, reset, and change camera view perspective.
+- [x] Mouse controls work on desktop.
+- [x] Player can rotate, zoom, reset, and change camera view perspective.
 - [ ] Tauri desktop build launches.
 - [ ] Android build path is documented and configured.
 - [ ] iOS build path is documented and configured.

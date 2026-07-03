@@ -34,10 +34,10 @@ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const smooth=(cur,target,lag,dt)=>{const t=1-Math.exp(-dt/Math.max(lag,1e-4));return cur+(target-cur)*t;};
 
 const ACTIVE_I18N={
-  en:{dir:'ltr',language:'Language',tagline:'A 3D adventure to save the garden! 🌍',howto:'🗑️ <b>Pick up trash</b> — walk over it to clean it up!<br>🌱 <b>Plant trees</b> — stand on the glowing patch and press the button.<br>😈 <span class="bad">Stop Mtermish minions</span> — touch them to turn them into nature friends!<br>🎩 <span class="bad">Big Mtermish</span> needs <b>3 touches</b>... and runs fast!',start:'🚀 Start Adventure',keys:'💻 Arrow keys / WASD to move — Space or E to plant<br>📱 Joystick right — 🌱 button left',level:'Level',clean:'Garden cleanliness',prompt:'🌱 Press to plant a tree!',exit:'Exit',pause:'Pause',paused:'Paused',resume:'Resume',retry:'Retry',menu:'Menu',next:'Next Level',trashLeft:'Trash left',trees:'Trees',minions:'Mtermish minions',boss:'Big Mtermish',time:'Time',best:'Best',levelStart:n=>`Level ${n}: clean the garden and plant trees! 🌍`,levelDone:n=>`🎉 Level ${n} complete!`,exited:'Exited the game'},
-  ar:{dir:'rtl',language:'اللغة',tagline:'مغامرة ثلاثية الأبعاد لإنقاذ الحديقة! 🌍',howto:'🗑️ <b>التقط القمامة</b> — امشِ فوقها لتختفي!<br>🌱 <b>ازرع الأشجار</b> — قف على البقعة المضيئة واضغط الزر.<br>😈 <span class="bad">أوقف أتباع مترميش</span> — المسهم ليتحولوا إلى أصدقاء للطبيعة!<br>🎩 <span class="bad">مترميش الكبير</span> يحتاج <b>٣ لمسات</b>... وهو سريع الهرب!',start:'🚀 ابدأ المغامرة',keys:'💻 الأسهم / WASD للحركة — مسافة أو E للزراعة<br>📱 عصا التحكم يمين — زر 🌱 يسار',level:'مستوى',clean:'نظافة الحديقة',prompt:'🌱 اضغط لتزرع شجرة!',exit:'خروج',pause:'إيقاف',paused:'إيقاف مؤقت',resume:'متابعة',retry:'إعادة',menu:'القائمة',next:'المستوى التالي',trashLeft:'قمامة متبقية',trees:'أشجار',minions:'أتباع مترميش',boss:'مترميش الكبير',time:'الوقت',best:'الأفضل',levelStart:n=>`المستوى ${n}: نظّف الحديقة وازرع الأشجار! 🌍`,levelDone:n=>`🎉 المستوى ${n} اكتمل!`,exited:'تم الخروج من اللعبة'},
-  es:{dir:'ltr',language:'Idioma',tagline:'Una aventura 3D para salvar el jardin. 🌍',howto:'🗑️ <b>Recoge basura</b> — pasa por encima para limpiarla.<br>🌱 <b>Planta arboles</b> — ponte en el punto brillante y pulsa el boton.<br>😈 <span class="bad">Deten a los secuaces de Mtermish</span> — tocalos para convertirlos en amigos de la naturaleza.<br>🎩 <span class="bad">Gran Mtermish</span> necesita <b>3 toques</b>... y corre rapido.',start:'🚀 Iniciar aventura',keys:'💻 Flechas / WASD para moverte — Espacio o E para plantar<br>📱 Joystick derecha — boton 🌱 izquierda',level:'Nivel',clean:'Limpieza del jardin',prompt:'🌱 Pulsa para plantar un arbol.',exit:'Salir',pause:'Pausa',paused:'Pausa',resume:'Continuar',retry:'Reintentar',menu:'Menu',next:'Siguiente nivel',trashLeft:'Basura restante',trees:'Arboles',minions:'Secuaces de Mtermish',boss:'Gran Mtermish',time:'Tiempo',best:'Mejor',levelStart:n=>`Nivel ${n}: limpia el jardin y planta arboles. 🌍`,levelDone:n=>`🎉 Nivel ${n} completado.`,exited:'Saliste del juego'},
-  fr:{dir:'ltr',language:'Langue',tagline:'Une aventure 3D pour sauver le jardin. 🌍',howto:'🗑️ <b>Ramasse les dechets</b> — marche dessus pour les nettoyer.<br>🌱 <b>Plante des arbres</b> — place-toi sur la zone brillante et appuie sur le bouton.<br>😈 <span class="bad">Arrete les sbires de Mtermish</span> — touche-les pour en faire des amis de la nature.<br>🎩 <span class="bad">Grand Mtermish</span> demande <b>3 touches</b>... et court vite.',start:"🚀 Lancer l'aventure",keys:'💻 Fleches / WASD pour bouger — Espace ou E pour planter<br>📱 Joystick a droite — bouton 🌱 a gauche',level:'Niveau',clean:'Proprete du jardin',prompt:'🌱 Appuie pour planter un arbre.',exit:'Quitter',pause:'Pause',paused:'Pause',resume:'Reprendre',retry:'Rejouer',menu:'Menu',next:'Niveau suivant',trashLeft:'Dechets restants',trees:'Arbres',minions:'Sbires de Mtermish',boss:'Grand Mtermish',time:'Temps',best:'Meilleur',levelStart:n=>`Niveau ${n} : nettoie le jardin et plante des arbres. 🌍`,levelDone:n=>`🎉 Niveau ${n} termine.`,exited:'Partie quittee'}
+  en:{dir:'ltr',language:'Language',tagline:'A 3D adventure to save the garden! 🌍',howto:'🗑️ <b>Pick up trash</b> — walk over it to clean it up!<br>🌱 <b>Plant trees</b> — stand on the glowing patch and press the button.<br>😈 <span class="bad">Stop Mtermish minions</span> — touch them to turn them into nature friends!<br>🎩 <span class="bad">Big Mtermish</span> needs <b>3 touches</b>... and runs fast!',start:'🚀 Start Adventure',keys:'💻 Arrow keys / WASD to move — Space or E to plant<br>📱 Joystick right — 🌱 button left',level:'Level',clean:'Garden cleanliness',prompt:'🌱 Press to plant a tree!',exit:'Exit',pause:'Pause',paused:'Paused',resume:'Resume',retry:'Retry',menu:'Menu',next:'Next Level',trashLeft:'Trash left',trees:'Trees',minions:'Mtermish minions',boss:'Big Mtermish',time:'Time',best:'Best',view:'View',resetView:'Reset',levelStart:n=>`Level ${n}: clean the garden and plant trees! 🌍`,levelDone:n=>`🎉 Level ${n} complete!`,exited:'Exited the game'},
+  ar:{dir:'rtl',language:'اللغة',tagline:'مغامرة ثلاثية الأبعاد لإنقاذ الحديقة! 🌍',howto:'🗑️ <b>التقط القمامة</b> — امشِ فوقها لتختفي!<br>🌱 <b>ازرع الأشجار</b> — قف على البقعة المضيئة واضغط الزر.<br>😈 <span class="bad">أوقف أتباع مترميش</span> — المسهم ليتحولوا إلى أصدقاء للطبيعة!<br>🎩 <span class="bad">مترميش الكبير</span> يحتاج <b>٣ لمسات</b>... وهو سريع الهرب!',start:'🚀 ابدأ المغامرة',keys:'💻 الأسهم / WASD للحركة — مسافة أو E للزراعة<br>📱 عصا التحكم يمين — زر 🌱 يسار',level:'مستوى',clean:'نظافة الحديقة',prompt:'🌱 اضغط لتزرع شجرة!',exit:'خروج',pause:'إيقاف',paused:'إيقاف مؤقت',resume:'متابعة',retry:'إعادة',menu:'القائمة',next:'المستوى التالي',trashLeft:'قمامة متبقية',trees:'أشجار',minions:'أتباع مترميش',boss:'مترميش الكبير',time:'الوقت',best:'الأفضل',view:'العرض',resetView:'إعادة',levelStart:n=>`المستوى ${n}: نظّف الحديقة وازرع الأشجار! 🌍`,levelDone:n=>`🎉 المستوى ${n} اكتمل!`,exited:'تم الخروج من اللعبة'},
+  es:{dir:'ltr',language:'Idioma',tagline:'Una aventura 3D para salvar el jardin. 🌍',howto:'🗑️ <b>Recoge basura</b> — pasa por encima para limpiarla.<br>🌱 <b>Planta arboles</b> — ponte en el punto brillante y pulsa el boton.<br>😈 <span class="bad">Deten a los secuaces de Mtermish</span> — tocalos para convertirlos en amigos de la naturaleza.<br>🎩 <span class="bad">Gran Mtermish</span> necesita <b>3 toques</b>... y corre rapido.',start:'🚀 Iniciar aventura',keys:'💻 Flechas / WASD para moverte — Espacio o E para plantar<br>📱 Joystick derecha — boton 🌱 izquierda',level:'Nivel',clean:'Limpieza del jardin',prompt:'🌱 Pulsa para plantar un arbol.',exit:'Salir',pause:'Pausa',paused:'Pausa',resume:'Continuar',retry:'Reintentar',menu:'Menu',next:'Siguiente nivel',trashLeft:'Basura restante',trees:'Arboles',minions:'Secuaces de Mtermish',boss:'Gran Mtermish',time:'Tiempo',best:'Mejor',view:'Vista',resetView:'Reiniciar',levelStart:n=>`Nivel ${n}: limpia el jardin y planta arboles. 🌍`,levelDone:n=>`🎉 Nivel ${n} completado.`,exited:'Saliste del juego'},
+  fr:{dir:'ltr',language:'Langue',tagline:'Une aventure 3D pour sauver le jardin. 🌍',howto:'🗑️ <b>Ramasse les dechets</b> — marche dessus pour les nettoyer.<br>🌱 <b>Plante des arbres</b> — place-toi sur la zone brillante et appuie sur le bouton.<br>😈 <span class="bad">Arrete les sbires de Mtermish</span> — touche-les pour en faire des amis de la nature.<br>🎩 <span class="bad">Grand Mtermish</span> demande <b>3 touches</b>... et court vite.',start:"🚀 Lancer l'aventure",keys:'💻 Fleches / WASD pour bouger — Espace ou E pour planter<br>📱 Joystick a droite — bouton 🌱 a gauche',level:'Niveau',clean:'Proprete du jardin',prompt:'🌱 Appuie pour planter un arbre.',exit:'Quitter',pause:'Pause',paused:'Pause',resume:'Reprendre',retry:'Rejouer',menu:'Menu',next:'Niveau suivant',trashLeft:'Dechets restants',trees:'Arbres',minions:'Sbires de Mtermish',boss:'Grand Mtermish',time:'Temps',best:'Meilleur',view:'Vue',resetView:'Recentrer',levelStart:n=>`Niveau ${n} : nettoie le jardin et plante des arbres. 🌍`,levelDone:n=>`🎉 Niveau ${n} termine.`,exited:'Partie quittee'}
 };
 let activeLocale=localStorage.getItem('cleanGarden.locale')||'en';
 function tr(k,...args){const pack=ACTIVE_I18N[activeLocale]||ACTIVE_I18N.en;const v=pack[k]??ACTIVE_I18N.en[k]??k;return typeof v==='function'?v(...args):v;}
@@ -51,8 +51,9 @@ function applyLocale(locale=activeLocale){
   $('uiLevelLabel').textContent=tr('level');$('cleanlinessLabel').textContent=tr('clean');$('prompt').textContent=tr('prompt');
   $('exitBtn').textContent=tr('exit');$('pauseBtn').textContent=tr('pause');$('pauseTitle').textContent=tr('paused');
   $('resumeBtn').textContent=tr('resume');$('retryBtn').textContent=tr('retry');$('menuBtn').textContent=tr('menu');$('nextBtn').textContent=tr('next');
+  $('viewBtn').textContent=tr('view');$('resetViewBtn').textContent=tr('resetView');
   $('stTimeLabel').textContent=tr('time');$('stBestLabel').textContent=tr('best');
-  $('actBtn').setAttribute('aria-label',tr('prompt'));$('exitBtn').setAttribute('aria-label',tr('exit'));$('sndBtn').setAttribute('aria-label','Sound');
+  $('actBtn').setAttribute('aria-label',tr('prompt'));$('exitBtn').setAttribute('aria-label',tr('exit'));$('viewBtn').setAttribute('aria-label',tr('view'));$('resetViewBtn').setAttribute('aria-label',tr('resetView'));$('sndBtn').setAttribute('aria-label','Sound');
   if(typeof Game!=='undefined'&&Game.running)Game.updateMission();
 }
 
@@ -435,9 +436,54 @@ addEventListener('touchend',e=>{for(const t of e.changedTouches)if(t.identifier=
   joy.active=false;joy.x=joy.y=0;knob.style.transform='translate(-50%,-50%)';}});
 $('actBtn').addEventListener('touchstart',e=>{e.preventDefault();Game.tryPlant();},{passive:false});
 $('actBtn').addEventListener('click',()=>Game.tryPlant());
+const CAMERA_DEFAULT={mode:'follow',yaw:0,zoom:1};
+const cameraState={
+  mode:localStorage.getItem('cleanGarden.cameraMode')||CAMERA_DEFAULT.mode,
+  yaw:Number(localStorage.getItem('cleanGarden.cameraYaw')||CAMERA_DEFAULT.yaw),
+  zoom:Number(localStorage.getItem('cleanGarden.cameraZoom')||CAMERA_DEFAULT.zoom),
+  dragging:false,lastX:0,lastY:0,moved:false
+};
+function saveCamera(){
+  localStorage.setItem('cleanGarden.cameraMode',cameraState.mode);
+  localStorage.setItem('cleanGarden.cameraYaw',String(cameraState.yaw));
+  localStorage.setItem('cleanGarden.cameraZoom',String(cameraState.zoom));
+}
+function resetCameraView(){
+  cameraState.mode=CAMERA_DEFAULT.mode;cameraState.yaw=CAMERA_DEFAULT.yaw;cameraState.zoom=CAMERA_DEFAULT.zoom;
+  saveCamera();
+}
+function toggleCameraView(){
+  cameraState.mode=cameraState.mode==='follow'?'top':'follow';
+  saveCamera();
+}
+renderer.domElement.addEventListener('pointerdown',e=>{
+  if(e.pointerType!=='mouse'||e.button!==0)return;
+  cameraState.dragging=true;cameraState.lastX=e.clientX;cameraState.lastY=e.clientY;cameraState.moved=false;
+  renderer.domElement.setPointerCapture(e.pointerId);
+});
+renderer.domElement.addEventListener('pointermove',e=>{
+  if(!cameraState.dragging)return;
+  const dx=e.clientX-cameraState.lastX,dy=e.clientY-cameraState.lastY;
+  if(Math.abs(dx)+Math.abs(dy)>3)cameraState.moved=true;
+  cameraState.lastX=e.clientX;cameraState.lastY=e.clientY;
+  if(cameraState.moved){cameraState.yaw+=dx*.01;cameraState.zoom=clamp(cameraState.zoom+dy*.003,.65,1.7);saveCamera();}
+});
+renderer.domElement.addEventListener('pointerup',e=>{
+  if(!cameraState.dragging)return;
+  cameraState.dragging=false;
+  renderer.domElement.releasePointerCapture(e.pointerId);
+  if(!cameraState.moved)Game.tryPlant();
+});
+renderer.domElement.addEventListener('wheel',e=>{
+  e.preventDefault();
+  cameraState.zoom=clamp(cameraState.zoom+Math.sign(e.deltaY)*.08,.65,1.7);
+  saveCamera();
+},{passive:false});
 const isTouch='ontouchstart' in window||navigator.maxTouchPoints>0;
 $('sndBtn').onclick=()=>{Snd.on=!Snd.on;$('sndBtn').textContent=Snd.on?'🔊':'🔇';};
 $('exitBtn').onclick=()=>exitGame();
+$('viewBtn').onclick=()=>toggleCameraView();
+$('resetViewBtn').onclick=()=>resetCameraView();
 
 /* ---------------- UI helpers ---------------- */
 const notesEl=$('notes');
@@ -692,8 +738,13 @@ const Game={
 /* ---------------- Update loop ---------------- */
 const clock=new THREE.Clock();
 const camTarget=new THREE.Vector3();
-const CAM_OFF=new THREE.Vector3(0,13,15);
-camera.position.copy(CAM_OFF);
+const cameraOffset=new THREE.Vector3();
+function currentCameraOffset(){
+  if(cameraState.mode==='top')return cameraOffset.set(0,34*cameraState.zoom,.01);
+  const dist=15*cameraState.zoom,height=13*cameraState.zoom;
+  return cameraOffset.set(Math.sin(cameraState.yaw)*dist,height,Math.cos(cameraState.yaw)*dist);
+}
+camera.position.copy(currentCameraOffset());
 
 function playerUpdate(dt){
   let ix=0,iz=0;
@@ -850,7 +901,7 @@ function loop(){
   tickGameplay(dt,time);
   envUpdate(dt,time);
   updateBursts(dt);
-  camTarget.copy(player.pos).add(CAM_OFF);
+  camTarget.copy(player.pos).add(currentCameraOffset());
   camera.position.x=smooth(camera.position.x,camTarget.x,.18,dt);
   camera.position.y=smooth(camera.position.y,camTarget.y,.18,dt);
   camera.position.z=smooth(camera.position.z,camTarget.z,.18,dt);
@@ -877,6 +928,8 @@ function showMenu(){
   $('sndBtn').style.display='none';
   $('exitBtn').style.display='none';
   $('pauseBtn').style.display='none';
+  $('viewBtn').style.display='none';
+  $('resetViewBtn').style.display='none';
   $('joy').style.display='none';
   $('actBtn').style.display='none';
   $('prompt').style.display='none';
@@ -910,6 +963,8 @@ $('startBtn').onclick=()=>{
   $('sndBtn').style.display='block';
   $('exitBtn').style.display='block';
   $('pauseBtn').style.display='block';
+  $('viewBtn').style.display='block';
+  $('resetViewBtn').style.display='block';
   if(isTouch){$('joy').style.display='block';$('actBtn').style.display='flex';}
   Game.running=true;
   Game.startLevel(1);
@@ -918,6 +973,8 @@ $('nextBtn').onclick=()=>{
   $('lvlOverlay').style.display='none';
   $('exitBtn').style.display='block';
   $('pauseBtn').style.display='block';
+  $('viewBtn').style.display='block';
+  $('resetViewBtn').style.display='block';
   Game.running=true;
   Game.startLevel(Game.level+1);
 };
@@ -975,6 +1032,12 @@ function observeAgent(){
       velocity:vecObs(player.vel),
       heading:q(player.yaw)
     },
+    camera:{
+      mode:cameraState.mode,
+      yaw:q(cameraState.yaw),
+      zoom:q(cameraState.zoom),
+      actions:['toggleCamera','resetCamera','setCamera']
+    },
     nearest:{
       trash:nearestList(trash,'trash',t=>t.mesh.position,()=>({})),
       patches:nearestList(patches,'patch',p=>p.mesh.position,p=>({ planted:!!p.planted })),
@@ -1017,6 +1080,14 @@ function actAgent(action={}){
     const villainsObs=observeAgent().nearest.villains;
     moveTowardAgent(type==='attackBoss'?villainsObs.find(v=>v.boss):villainsObs[0],action.durationMs);
   }else if(type==='plant'||type==='plantNearest')Game.tryPlant();
+  else if(type==='toggleCamera')toggleCameraView();
+  else if(type==='resetCamera')resetCameraView();
+  else if(type==='setCamera'){
+    if(action.mode==='follow'||action.mode==='top')cameraState.mode=action.mode;
+    if(Number.isFinite(Number(action.yaw)))cameraState.yaw=Number(action.yaw);
+    if(Number.isFinite(Number(action.zoom)))cameraState.zoom=clamp(Number(action.zoom),.65,1.7);
+    saveCamera();
+  }
   else if(type==='pause')pauseGame();
   else if(type==='resume')resumeGame();
   else if(type==='restart'||type==='retry')retryLevel();
