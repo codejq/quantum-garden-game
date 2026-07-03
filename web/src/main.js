@@ -588,8 +588,9 @@ function line(group){
 }
 
 /* ---------------- Game entities ---------------- */
-const player={mesh:buildNaqi(),pos:new THREE.Vector3(6,0,6),vel:new THREE.Vector3(),yaw:0,anim:0};
-scene.add(player.mesh);
+const player={pos:new THREE.Vector3(6,0,6),vel:new THREE.Vector3(),yaw:0,anim:0};
+const playerMesh=buildNaqi();
+scene.add(playerMesh);
 const trash=[];
 const trashMeshes=new WeakMap();
 const patches=[];
@@ -955,14 +956,14 @@ function patchesUpdate(dt,time){
 }
 
 function syncGameplayMeshes(dt,time){
-  player.mesh.position.copy(player.pos);
-  player.mesh.rotation.y=player.yaw;
+  playerMesh.position.copy(player.pos);
+  playerMesh.rotation.y=player.yaw;
   const spd=Math.hypot(player.vel.x,player.vel.z);
   const sw=Math.sin(player.anim*4)*clamp(spd/8,0,1);
-  const {arms,legs}=player.mesh.userData;
+  const {arms,legs}=playerMesh.userData;
   arms[0].rotation.x=sw*.9;arms[1].rotation.x=-sw*.9;
   legs[0].rotation.x=-sw*.8;legs[1].rotation.x=sw*.8;
-  player.mesh.position.y=Math.abs(Math.sin(player.anim*4))*.1*clamp(spd/8,0,1);
+  playerMesh.position.y=Math.abs(Math.sin(player.anim*4))*.1*clamp(spd/8,0,1);
 
   for(const v of villains){
     const view=villainView(v);

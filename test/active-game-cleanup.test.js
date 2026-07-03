@@ -65,7 +65,9 @@ test('active villain gameplay reads plain position data instead of mesh-owned st
 });
 
 test('active browser does not keep authoritative interaction positions only on meshes', () => {
-  assert.match(source, /player=\{mesh:buildNaqi\(\),pos:new THREE\.Vector3/);
+  assert.match(source, /const player=\{pos:new THREE\.Vector3\(6,0,6\),vel:new THREE\.Vector3\(\),yaw:0,anim:0\}/);
+  assert.match(source, /const playerMesh=buildNaqi\(\)/);
+  assert.doesNotMatch(source, /player=\{[^}]*mesh/);
   assert.match(source, /trash\.push\(item\)/);
   assert.doesNotMatch(source, /trash\.push\(\{[^}]*mesh/);
   assert.match(source, /patches\.push\(patch\)/);
@@ -88,7 +90,7 @@ test('active browser syncs mesh transforms from gameplay data in one render step
   const trashUpdateSource = source.slice(source.indexOf('function trashUpdate'), source.indexOf('function patchesUpdate'));
   const patchesUpdateSource = source.slice(source.indexOf('function patchesUpdate'), source.indexOf('function syncGameplayMeshes'));
 
-  assert.match(syncSource, /player\.mesh\.position\.copy\(player\.pos\)/);
+  assert.match(syncSource, /playerMesh\.position\.copy\(player\.pos\)/);
   assert.match(syncSource, /const view=villainView\(v\)/);
   assert.match(syncSource, /mesh\.position\.copy\(v\.pos\)/);
   assert.match(syncSource, /const mesh=trashMesh\(t\)/);
