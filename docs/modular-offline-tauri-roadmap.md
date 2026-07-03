@@ -37,10 +37,10 @@
 - [x] Copy the current `web/index.html` to `web/legacy/index.html` as a frozen reference build.
 - [x] Add a short note in `web/legacy/README.md` explaining that the legacy build is for parity checks only.
 - [x] Add a simple parity snapshot script that records key baseline behavior from the legacy build.
-- [ ] Capture baseline screenshots for desktop and mobile viewport sizes.
+- [x] Capture baseline screenshots for desktop and mobile viewport sizes.
 - [x] Capture a short baseline gameplay checklist: start game, collect trash, plant tree, convert minion, defeat boss, finish level.
 - [x] Do not edit `web/legacy/index.html` except when intentionally updating the frozen reference after a signed-off milestone.
-- [ ] Task zero exit gate: git exists, baseline commit exists, frozen legacy reference exists, and baseline screenshots/checklist are saved.
+- [x] Task zero exit gate: git exists, baseline commit exists, frozen legacy reference exists, and baseline screenshots/checklist are saved.
 
 ## MVP Line
 
