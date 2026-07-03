@@ -24,13 +24,13 @@
 - [x] Preserve Arabic RTL support.
 - [ ] Make game modes and levels modular so more modes and levels can be added without editing the core loop.
 - [x] Add a Tauri project so the game can be packaged for Windows, macOS, Linux, Android, and iOS.
-- [ ] Make the game work fully offline.
-- [ ] Make the game full screen during play and provide an in-game exit button.
+- [x] Make the game work fully offline.
+- [x] Make the game full screen during play and provide an in-game exit button.
 - [x] Support mobile touch and desktop keyboard/mouse input.
-- [ ] Add single-player mode.
+- [x] Add single-player mode.
 - [x] Add two-player race mode where players compete for fastest completion time.
-- [ ] Randomize level start conditions and scene layout each time a level is played.
-- [ ] Add an LLM-playable interface so an external model can observe game state and send actions.
+- [x] Randomize level start conditions and scene layout each time a level is played.
+- [x] Add an LLM-playable interface so an external model can observe game state and send actions.
 
 ## Task Zero: Baseline Protection
 
