@@ -17,6 +17,22 @@ function createPlayerState(name, level, seed) {
 export const twoPlayerRaceMode = {
   id: 'two-player-race',
   nameKey: 'modes.twoPlayerRace.name',
+  capabilities: {
+    current: {
+      style: 'sequential-same-seed',
+      simultaneousPlayers: 1,
+    },
+    futureRealTime: {
+      style: 'same-arena-or-split-screen',
+      status: 'later-mode-after-simulation-render-split',
+      entityOwnership: ['player-1', 'player-2'],
+      collisionScopes: {
+        player1: 'independent',
+        player2: 'independent',
+      },
+      sharedObjectiveOwnership: true,
+    },
+  },
 
   setup({ levelId = 'level-001', seed = levelId, playerNames = ['Player 1', 'Player 2'] } = {}) {
     const level = getLevel(levelId);

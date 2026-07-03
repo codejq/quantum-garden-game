@@ -51,3 +51,15 @@ test('two-player race compares completion times and reports winner', () => {
   assert.equal(results.winner.name, 'Fast');
   assert.equal(results.timeDifference, 8);
 });
+
+test('two-player race declares future real-time race extension boundaries', () => {
+  const mode = getMode('two-player-race');
+
+  assert.equal(mode.capabilities.current.style, 'sequential-same-seed');
+  assert.equal(mode.capabilities.current.simultaneousPlayers, 1);
+  assert.deepEqual(mode.capabilities.futureRealTime.entityOwnership, ['player-1', 'player-2']);
+  assert.equal(mode.capabilities.futureRealTime.collisionScopes.player1, 'independent');
+  assert.equal(mode.capabilities.futureRealTime.collisionScopes.player2, 'independent');
+  assert.equal(mode.capabilities.futureRealTime.sharedObjectiveOwnership, true);
+  assert.equal(mode.capabilities.futureRealTime.status, 'later-mode-after-simulation-render-split');
+});
