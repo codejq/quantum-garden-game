@@ -420,7 +420,7 @@
 
 ## Testing And Verification
 
-- [ ] Add CI to run headless simulation tests, determinism tests, i18n checks, and offline build checks on push.
+- [x] Add CI to run headless simulation tests, determinism tests, i18n checks, and offline build checks on push.
 - [ ] Add smoke tests for app startup.
 - [x] Add headless simulation tests that run without WebGL.
 - [x] Add tests for i18n key coverage in all four languages.
