@@ -165,7 +165,7 @@
 - [x] Replace hard-coded Arabic text in HTML with UI rendering from the i18n system.
 - [x] Ensure `document.documentElement.lang` updates when the selected locale changes.
 - [x] Ensure `document.documentElement.dir` is `rtl` for Arabic and `ltr` for English, Spanish, and French.
-- [ ] Replace direction-specific CSS such as `text-align:right`, `left`, `right`, and directional margins with logical CSS such as `text-align:start`, `inset-inline`, `margin-inline`, and `padding-inline`.
+- [x] Replace direction-specific CSS such as `text-align:right`, `left`, `right`, and directional margins with logical CSS such as `text-align:start`, `inset-inline`, `margin-inline`, and `padding-inline`.
 - [ ] Preserve the current touch controls and keyboard controls after the split.
 - [ ] Preserve the current visual behavior after the split.
 

@@ -11,7 +11,7 @@
 
   /* ---------- HUD ---------- */
   #hud{position:fixed;inset:0;pointer-events:none;z-index:5;display:none}
-  .hud-top{position:absolute;top:10px;right:10px;left:10px;display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap}
+  .hud-top{position:absolute;top:10px;inset-inline:10px;display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap}
   .chip{background:rgba(255,253,245,.92);border:3px solid var(--deep);border-radius:16px;
     padding:4px 12px;font-weight:800;color:var(--ink);font-size:15px;display:flex;gap:6px;align-items:center;
     box-shadow:0 3px 0 rgba(0,0,0,.25)}
@@ -21,11 +21,11 @@
   #meterWrap .lbl{font-size:12px;font-weight:800;color:var(--ink);display:flex;justify-content:space-between}
   #meterBar{height:12px;border-radius:8px;background:#e2dccb;overflow:hidden;margin-top:3px;border:2px solid #c9c2ac}
   #meterFill{height:100%;width:100%;border-radius:6px;background:linear-gradient(90deg,#7a5230,#a3742f);transition:width .4s}
-  #missionCard{position:absolute;top:64px;right:10px;background:rgba(255,253,245,.92);border:3px solid var(--deep);
+  #missionCard{position:absolute;top:64px;inset-inline-end:10px;background:rgba(255,253,245,.92);border:3px solid var(--deep);
     border-radius:16px;padding:8px 12px;color:var(--ink);font-size:13px;font-weight:700;box-shadow:0 3px 0 rgba(0,0,0,.25);max-width:210px}
   #missionCard div{display:flex;gap:6px;align-items:center;margin:2px 0}
   #missionCard .done{color:var(--deep)}
-  #notes{position:absolute;top:12px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;
+  #notes{position:absolute;top:12px;inset-inline-start:50%;transform:translateX(-50%);display:flex;flex-direction:column;
     gap:6px;align-items:center;width:min(92vw,460px)}
   .note{background:var(--paper);border:3px solid var(--grape);color:#3b2358;border-radius:18px;padding:6px 16px;
     font-weight:800;font-size:15px;box-shadow:0 4px 0 rgba(0,0,0,.25);animation:notein .3s ease-out;text-align:center}
@@ -36,29 +36,29 @@
     text-shadow:0 2px 0 var(--deep),0 0 8px rgba(0,0,0,.3);animation:popfly 1s ease-out forwards;pointer-events:none;z-index:6}
   @keyframes popfly{0%{transform:translate(-50%,0) scale(.6);opacity:0}20%{opacity:1;transform:translate(-50%,-16px) scale(1.15)}
     100%{transform:translate(-50%,-70px) scale(1);opacity:0}}
-  #prompt{position:absolute;bottom:150px;left:50%;transform:translateX(-50%);background:var(--sun);
+  #prompt{position:absolute;bottom:150px;inset-inline-start:50%;transform:translateX(-50%);background:var(--sun);
     border:3px solid #b8860b;color:#5a3d00;border-radius:20px;padding:8px 20px;font-weight:900;font-size:17px;
     box-shadow:0 4px 0 rgba(0,0,0,.3);display:none;animation:bounce 1s infinite}
   @keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-6px)}}
 
   /* ---------- touch controls ---------- */
-  #joy{position:fixed;bottom:26px;right:26px;width:120px;height:120px;border-radius:50%;
+  #joy{position:fixed;bottom:26px;inset-inline-end:26px;width:120px;height:120px;border-radius:50%;
     background:rgba(255,253,245,.25);border:3px solid rgba(255,253,245,.6);display:none;z-index:8}
-  #joyKnob{position:absolute;top:50%;left:50%;width:52px;height:52px;border-radius:50%;
+  #joyKnob{position:absolute;top:50%;inset-inline-start:50%;width:52px;height:52px;border-radius:50%;
     background:rgba(255,253,245,.9);border:3px solid var(--deep);transform:translate(-50%,-50%);box-shadow:0 3px 0 rgba(0,0,0,.3)}
-  #actBtn{position:fixed;bottom:44px;left:26px;width:86px;height:86px;border-radius:50%;background:var(--leaf);
+  #actBtn{position:fixed;bottom:44px;inset-inline-start:26px;width:86px;height:86px;border-radius:50%;background:var(--leaf);
     border:4px solid var(--deep);color:#fff;font-size:36px;display:none;align-items:center;justify-content:center;
     z-index:8;box-shadow:0 5px 0 rgba(0,0,0,.35);font-family:inherit}
   #actBtn:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.35)}
-  #sndBtn{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:8;background:rgba(255,253,245,.85);
+  #sndBtn{position:fixed;bottom:12px;inset-inline-start:50%;transform:translateX(-50%);z-index:8;background:rgba(255,253,245,.85);
     border:3px solid var(--deep);border-radius:14px;font-size:18px;padding:3px 12px;display:none;font-family:inherit}
   #pauseBtn,#exitBtn,#viewBtn,#resetViewBtn{position:absolute;top:10px;z-index:9;pointer-events:auto;background:rgba(255,253,245,.94);
     border:3px solid var(--deep);border-radius:14px;color:var(--ink);font-family:inherit;font-size:15px;font-weight:900;
     padding:5px 14px;box-shadow:0 3px 0 rgba(0,0,0,.25);display:none;cursor:pointer}
-  #exitBtn{left:10px}
-  #pauseBtn{left:82px}
-  #viewBtn{left:166px}
-  #resetViewBtn{left:246px}
+  #exitBtn{inset-inline-start:10px}
+  #pauseBtn{inset-inline-start:82px}
+  #viewBtn{inset-inline-start:166px}
+  #resetViewBtn{inset-inline-start:246px}
   #pauseBtn:active,#exitBtn:active,#viewBtn:active,#resetViewBtn:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.25)}
 
   /* ---------- overlays ---------- */
