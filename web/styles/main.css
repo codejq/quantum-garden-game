@@ -42,11 +42,11 @@
   @keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-6px)}}
 
   /* ---------- touch controls ---------- */
-  #joy{position:fixed;bottom:26px;inset-inline-end:26px;width:120px;height:120px;border-radius:50%;
+  #joy{position:fixed;bottom:max(26px,env(safe-area-inset-bottom));inset-inline-end:max(26px,env(safe-area-inset-right));width:120px;height:120px;border-radius:50%;
     background:rgba(255,253,245,.25);border:3px solid rgba(255,253,245,.6);display:none;z-index:8}
   #joyKnob{position:absolute;top:50%;inset-inline-start:50%;width:52px;height:52px;border-radius:50%;
     background:rgba(255,253,245,.9);border:3px solid var(--deep);transform:translate(-50%,-50%);box-shadow:0 3px 0 rgba(0,0,0,.3)}
-  #actBtn{position:fixed;bottom:44px;inset-inline-start:26px;width:86px;height:86px;border-radius:50%;background:var(--leaf);
+  #actBtn{position:fixed;bottom:max(44px,calc(env(safe-area-inset-bottom) + 18px));inset-inline-start:max(26px,env(safe-area-inset-left));width:86px;height:86px;border-radius:50%;background:var(--leaf);
     border:4px solid var(--deep);color:#fff;font-size:36px;display:none;align-items:center;justify-content:center;
     z-index:8;box-shadow:0 5px 0 rgba(0,0,0,.35);font-family:inherit}
   #actBtn:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.35)}
@@ -60,6 +60,18 @@
   #viewBtn{inset-inline-start:166px}
   #resetViewBtn{inset-inline-start:246px}
   #pauseBtn:active,#exitBtn:active,#viewBtn:active,#resetViewBtn:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.25)}
+
+  @media (max-width:640px) and (orientation:portrait){
+    #joy{width:112px;height:112px;bottom:max(18px,env(safe-area-inset-bottom));inset-inline-end:max(18px,env(safe-area-inset-right))}
+    #actBtn{width:78px;height:78px;bottom:max(34px,calc(env(safe-area-inset-bottom) + 16px));inset-inline-start:max(18px,env(safe-area-inset-left))}
+    #prompt{bottom:132px}
+  }
+
+  @media (max-height:480px) and (orientation:landscape){
+    #joy{width:104px;height:104px;bottom:max(14px,env(safe-area-inset-bottom));inset-inline-end:max(14px,env(safe-area-inset-right))}
+    #actBtn{width:72px;height:72px;bottom:max(28px,calc(env(safe-area-inset-bottom) + 12px));inset-inline-start:max(18px,env(safe-area-inset-left))}
+    #prompt{bottom:112px}
+  }
 
   /* ---------- overlays ---------- */
   .overlay{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;

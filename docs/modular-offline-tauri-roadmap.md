@@ -298,7 +298,7 @@
 - [x] Keep touch action button for planting.
 - [x] Add touch drag support for changing camera view on mobile if it does not conflict with joystick controls.
 - [x] Add pinch zoom support for mobile camera zoom if playtesting confirms it is comfortable.
-- [ ] Add responsive placement for joystick and action button in portrait and landscape.
+- [x] Add responsive placement for joystick and action button in portrait and landscape.
 - [x] Add pointer events support so one input layer works across mouse, pen, and touch where practical.
 - [x] Add input abstraction so keyboard, mouse, touch, and LLM all emit the same actions.
 - [x] Add accessibility labels for controls.
