@@ -100,6 +100,7 @@ export function serializeAttempt(attempt) {
     spawned: attempt.spawned,
     bossSpawned: attempt.bossSpawned,
     player: {
+      id: attempt.player.id,
       x: Number(attempt.player.pos.x.toFixed(3)),
       z: Number(attempt.player.pos.z.toFixed(3)),
     },

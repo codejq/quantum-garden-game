@@ -63,7 +63,7 @@
 - [x] Allow tests and LLM agents to call `step()` without creating a WebGL renderer.
 - [x] Use a seeded random generator for all gameplay and cosmetic generation.
 - [x] Use fully seeded world generation for reproducible LLM evaluation and bug reports.
-- [ ] Add stable object IDs for all interactive objects.
+- [x] Add stable object IDs for all interactive objects.
 - [ ] Add teardown/disposal rules for every scene object created during a level attempt.
 - [x] Vendor current Three.js r128 locally first to remove CDN usage without changing behavior.
 - [x] Treat upgrading Three.js as a separate future migration after the modular/offline baseline is stable.

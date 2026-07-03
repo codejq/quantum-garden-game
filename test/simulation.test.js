@@ -40,6 +40,42 @@ test('createAttempt can use authored level spawn rules', () => {
   assert.equal(attempt.quota, 7);
 });
 
+test('interactive simulation objects expose stable ids', () => {
+  const attempt = createAttempt({ level: 1, seed: 'stable-ids', spawnRules: { trash: 2, patches: 2, minionQuota: 1 } });
+  startAttempt(attempt);
+  attempt.bossSpawnTimer = 0;
+  attempt.spawnTimer = 0;
+  stepAttempt(attempt, 1 / 60);
+  const snapshot = serializeAttempt(attempt);
+
+  assert.equal(snapshot.player.id, 'player-001');
+  assert.deepEqual(
+    snapshot.trash.map((item) => item.id),
+    ['trash-001', 'trash-002'],
+  );
+  assert.deepEqual(
+    snapshot.patches.map((patch) => patch.id),
+    ['patch-001', 'patch-002'],
+  );
+  assert.ok(snapshot.villains.some((villain) => villain.id === 'boss-001' && villain.boss));
+  assert.ok(snapshot.villains.some((villain) => villain.id === 'villain-001' && !villain.boss));
+});
+
+test('same seed preserves serialized interactive ids', () => {
+  const a = serializeAttempt(createAttempt({ level: 2, seed: 'id-replay' }));
+  const b = serializeAttempt(createAttempt({ level: 2, seed: 'id-replay' }));
+
+  assert.equal(a.player.id, b.player.id);
+  assert.deepEqual(
+    a.trash.map((item) => item.id),
+    b.trash.map((item) => item.id),
+  );
+  assert.deepEqual(
+    a.patches.map((patch) => patch.id),
+    b.patches.map((patch) => patch.id),
+  );
+});
+
 test('simulation can step without DOM, canvas, or WebGL', () => {
   const session = new GameSession({ level: 1, seed: 'headless' });
   session.start();
