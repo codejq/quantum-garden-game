@@ -47,10 +47,10 @@
 
 ## MVP Line
 
-- [ ] Define v0.1 MVP as a playable offline web game with modular code, self-contained levels, seeded/randomized level attempts, English default, Arabic support, full-screen play, exit/pause, keyboard/touch controls, and single-player mode.
-- [ ] Treat Phases 1, 2, 3, 4, 5, and 6 as the v0.1 MVP path.
-- [ ] Treat mouse camera polish, view presets, two-player race, LLM play, Tauri desktop, Android, iOS, and macOS as post-MVP expansion unless a release decision changes priority.
-- [ ] v0.1 exit gate: game builds locally, runs offline in browser, supports English and Arabic, can start and finish a single-player level, supports desktop and mobile input, and can safely exit or pause.
+- [x] Define v0.1 MVP as a playable offline web game with modular code, self-contained levels, seeded/randomized level attempts, English default, Arabic support, full-screen play, exit/pause, keyboard/touch controls, and single-player mode.
+- [x] Treat Phases 1, 2, 3, 4, 5, and 6 as the v0.1 MVP path.
+- [x] Treat mouse camera polish, view presets, two-player race, LLM play, Tauri desktop, Android, iOS, and macOS as post-MVP expansion unless a release decision changes priority.
+- [x] v0.1 exit gate: game builds locally, runs offline in browser, supports English and Arabic, can start and finish a single-player level, supports desktop and mobile input, and can safely exit or pause.
 
 ## Architecture Decisions
 
@@ -212,10 +212,10 @@
 ## Modular Game Modes
 
 - [x] Define a `GameMode` interface with `id`, `nameKey`, `setup()`, `start()`, `update()`, `onObjectiveEvent()`, `isComplete()`, and `getResults()`.
-- [ ] Move current gameplay into `single-player` mode.
+- [x] Move current gameplay into `single-player` mode.
 - [x] Add a mode registry that lists available modes.
 - [x] Add a mode select screen before starting the game.
-- [ ] Keep mode state separate from rendering state.
+- [x] Keep mode state separate from rendering state.
 - [ ] Keep scoring rules inside each mode.
 - [ ] Make the HUD read mode-provided objectives instead of hard-coded mission rows.
 - [x] Add clear extension docs for adding a new mode.
@@ -458,8 +458,8 @@
   - [x] Phase 3 tests: i18n key coverage, English fallback, Arabic RTL direction, and text-fit checks for English, Arabic, Spanish, and French.
   - [x] Phase 3 exit gate: English is default, all four languages can be selected, Arabic uses RTL, and no required UI string remains hard-coded in Arabic.
 - [ ] Phase 4: Add mode registry and migrate current game to single-player mode.
-  - [ ] Phase 4 depends on Phase 1 sessions and simulation state.
-  - [ ] Phase 4 tests: mode registry loads, single-player mode starts, objectives update, and win conditions complete.
+  - [x] Phase 4 depends on Phase 1 sessions and simulation state.
+  - [x] Phase 4 tests: mode registry loads, single-player mode starts, objectives update, and win conditions complete.
   - [ ] Phase 4 exit gate: current gameplay runs through the mode registry with no mode-specific logic hard-coded in the app shell.
 - [ ] Phase 5: Add level registry, seeded randomization, and deterministic replay.
   - [ ] Phase 5 depends on Phase 1 simulation separation and seeded random helpers.
