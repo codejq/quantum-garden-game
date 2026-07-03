@@ -32,8 +32,8 @@
 ## Task Zero: Baseline Protection
 
 - [x] Initialize git before changing gameplay code.
-- [ ] Commit the current working prototype as the baseline.
-- [ ] Create a branch per phase or per milestone.
+- [x] Commit the current working prototype as the baseline.
+- [x] Create a branch per phase or per milestone.
 - [x] Copy the current `web/index.html` to `web/legacy/index.html` as a frozen reference build.
 - [x] Add a short note in `web/legacy/README.md` explaining that the legacy build is for parity checks only.
 - [x] Add a simple parity snapshot script that records key baseline behavior from the legacy build.
