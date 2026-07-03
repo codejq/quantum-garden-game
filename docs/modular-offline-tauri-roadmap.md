@@ -354,7 +354,7 @@
 
 ## Tauri Project
 
-- [ ] Install Tauri CLI and required Rust tooling.
+- [x] Install Tauri CLI and required Rust tooling.
 - [x] Add `src-tauri/`.
 - [x] Configure Tauri to use the built web output.
 - [x] Set app name, identifier, icons, window title, and default dimensions.
