@@ -47,8 +47,30 @@ test('single-player mode can setup and start a headless session', () => {
   assert.equal(context.session.level, context.level.difficulty);
   assert.equal(context.session.attempt.trash.length, context.level.spawnRules.trash);
   assert.equal(context.session.mode, 'single-player');
+  assert.equal(context.session.attempt.scoring, mode.scoringRules);
   assert.equal(results.mode, 'single-player');
   assert.equal(results.complete, false);
+});
+
+test('single-player mode owns the current scoring rules', () => {
+  const mode = getMode('single-player');
+  const context = mode.setup({ levelId: 'level-001', seed: 'scoring-rules' });
+  const attempt = context.session.attempt;
+
+  assert.deepEqual(Object.keys(mode.scoringRules), [
+    'trash',
+    'plant',
+    'bossDefeat',
+    'minionConvert',
+    'villainHit',
+    'levelComplete',
+  ]);
+  assert.equal(mode.scoringRules.trash, 10);
+  assert.equal(mode.scoringRules.plant, 25);
+  assert.equal(mode.scoringRules.minionConvert, 30);
+  assert.equal(mode.scoringRules.bossDefeat, 100);
+  assert.equal(mode.scoringRules.villainHit, 15);
+  assert.equal(mode.scoringRules.levelComplete({ attempt }), 50 + attempt.level * 10);
 });
 
 test('single-player mode declares the current cleanup objective set', () => {

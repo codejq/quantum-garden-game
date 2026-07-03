@@ -216,7 +216,7 @@
 - [x] Add a mode registry that lists available modes.
 - [x] Add a mode select screen before starting the game.
 - [x] Keep mode state separate from rendering state.
-- [ ] Keep scoring rules inside each mode.
+- [x] Keep scoring rules inside each mode.
 - [ ] Make the HUD read mode-provided objectives instead of hard-coded mission rows.
 - [x] Add clear extension docs for adding a new mode.
 

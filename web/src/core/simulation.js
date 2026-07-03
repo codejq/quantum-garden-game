@@ -28,7 +28,21 @@ function emitLifecycle(attempt, type, payload = {}) {
   return event;
 }
 
-export function createAttempt({ level = 1, seed = `level-${level}`, spawnRules = {} } = {}) {
+export const DEFAULT_SCORING = {
+  trash: 10,
+  plant: 25,
+  bossDefeat: 100,
+  minionConvert: 30,
+  villainHit: 15,
+  levelComplete: ({ attempt }) => 50 + attempt.level * 10,
+};
+
+function scoreValue(attempt, event, payload = {}) {
+  const rule = attempt.scoring?.[event] ?? DEFAULT_SCORING[event] ?? 0;
+  return typeof rule === 'function' ? rule({ attempt, ...payload }) : rule;
+}
+
+export function createAttempt({ level = 1, seed = `level-${level}`, spawnRules = {}, scoring = DEFAULT_SCORING } = {}) {
   const rng = new SeededRandom(`${seed}:attempt`);
   const trashCount = spawnRules.trash ?? 9 + level * 3;
   const patchCount = spawnRules.patches ?? 2 + Math.min(level, 5);
@@ -69,6 +83,7 @@ export function createAttempt({ level = 1, seed = `level-${level}`, spawnRules =
   const attempt = {
     level,
     seed,
+    scoring,
     rng,
     events: new EventBus(),
     lifecycle: [],
@@ -251,7 +266,7 @@ function collectTrash(attempt) {
   attempt.trash = result.remaining;
   attempt.trashGot += result.collected.length;
   for (const item of result.collected) emitLifecycle(attempt, 'remove', { id: item.id, kind: 'trash', reason: 'collected' });
-  addScore(attempt, result.collected.length * 10);
+  addScore(attempt, result.collected.length * scoreValue(attempt, 'trash', { count: result.collected.length }));
 }
 
 function plantNearPatch(attempt) {
@@ -261,7 +276,7 @@ function plantNearPatch(attempt) {
   if (!patch) return;
   attempt.treesLevel += 1;
   attempt.treesTotal += 1;
-  addScore(attempt, 25);
+  addScore(attempt, scoreValue(attempt, 'plant', { patch }));
 }
 
 function updatePlayer(attempt, dt) {
@@ -294,13 +309,13 @@ function updateVillains(attempt, dt) {
 
     if (hitVillain(villain, attempt.player.pos)) {
       if (villain.hp <= 0) {
-        if (villain.boss) addScore(attempt, 100);
+        if (villain.boss) addScore(attempt, scoreValue(attempt, 'bossDefeat', { villain }));
         else {
           attempt.converted += 1;
-          addScore(attempt, 30);
+          addScore(attempt, scoreValue(attempt, 'minionConvert', { villain }));
         }
       } else {
-        addScore(attempt, 15);
+        addScore(attempt, scoreValue(attempt, 'villainHit', { villain }));
         villain.target = targetFrom(attempt.rng);
       }
     }
@@ -329,7 +344,7 @@ function updateWin(attempt) {
     (!attempt.bossRequired || (attempt.bossSpawned && !attempt.boss));
   if (complete) {
     attempt.status = 'complete';
-    addScore(attempt, 50 + attempt.level * 10);
+    addScore(attempt, scoreValue(attempt, 'levelComplete'));
     emitLifecycle(attempt, 'complete', { id: `level-${attempt.level}`, kind: 'attempt' });
   }
 }

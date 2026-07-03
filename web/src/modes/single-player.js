@@ -4,6 +4,14 @@ import { getLevel } from '../levels/level-registry.js';
 export const singlePlayerMode = {
   id: 'single-player',
   nameKey: 'modes.singlePlayer.name',
+  scoringRules: {
+    trash: 10,
+    plant: 25,
+    bossDefeat: 100,
+    minionConvert: 30,
+    villainHit: 15,
+    levelComplete: ({ attempt }) => 50 + attempt.level * 10,
+  },
 
   getObjectives() {
     return [
@@ -52,6 +60,7 @@ export const singlePlayerMode = {
         levelId: level.id,
         levelDefinition: level,
         seed,
+        scoring: this.scoringRules,
       }),
     };
   },
