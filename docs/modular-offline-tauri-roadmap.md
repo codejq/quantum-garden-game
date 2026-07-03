@@ -301,7 +301,7 @@
 - [ ] Add responsive placement for joystick and action button in portrait and landscape.
 - [x] Add pointer events support so one input layer works across mouse, pen, and touch where practical.
 - [x] Add input abstraction so keyboard, mouse, touch, and LLM all emit the same actions.
-- [ ] Add accessibility labels for controls.
+- [x] Add accessibility labels for controls.
 - [x] Test desktop Chrome or Edge.
 - [x] Test mobile viewport in browser dev tools.
 - [ ] Test Android WebView through Tauri.
