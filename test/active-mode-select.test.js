@@ -4,6 +4,7 @@ import { test } from 'node:test';
 
 const htmlSource = readFileSync(new URL('../web/index.html', import.meta.url), 'utf8');
 const mainSource = readFileSync(new URL('../web/src/main.js', import.meta.url), 'utf8');
+const browserModeRegistrySource = readFileSync(new URL('../web/src/modes/browser-mode-registry.js', import.meta.url), 'utf8');
 const cssSource = readFileSync(new URL('../web/styles/main.css', import.meta.url), 'utf8');
 const roadmapSource = readFileSync(new URL('../docs/modular-offline-tauri-roadmap.md', import.meta.url), 'utf8');
 
@@ -15,11 +16,17 @@ test('active start overlay exposes a mode selector before starting the game', ()
 });
 
 test('active mode selector is localized, persisted, and reflected in browser agent observations', () => {
+  assert.match(htmlSource, /<script src="src\/modes\/browser-mode-registry\.js"><\/script>/);
+  assert.match(htmlSource, /<script src="src\/main\.js"><\/script>/);
+  assert.match(browserModeRegistrySource, /window\.CleanGardenModes=/);
+  assert.match(mainSource, /const ACTIVE_MODE_REGISTRY=window\.CleanGardenModes/);
+  assert.match(mainSource, /const ACTIVE_MODE_DEFINITIONS=ACTIVE_MODE_REGISTRY\.listModes\(\)/);
   assert.match(mainSource, /mode:'Game mode'/);
   assert.match(mainSource, /singlePlayer:'Single Player'/);
   assert.match(mainSource, /twoPlayerRace:'Two Player Race'/);
-  assert.match(mainSource, /let activeMode=localStorage\.getItem\('cleanGarden\.mode'\)\|\|'single-player'/);
+  assert.match(mainSource, /let activeMode=normalizeActiveMode\(localStorage\.getItem\('cleanGarden\.mode'\)\)/);
   assert.match(mainSource, /function setActiveMode\(mode\)/);
+  assert.doesNotMatch(mainSource, /mode==='two-player-race'\?'two-player-race':'single-player'/);
   assert.match(mainSource, /localStorage\.setItem\('cleanGarden\.mode',activeMode\)/);
   assert.match(mainSource, /btn\.setAttribute\('aria-pressed',String\(selected\)\)/);
   assert.match(mainSource, /mode:activeMode/);

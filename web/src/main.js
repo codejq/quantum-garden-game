@@ -3,6 +3,15 @@
 ============================================================ */
 'use strict';
 const $=id=>document.getElementById(id);
+const ACTIVE_MODE_REGISTRY=window.CleanGardenModes;
+const ACTIVE_MODE_DEFINITIONS=ACTIVE_MODE_REGISTRY.listModes();
+const DEFAULT_ACTIVE_MODE=ACTIVE_MODE_REGISTRY.getDefaultMode();
+function isKnownActiveMode(mode){
+  return ACTIVE_MODE_REGISTRY.hasMode(mode);
+}
+function normalizeActiveMode(mode){
+  return isKnownActiveMode(mode)?mode:DEFAULT_ACTIVE_MODE;
+}
 let activeSeed='menu-'+Date.now().toString(36);
 let activeRngState=hashSeed(activeSeed);
 let activeAttempt=0;
@@ -50,7 +59,7 @@ const ACTIVE_I18N_LINE_KEYS=[
 ];
 const requestedLocale=new URLSearchParams(location.search).get('locale');
 let activeLocale=ACTIVE_I18N[requestedLocale]?requestedLocale:(localStorage.getItem('cleanGarden.locale')||'en');
-let activeMode=localStorage.getItem('cleanGarden.mode')||'single-player';
+let activeMode=normalizeActiveMode(localStorage.getItem('cleanGarden.mode'));
 function tr(k,...args){const pack=ACTIVE_I18N[activeLocale]||ACTIVE_I18N.en;const v=pack[k]??ACTIVE_I18N.en[k]??k;return typeof v==='function'?v(...args):v;}
 function applyLocale(locale=activeLocale){
   activeLocale=ACTIVE_I18N[locale]?locale:'en';
@@ -1159,7 +1168,7 @@ function retryLevel(){
   Game.startLevel(Game.level);
 }
 function setActiveMode(mode){
-  activeMode=mode==='two-player-race'?'two-player-race':'single-player';
+  activeMode=normalizeActiveMode(mode);
   localStorage.setItem('cleanGarden.mode',activeMode);
   document.querySelectorAll('.modeOption').forEach(btn=>{
     const selected=btn.dataset.mode===activeMode;
