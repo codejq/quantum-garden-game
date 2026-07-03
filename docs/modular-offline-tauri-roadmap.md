@@ -415,7 +415,7 @@
 - [x] Add real-time browser mode for demos.
 - [x] Allow raw low-level movement actions and higher-level intent actions.
 - [ ] Add a Playwright-based agent harness that can call the browser API.
-- [ ] Add sample scripts showing how an external LLM agent can observe and act.
+- [x] Add sample scripts showing how an external LLM agent can observe and act.
 - [x] Add a safety boundary: the LLM API can control only the game, not the filesystem, OS, or Tauri commands.
 - [x] For Tauri, expose the same browser-side API and avoid privileged native commands for LLM control.
 
@@ -526,7 +526,7 @@
 - [ ] iOS build path is documented and configured.
 - [x] `window.QuantumGardenAgent.observe()` returns valid state.
 - [x] `window.QuantumGardenAgent.act()` can control the player.
-- [ ] LLM can use both low-level actions and high-level target actions.
+- [x] LLM can use both low-level actions and high-level target actions.
 
 ## Risks And Decisions
 
