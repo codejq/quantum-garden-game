@@ -7,11 +7,19 @@
     "dev": "vite --host 127.0.0.1",
     "build": "vite build && node scripts/copy-static-assets.mjs",
     "preview": "vite preview --host 127.0.0.1",
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build",
+    "tauri:android:dev": "tauri android dev",
+    "tauri:android:build": "tauri android build",
+    "tauri:ios:dev": "tauri ios dev",
+    "tauri:ios:build": "tauri ios build",
     "test": "node --test",
     "test:offline-build": "npm run build && node scripts/verify-offline-build.mjs && node scripts/offline-load-smoke.mjs",
     "snapshot:baseline": "node scripts/baseline-snapshot.mjs"
   },
   "devDependencies": {
+    "@tauri-apps/cli": "^2.11.4",
     "vite": "^8.1.3"
   }
 }

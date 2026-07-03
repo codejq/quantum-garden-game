@@ -1,0 +1,34 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Clean Garden",
+  "version": "0.1.0",
+  "identifier": "com.quantumgarden.clean",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://127.0.0.1:5173",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist/web"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Clean Garden",
+        "width": 1280,
+        "height": 800,
+        "fullscreen": false,
+        "resizable": true
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "category": "Game",
+    "shortDescription": "A 3D garden cleanup game",
+    "longDescription": "Clean Garden is an offline 3D garden cleanup and tree planting game."
+  }
+}
+

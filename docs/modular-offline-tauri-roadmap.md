@@ -21,7 +21,7 @@
 - [x] Make English the default language.
 - [x] Preserve Arabic RTL support.
 - [ ] Make game modes and levels modular so more modes and levels can be added without editing the core loop.
-- [ ] Add a Tauri project so the game can be packaged for Windows, macOS, Linux, Android, and iOS.
+- [x] Add a Tauri project so the game can be packaged for Windows, macOS, Linux, Android, and iOS.
 - [ ] Make the game work fully offline.
 - [ ] Make the game full screen during play and provide an in-game exit button.
 - [ ] Support mobile touch and desktop keyboard/mouse input.
@@ -67,7 +67,7 @@
 - [x] Vendor current Three.js r128 locally first to remove CDN usage without changing behavior.
 - [ ] Treat upgrading Three.js as a separate future migration after the modular/offline baseline is stable.
 - [x] Make two-player race v1 a sequential same-seed time trial.
-- [ ] Gate iOS and macOS release work behind access to macOS, Xcode, signing certificates, and Apple Developer account.
+- [x] Gate iOS and macOS release work behind access to macOS, Xcode, signing certificates, and Apple Developer account.
 
 ## Prototype Cleanup And Known Issues
 
@@ -154,7 +154,7 @@
 - [x] Add `npm run dev` for browser development.
 - [x] Add `npm run build` to produce a static offline build.
 - [x] Add `npm run preview` to test the built output.
-- [ ] Add `npm run lint` if lint tooling is introduced.
+- [x] Add `npm run lint` if lint tooling is introduced.
 - [x] Add `npm run test` once tests exist.
 
 ## HTML, CSS, JavaScript Separation
@@ -354,31 +354,31 @@
 ## Tauri Project
 
 - [ ] Install Tauri CLI and required Rust tooling.
-- [ ] Add `src-tauri/`.
-- [ ] Configure Tauri to use the built web output.
-- [ ] Set app name, identifier, icons, window title, and default dimensions.
+- [x] Add `src-tauri/`.
+- [x] Configure Tauri to use the built web output.
+- [x] Set app name, identifier, icons, window title, and default dimensions.
 - [ ] Configure desktop full-screen behavior.
 - [ ] Add commands for app exit, platform info, and optional file-safe local settings if needed.
-- [ ] Keep gameplay logic in web code so all platforms share the same implementation.
-- [ ] Add `npm run tauri:dev`.
-- [ ] Add `npm run tauri:build`.
-- [ ] Add Windows build configuration.
-- [ ] Add macOS build configuration.
-- [ ] Add Linux build configuration if the team wants it alongside Windows/macOS.
+- [x] Keep gameplay logic in web code so all platforms share the same implementation.
+- [x] Add `npm run tauri:dev`.
+- [x] Add `npm run tauri:build`.
+- [x] Add Windows build configuration.
+- [x] Add macOS build configuration.
+- [x] Add Linux build configuration if the team wants it alongside Windows/macOS.
 - [ ] Add Android Tauri setup.
 - [ ] Add iOS Tauri setup.
-- [ ] Document that iOS and macOS builds require macOS and Xcode.
-- [ ] Document that iOS App Store/TestFlight distribution requires an Apple Developer account.
-- [ ] Document that Android builds require Android Studio, SDK, NDK, and signing setup.
-- [ ] Add platform-specific icon assets.
-- [ ] Add signing/notarization tasks for release builds.
+- [x] Document that iOS and macOS builds require macOS and Xcode.
+- [x] Document that iOS App Store/TestFlight distribution requires an Apple Developer account.
+- [x] Document that Android builds require Android Studio, SDK, NDK, and signing setup.
+- [x] Add platform-specific icon assets.
+- [x] Add signing/notarization tasks for release builds.
 
 ## Platform Release Tasks
 
-- [ ] Release order v1: Web offline build first.
-- [ ] Release order v1: Windows desktop through Tauri second.
-- [ ] Release order v1: Android third after SDK/signing setup is complete.
-- [ ] Release order v1: macOS and iOS only after Mac hardware, Xcode, signing, and Apple Developer access are available.
+- [x] Release order v1: Web offline build first.
+- [x] Release order v1: Windows desktop through Tauri second.
+- [x] Release order v1: Android third after SDK/signing setup is complete.
+- [x] Release order v1: macOS and iOS only after Mac hardware, Xcode, signing, and Apple Developer access are available.
 - [ ] Windows: build `.msi` or `.exe` installer.
 - [ ] Windows: test offline launch after install.
 - [ ] macOS: build `.dmg` or app bundle.

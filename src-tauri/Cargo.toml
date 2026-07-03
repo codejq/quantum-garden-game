@@ -1,0 +1,21 @@
+[package]
+name = "clean-garden"
+version = "0.1.0"
+description = "Clean Garden"
+authors = ["Quantum Garden Team"]
+edition = "2021"
+
+[lib]
+name = "clean_garden_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[[bin]]
+name = "clean-garden"
+path = "src/main.rs"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+
