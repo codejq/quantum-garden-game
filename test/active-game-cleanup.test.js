@@ -33,3 +33,14 @@ test('active trash gameplay reads plain position data instead of mesh-owned stat
   assert.match(source, /Game\.addScore\(10,t\.pos\.clone\(\)\.setY\(1\.4\)\)/);
   assert.match(source, /trash:nearestList\(trash,'trash',t=>t\.pos/);
 });
+
+test('active patch gameplay reads plain position data instead of mesh-owned state', () => {
+  assert.match(source, /const patchPos=new THREE\.Vector3\(Math\.cos\(a\)\*r,0,Math\.sin\(a\)\*r\)/);
+  assert.match(source, /scene\.add\(g\);patches\.push\(\{pos:patchPos,mesh:g,ring,planted:false,tree:null,grow:0\}\)/);
+  assert.match(source, /p\.tree\.position\.copy\(p\.pos\)/);
+  assert.match(source, /this\.addScore\(25,p\.pos\.clone\(\)\.add\(new THREE\.Vector3\(0,2,0\)\)\)/);
+  assert.match(source, /burst\(p\.pos\.clone\(\)\.setY\(1\),0x9ef01a/);
+  assert.match(source, /p\.mesh\.position\.copy\(p\.pos\)/);
+  assert.match(source, /if\(p\.pos\.distanceTo\(player\.pos\)<2\.2\)Game\.nearPatch=p/);
+  assert.match(source, /patches:nearestList\(patches,'patch',p=>p\.pos/);
+});

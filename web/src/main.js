@@ -611,14 +611,15 @@ function spawnTrash(pos){
 
 function spawnPatch(){
   const a=random()*Math.PI*2,r=rand(7,WORLD_R-6);
+  const patchPos=new THREE.Vector3(Math.cos(a)*r,0,Math.sin(a)*r);
   const g=new THREE.Group();
   const soil=new THREE.Mesh(new THREE.CircleGeometry(1.4,20),mat(0x6d4a2f));
   soil.rotation.x=-Math.PI/2;soil.position.y=.03;g.add(soil);
   const ring=new THREE.Mesh(new THREE.RingGeometry(1.5,1.75,24),
     new THREE.MeshBasicMaterial({color:0x9ef01a,transparent:true,opacity:.8,side:THREE.DoubleSide}));
   ring.rotation.x=-Math.PI/2;ring.position.y=.05;g.add(ring);
-  g.position.set(Math.cos(a)*r,0,Math.sin(a)*r);
-  scene.add(g);patches.push({mesh:g,ring,planted:false,tree:null,grow:0});}
+  g.position.copy(patchPos);
+  scene.add(g);patches.push({pos:patchPos,mesh:g,ring,planted:false,tree:null,grow:0});}
 
 function spawnVillain(boss=false){
   const m=boss?buildMtermish():buildMinion();
@@ -767,11 +768,11 @@ const Game={
     if(!this.running||!this.nearPatch||this.plantCd>0)return;
     const p=this.nearPatch;p.planted=true;p.grow=0;
     p.tree=makeTree();p.tree.scale.setScalar(.01);
-    p.tree.position.copy(p.mesh.position);scene.add(p.tree);
+    p.tree.position.copy(p.pos);scene.add(p.tree);
     p.ring.visible=false;
-    this.trees++;this.lifetimeTrees++;this.addScore(25,p.mesh.position.clone().add(new THREE.Vector3(0,2,0)));
+    this.trees++;this.lifetimeTrees++;this.addScore(25,p.pos.clone().add(new THREE.Vector3(0,2,0)));
     this.plantCd=.6;
-    Snd.plant();burst(p.mesh.position.clone().setY(1),0x9ef01a,18,3.5);
+    Snd.plant();burst(p.pos.clone().setY(1),0x9ef01a,18,3.5);
     note(line('plant'),true);
     $('uiTrees').textContent=this.trees;
     this.updateMission();
@@ -943,6 +944,7 @@ function patchesUpdate(dt,time){
   Game.plantCd-=dt;
   Game.nearPatch=null;
   for(const p of patches){
+    p.mesh.position.copy(p.pos);
     if(p.planted){
       if(p.grow<1){p.grow=Math.min(1,p.grow+dt*.9);
         const e=1-Math.pow(1-p.grow,3);
@@ -951,7 +953,7 @@ function patchesUpdate(dt,time){
       continue;}
     p.ring.material.opacity=.55+Math.sin(time*4)*.3;
     p.ring.scale.setScalar(1+Math.sin(time*4)*.06);
-    if(p.mesh.position.distanceTo(player.pos)<2.2)Game.nearPatch=p;
+    if(p.pos.distanceTo(player.pos)<2.2)Game.nearPatch=p;
   }
   $('prompt').style.display=(Game.nearPatch&&Game.running)?'block':'none';
 }
@@ -1157,7 +1159,7 @@ function observeAgent(){
     },
     nearest:{
       trash:nearestList(trash,'trash',t=>t.pos,()=>({})),
-      patches:nearestList(patches,'patch',p=>p.mesh.position,p=>({ planted:!!p.planted })),
+      patches:nearestList(patches,'patch',p=>p.pos,p=>({ planted:!!p.planted })),
       villains:nearestList(villains,'villain',v=>v.mesh.position,v=>({
         boss:!!v.boss,
         hp:v.hp,
