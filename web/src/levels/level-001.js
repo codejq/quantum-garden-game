@@ -24,3 +24,18 @@ export const level001 = {
   },
 };
 
+export const level002 = {
+  ...level001,
+  id: 'level-002',
+  nameKey: 'levels.level002.name',
+  difficulty: 2,
+  spawnRules: levelCounts(2),
+};
+
+export const level003 = {
+  ...level001,
+  id: 'level-003',
+  nameKey: 'levels.level003.name',
+  difficulty: 3,
+  spawnRules: levelCounts(3),
+};

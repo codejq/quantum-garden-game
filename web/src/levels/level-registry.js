@@ -1,6 +1,10 @@
-import { level001 } from './level-001.js';
+import { level001, level002, level003 } from './level-001.js';
 
-const levels = new Map([[level001.id, level001]]);
+const levels = new Map([
+  [level001.id, level001],
+  [level002.id, level002],
+  [level003.id, level003],
+]);
 
 export function registerLevel(level) {
   if (!level?.id) throw new Error('Level must include an id');
@@ -16,4 +20,3 @@ export function getLevel(id = level001.id) {
 export function listLevels() {
   return [...levels.values()];
 }
-

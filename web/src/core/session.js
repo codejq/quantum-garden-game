@@ -14,12 +14,13 @@ import {
 } from './simulation.js';
 
 export class GameSession {
-  constructor({ mode = 'single-player', level = 1, levelId = level, seed = `level-${levelId}` } = {}) {
+  constructor({ mode = 'single-player', level = 1, levelId = level, levelDefinition = null, seed = `level-${levelId}` } = {}) {
     this.mode = mode;
-    this.level = Number(levelId);
+    this.levelDefinition = levelDefinition;
+    this.level = levelDefinition?.difficulty ?? Number(levelId);
     this.levelId = levelId;
     this.seed = seed;
-    this.attempt = createAttempt({ level: this.level, seed });
+    this.attempt = createAttempt({ level: this.level, seed, spawnRules: levelDefinition?.spawnRules });
   }
 
   start() {
@@ -69,7 +70,7 @@ export class GameSession {
   retry(seed = this.seed) {
     this.teardown();
     this.seed = seed;
-    this.attempt = createAttempt({ level: this.level, seed });
+    this.attempt = createAttempt({ level: this.level, seed, spawnRules: this.levelDefinition?.spawnRules });
     return this.attempt;
   }
 }

@@ -28,6 +28,18 @@ test('different seeds create different attempt layouts', () => {
   assert.notDeepEqual(a.patches, b.patches);
 });
 
+test('createAttempt can use authored level spawn rules', () => {
+  const attempt = createAttempt({
+    level: 99,
+    seed: 'authored-rules',
+    spawnRules: { trash: 2, patches: 1, minionQuota: 7 },
+  });
+
+  assert.equal(attempt.trash.length, 2);
+  assert.equal(attempt.patches.length, 1);
+  assert.equal(attempt.quota, 7);
+});
+
 test('simulation can step without DOM, canvas, or WebGL', () => {
   const session = new GameSession({ level: 1, seed: 'headless' });
   session.start();

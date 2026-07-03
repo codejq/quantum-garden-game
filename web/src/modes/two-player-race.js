@@ -6,7 +6,8 @@ function createPlayerState(name, level, seed) {
     name,
     session: new GameSession({
       mode: 'two-player-race',
-      levelId: level.difficulty,
+      levelId: level.id,
+      levelDefinition: level,
       seed,
     }),
     result: null,
@@ -95,4 +96,3 @@ export const twoPlayerRaceMode = {
     };
   },
 };
-

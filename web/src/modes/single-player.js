@@ -49,7 +49,8 @@ export const singlePlayerMode = {
       objectives: this.getObjectives(),
       session: new GameSession({
         mode: this.id,
-        levelId: level.difficulty,
+        levelId: level.id,
+        levelDefinition: level,
         seed,
       }),
     };

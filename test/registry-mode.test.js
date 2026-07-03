@@ -5,6 +5,13 @@ import { getMode, listModes, registerMode } from '../web/src/modes/mode-registry
 
 test('level registry exposes the first level and supports registration', () => {
   assert.equal(getLevel('level-001').id, 'level-001');
+  assert.deepEqual(
+    listLevels()
+      .filter((level) => level.id.startsWith('level-'))
+      .map((level) => level.id),
+    ['level-001', 'level-002', 'level-003'],
+  );
+  assert.deepEqual(getLevel('level-003').spawnRules, { trash: 18, patches: 5, minionQuota: 4 });
   registerLevel({ id: 'test-level', difficulty: 99 });
   assert.equal(getLevel('test-level').difficulty, 99);
   assert.ok(listLevels().some((level) => level.id === 'level-001'));
@@ -25,6 +32,9 @@ test('single-player mode can setup and start a headless session', () => {
   const results = mode.getResults(context);
 
   assert.equal(context.level.id, 'level-001');
+  assert.equal(context.session.levelId, 'level-001');
+  assert.equal(context.session.level, context.level.difficulty);
+  assert.equal(context.session.attempt.trash.length, context.level.spawnRules.trash);
   assert.equal(context.session.mode, 'single-player');
   assert.equal(results.mode, 'single-player');
   assert.equal(results.complete, false);

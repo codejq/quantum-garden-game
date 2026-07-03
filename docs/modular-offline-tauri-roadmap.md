@@ -222,9 +222,9 @@
 ## Level System
 
 - [x] Define a `LevelDefinition` object shape with `id`, `nameKey`, `difficulty`, `world`, `objectives`, `spawnRules`, `timer`, `boss`, and `randomization`.
-- [ ] Move the current level formula into level definitions.
+- [x] Move the current level formula into level definitions.
 - [x] Create a level registry.
-- [ ] Support finite authored levels.
+- [x] Support finite authored levels.
 - [ ] Support generated levels after authored levels are complete.
 - [x] Add seeded random generation per level attempt.
 - [x] Store the active seed in game state.

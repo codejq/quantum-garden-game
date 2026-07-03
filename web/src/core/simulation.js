@@ -17,11 +17,11 @@ function targetFrom(rng) {
   return randomPoint(rng, 5, WORLD_RADIUS - 3);
 }
 
-export function createAttempt({ level = 1, seed = `level-${level}` } = {}) {
+export function createAttempt({ level = 1, seed = `level-${level}`, spawnRules = {} } = {}) {
   const rng = new SeededRandom(`${seed}:attempt`);
-  const trashCount = 9 + level * 3;
-  const patchCount = 2 + Math.min(level, 5);
-  const quota = 1 + Math.min(level, 5);
+  const trashCount = spawnRules.trash ?? 9 + level * 3;
+  const patchCount = spawnRules.patches ?? 2 + Math.min(level, 5);
+  const quota = spawnRules.minionQuota ?? 1 + Math.min(level, 5);
   const trash = [];
   const patches = [];
   const decor = [];
