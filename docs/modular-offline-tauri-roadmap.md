@@ -358,7 +358,7 @@
 - [x] Configure Tauri to use the built web output.
 - [x] Set app name, identifier, icons, window title, and default dimensions.
 - [ ] Configure desktop full-screen behavior.
-- [ ] Add commands for app exit, platform info, and optional file-safe local settings if needed.
+- [x] Add commands for app exit, platform info, and optional file-safe local settings if needed.
 - [x] Keep gameplay logic in web code so all platforms share the same implementation.
 - [x] Add `npm run tauri:dev`.
 - [x] Add `npm run tauri:build`.
