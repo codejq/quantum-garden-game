@@ -489,10 +489,10 @@
   - [ ] Phase 11 depends on Phase 10 Tauri configuration and available mobile toolchains.
   - [ ] Phase 11 tests: Android emulator/device smoke test, iOS simulator/device smoke test when Mac/Xcode/signing are available.
   - [ ] Phase 11 exit gate: Android build path is proven; iOS remains gated until Apple requirements are satisfied.
-- [ ] Phase 12: Add packaging docs, platform release tasks, and final verification.
-  - [ ] Phase 12 depends on the target platform phases selected for release.
-  - [ ] Phase 12 tests: release checklist per platform, offline launch, settings persistence migration, and smoke gameplay.
-  - [ ] Phase 12 exit gate: selected release platforms have documented build, signing, test, and distribution steps.
+- [x] Phase 12: Add packaging docs, platform release tasks, and final verification.
+  - [x] Phase 12 depends on the target platform phases selected for release.
+  - [x] Phase 12 tests: release checklist per platform, offline launch, settings persistence migration, and smoke gameplay.
+  - [x] Phase 12 exit gate: selected release platforms have documented build, signing, test, and distribution steps.
 
 ## Acceptance Criteria
 

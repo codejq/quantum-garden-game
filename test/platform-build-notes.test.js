@@ -6,6 +6,7 @@ const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.me
 const tauriConfig = JSON.parse(readFileSync(new URL('../src-tauri/tauri.conf.json', import.meta.url), 'utf8'));
 const cargoToml = readFileSync(new URL('../src-tauri/Cargo.toml', import.meta.url), 'utf8');
 const notes = readFileSync(new URL('../docs/platform-build-notes.md', import.meta.url), 'utf8');
+const releaseChecklist = readFileSync(new URL('../docs/release-checklist.md', import.meta.url), 'utf8');
 
 test('platform notes document desktop and mobile build commands', () => {
   assert.equal(packageJson.scripts['tauri:android:dev'], 'tauri android dev');
@@ -57,4 +58,18 @@ test('target Tauri version is confirmed before mobile setup', () => {
   assert.match(cargoToml, /tauri = \{ version = "2"/);
   assert.match(cargoToml, /tauri-build = \{ version = "2"/);
   assert.match(notes, /Target Tauri version: v2/);
+});
+
+test('release checklist documents selected targets and gated platforms', () => {
+  assert.match(releaseChecklist, /current verified release targets are offline web and Windows desktop/);
+  assert.match(releaseChecklist, /Run `npm test`/);
+  assert.match(releaseChecklist, /Run `npm run test:offline-build`/);
+  assert.match(releaseChecklist, /Run `npm run tauri:build`/);
+  assert.match(releaseChecklist, /Run `npm run test:tauri-launch`/);
+  assert.match(releaseChecklist, /Run `npm run test:tauri-install`/);
+  assert.match(releaseChecklist, /Launch the packaged app with the network disabled and complete one single-player level/);
+  assert.match(releaseChecklist, /Change language, quality, and view preset, then relaunch/);
+  assert.match(releaseChecklist, /Run the LLM harness smoke path/);
+  assert.match(releaseChecklist, /Android is scaffolded but not release-ready/);
+  assert.match(releaseChecklist, /macOS and iOS remain gated/);
 });
