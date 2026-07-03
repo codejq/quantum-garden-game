@@ -502,7 +502,7 @@
 - [ ] Rendering syncs to simulation state instead of owning authoritative gameplay state.
 - [x] Simulation uses a fixed timestep.
 - [x] A level attempt can be built, played, torn down, disposed, and rebuilt from a seed.
-- [ ] Starting a new level does not keep stale patches, planted trees, villains, trash, or decorative objects unless explicitly designed.
+- [x] Starting a new level does not keep stale patches, planted trees, villains, trash, or decorative objects unless explicitly designed.
 - [x] The game runs in a browser from the local build.
 - [x] The game runs without internet access.
 - [x] English is the default language.
