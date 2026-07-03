@@ -446,8 +446,8 @@
 ## Implementation Order
 
 - [ ] Phase 1: Create build tooling, make level attempts self-contained, add teardown/disposal, move the current game into modules, separate simulation from rendering, and add fixed-timestep stepping.
-  - [ ] Phase 1 depends on Task Zero baseline protection.
-  - [ ] Phase 1 tests: headless simulation startup, seeded same-layout replay, different-seed different layout, fixed-timestep frame-rate independence, and teardown/disposal smoke test.
+  - [x] Phase 1 depends on Task Zero baseline protection.
+  - [x] Phase 1 tests: headless simulation startup, seeded same-layout replay, different-seed different layout, fixed-timestep frame-rate independence, and teardown/disposal smoke test.
   - [ ] Phase 1 exit gate: gameplay simulation can run without WebGL, rendering syncs from simulation state, a level attempt can build/play/teardown/rebuild from seed, and the legacy parity checklist still passes.
 - [ ] Phase 2: Replace CDN dependencies with offline local dependencies.
   - [x] Phase 2 depends on Phase 1 or an agreed minimal module split.
