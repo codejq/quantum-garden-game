@@ -25,7 +25,7 @@
 - [x] Add a Tauri project so the game can be packaged for Windows, macOS, Linux, Android, and iOS.
 - [ ] Make the game work fully offline.
 - [ ] Make the game full screen during play and provide an in-game exit button.
-- [ ] Support mobile touch and desktop keyboard/mouse input.
+- [x] Support mobile touch and desktop keyboard/mouse input.
 - [ ] Add single-player mode.
 - [x] Add two-player race mode where players compete for fastest completion time.
 - [ ] Randomize level start conditions and scene layout each time a level is played.
@@ -167,7 +167,7 @@
 - [x] Ensure `document.documentElement.lang` updates when the selected locale changes.
 - [x] Ensure `document.documentElement.dir` is `rtl` for Arabic and `ltr` for English, Spanish, and French.
 - [x] Replace direction-specific CSS such as `text-align:right`, `left`, `right`, and directional margins with logical CSS such as `text-align:start`, `inset-inline`, `margin-inline`, and `padding-inline`.
-- [ ] Preserve the current touch controls and keyboard controls after the split.
+- [x] Preserve the current touch controls and keyboard controls after the split.
 - [ ] Preserve the current visual behavior after the split.
 
 ## Simulation And Rendering Separation
@@ -515,10 +515,10 @@
 - [x] Level unload disposes generated Three.js resources.
 - [x] Single-player mode records completion time.
 - [x] Two-player race mode declares the faster player.
-- [ ] The game enters full-screen or viewport-filling play mode.
-- [ ] An exit button is visible and usable during gameplay.
-- [ ] Touch controls work on mobile.
-- [ ] Keyboard controls work on desktop.
+- [x] The game enters full-screen or viewport-filling play mode.
+- [x] An exit button is visible and usable during gameplay.
+- [x] Touch controls work on mobile.
+- [x] Keyboard controls work on desktop.
 - [x] Mouse controls work on desktop.
 - [x] Player can rotate, zoom, reset, and change camera view perspective.
 - [ ] Tauri desktop build launches.
