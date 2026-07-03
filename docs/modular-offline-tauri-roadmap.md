@@ -453,10 +453,10 @@
   - [ ] Phase 2 depends on Phase 1 or an agreed minimal module split.
   - [ ] Phase 2 tests: local build loads with network blocked, local Three r128 is used, local font is used, and no external runtime request is required.
   - [ ] Phase 2 exit gate: the browser build runs fully offline and matches the frozen baseline visually within accepted tolerance.
-- [ ] Phase 3: Add i18n and make English the default.
-  - [ ] Phase 3 depends on Phase 1 UI/module boundaries.
-  - [ ] Phase 3 tests: i18n key coverage, English fallback, Arabic RTL direction, and text-fit checks for English, Arabic, Spanish, and French.
-  - [ ] Phase 3 exit gate: English is default, all four languages can be selected, Arabic uses RTL, and no required UI string remains hard-coded in Arabic.
+- [x] Phase 3: Add i18n and make English the default.
+  - [x] Phase 3 depends on Phase 1 UI/module boundaries.
+  - [x] Phase 3 tests: i18n key coverage, English fallback, Arabic RTL direction, and text-fit checks for English, Arabic, Spanish, and French.
+  - [x] Phase 3 exit gate: English is default, all four languages can be selected, Arabic uses RTL, and no required UI string remains hard-coded in Arabic.
 - [ ] Phase 4: Add mode registry and migrate current game to single-player mode.
   - [ ] Phase 4 depends on Phase 1 sessions and simulation state.
   - [ ] Phase 4 tests: mode registry loads, single-player mode starts, objectives update, and win conditions complete.
@@ -465,18 +465,18 @@
   - [ ] Phase 5 depends on Phase 1 simulation separation and seeded random helpers.
   - [ ] Phase 5 tests: same seed produces same gameplay/decorative layout, different seeds vary layout, bad placements are rejected, and replay can reproduce a completed run.
   - [ ] Phase 5 exit gate: new levels can be registered, accepted layouts pass solvability checks, and deterministic replay works.
-- [ ] Phase 6: Add full-screen handling, pause, exit, and responsive control refinements.
-  - [ ] Phase 6 depends on Phase 1 lifecycle hooks and Phase 3 localized UI.
-  - [ ] Phase 6 tests: pause freezes gameplay timers, exit clears pending timers, fullscreen fallback fills viewport, and controls do not overlap on desktop/mobile.
-  - [ ] Phase 6 exit gate: player can pause, resume, exit, retry, and return to menu without stale timers or state leaks.
-- [ ] Phase 7: Add mouse controls and camera perspective/view controls.
-  - [ ] Phase 7 depends on Phase 1 input abstraction and Phase 6 responsive HUD placement.
-  - [ ] Phase 7 tests: mouse click interaction, mouse camera drag, mouse wheel zoom, view reset, top-down view, follow view, and storage of selected view preset.
-  - [ ] Phase 7 exit gate: keyboard, mouse, and touch can all play a level; player can rotate, zoom, reset, and change camera view.
-- [ ] Phase 8: Add two-player race mode.
-  - [ ] Phase 8 depends on Phase 4 mode registry and Phase 5 deterministic same-seed replay.
-  - [ ] Phase 8 tests: Player 1 and Player 2 receive the same seed, handoff screen hides the route, both times are recorded, and winner comparison is correct.
-  - [ ] Phase 8 exit gate: two local players can complete a sequential same-seed race and see a correct winner summary.
+- [x] Phase 6: Add full-screen handling, pause, exit, and responsive control refinements.
+  - [x] Phase 6 depends on Phase 1 lifecycle hooks and Phase 3 localized UI.
+  - [x] Phase 6 tests: pause freezes gameplay timers, exit clears pending timers, fullscreen fallback fills viewport, and controls do not overlap on desktop/mobile.
+  - [x] Phase 6 exit gate: player can pause, resume, exit, retry, and return to menu without stale timers or state leaks.
+- [x] Phase 7: Add mouse controls and camera perspective/view controls.
+  - [x] Phase 7 depends on Phase 1 input abstraction and Phase 6 responsive HUD placement.
+  - [x] Phase 7 tests: mouse click interaction, mouse camera drag, mouse wheel zoom, view reset, top-down view, follow view, and storage of selected view preset.
+  - [x] Phase 7 exit gate: keyboard, mouse, and touch can all play a level; player can rotate, zoom, reset, and change camera view.
+- [x] Phase 8: Add two-player race mode.
+  - [x] Phase 8 depends on Phase 4 mode registry and Phase 5 deterministic same-seed replay.
+  - [x] Phase 8 tests: Player 1 and Player 2 receive the same seed, handoff screen hides the route, both times are recorded, and winner comparison is correct.
+  - [x] Phase 8 exit gate: two local players can complete a sequential same-seed race and see a correct winner summary.
 - [x] Phase 9: Add LLM observation/action API and Playwright harness.
   - [x] Phase 9 depends on Phase 1 headless stepping and Phase 5 stable seeded IDs/layouts.
   - [x] Phase 9 tests: `observe()` schema, raw movement action, high-level target action, `plantNearest()`, reset by seed, and deterministic stepped evaluation.
