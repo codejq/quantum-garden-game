@@ -18,11 +18,11 @@
 - [x] Protect the current working prototype before large refactors begin.
 - [x] Split the single HTML file into standard HTML, CSS, and JavaScript modules.
 - [ ] Separate simulation from rendering so gameplay state is plain data and Three.js only visualizes that state.
-- [ ] Add a fixed-timestep simulation loop so tests, replay, two-player race, and LLM play are deterministic.
+- [x] Add a fixed-timestep simulation loop so tests, replay, two-player race, and LLM play are deterministic.
 - [x] Support `en`, `ar`, `es`, and `fr`.
 - [x] Make English the default language.
 - [x] Preserve Arabic RTL support.
-- [ ] Make game modes and levels modular so more modes and levels can be added without editing the core loop.
+- [x] Make game modes and levels modular so more modes and levels can be added without editing the core loop.
 - [x] Add a Tauri project so the game can be packaged for Windows, macOS, Linux, Android, and iOS.
 - [x] Make the game work fully offline.
 - [x] Make the game full screen during play and provide an in-game exit button.
