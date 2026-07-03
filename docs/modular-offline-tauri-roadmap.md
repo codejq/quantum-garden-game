@@ -301,8 +301,8 @@
 - [ ] Add pointer events support so one input layer works across mouse, pen, and touch where practical.
 - [x] Add input abstraction so keyboard, mouse, touch, and LLM all emit the same actions.
 - [ ] Add accessibility labels for controls.
-- [ ] Test desktop Chrome or Edge.
-- [ ] Test mobile viewport in browser dev tools.
+- [x] Test desktop Chrome or Edge.
+- [x] Test mobile viewport in browser dev tools.
 - [ ] Test Android WebView through Tauri.
 - [ ] Test iOS WebView through Tauri when macOS build access exists.
 
@@ -421,7 +421,7 @@
 ## Testing And Verification
 
 - [x] Add CI to run headless simulation tests, determinism tests, i18n checks, and offline build checks on push.
-- [ ] Add smoke tests for app startup.
+- [x] Add smoke tests for app startup.
 - [x] Add headless simulation tests that run without WebGL.
 - [x] Add tests for i18n key coverage in all four languages.
 - [x] Add tests for fallback to English.
@@ -435,9 +435,9 @@
 - [x] Add tests for LLM raw movement and planting actions.
 - [x] Add tests for LLM high-level actions such as `moveToward(targetId)` and `plantNearest()`.
 - [x] Add tests for scene teardown and Three.js disposal where practical.
-- [ ] Add visual checks for desktop viewport.
-- [ ] Add visual checks for mobile portrait viewport.
-- [ ] Add visual checks for mobile landscape viewport.
+- [x] Add visual checks for desktop viewport.
+- [x] Add visual checks for mobile portrait viewport.
+- [x] Add visual checks for mobile landscape viewport.
 - [x] Add offline build test with network disabled.
 - [ ] Add Tauri desktop launch smoke test where CI support exists.
 
