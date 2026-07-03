@@ -29,8 +29,11 @@ export class QuantumGardenAgent {
     this.tick = tick;
   }
 
-  reset({ mode = 'single-player', levelId = 1, seed = `level-${levelId}` } = {}) {
-    this.session = new GameSession({ mode, levelId, seed });
+  reset({ mode = 'single-player', levelId = 1, seed = `level-${levelId}`, spawnRules = null } = {}) {
+    const levelDefinition = spawnRules
+      ? { id: String(levelId), difficulty: Number(levelId), spawnRules }
+      : null;
+    this.session = new GameSession({ mode, levelId, seed, levelDefinition });
     this.session.start();
     return this.observe();
   }
@@ -136,7 +139,12 @@ export class QuantumGardenAgent {
         this.reset({ mode: action.mode ?? this.session.mode, levelId: this.session.levelId, seed: this.session.seed });
         break;
       case 'selectLevel':
-        this.reset({ mode: this.session.mode, levelId: action.levelId ?? this.session.levelId, seed: action.seed ?? `level-${action.levelId ?? this.session.levelId}` });
+        this.reset({
+          mode: this.session.mode,
+          levelId: action.levelId ?? this.session.levelId,
+          seed: action.seed ?? `level-${action.levelId ?? this.session.levelId}`,
+          spawnRules: action.spawnRules ?? null,
+        });
         break;
       default:
         break;

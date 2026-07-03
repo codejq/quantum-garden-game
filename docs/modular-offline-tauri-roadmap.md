@@ -477,10 +477,10 @@
   - [ ] Phase 8 depends on Phase 4 mode registry and Phase 5 deterministic same-seed replay.
   - [ ] Phase 8 tests: Player 1 and Player 2 receive the same seed, handoff screen hides the route, both times are recorded, and winner comparison is correct.
   - [ ] Phase 8 exit gate: two local players can complete a sequential same-seed race and see a correct winner summary.
-- [ ] Phase 9: Add LLM observation/action API and Playwright harness.
-  - [ ] Phase 9 depends on Phase 1 headless stepping and Phase 5 stable seeded IDs/layouts.
-  - [ ] Phase 9 tests: `observe()` schema, raw movement action, high-level target action, `plantNearest()`, reset by seed, and deterministic stepped evaluation.
-  - [ ] Phase 9 exit gate: an external harness can reset, observe, act, step, and complete basic objectives without direct DOM or WebGL control.
+- [x] Phase 9: Add LLM observation/action API and Playwright harness.
+  - [x] Phase 9 depends on Phase 1 headless stepping and Phase 5 stable seeded IDs/layouts.
+  - [x] Phase 9 tests: `observe()` schema, raw movement action, high-level target action, `plantNearest()`, reset by seed, and deterministic stepped evaluation.
+  - [x] Phase 9 exit gate: an external harness can reset, observe, act, step, and complete basic objectives without direct DOM or WebGL control.
 - [ ] Phase 10: Add Tauri desktop project.
   - [ ] Phase 10 depends on Phase 2 offline build and v0.1 web stability.
   - [ ] Phase 10 tests: Tauri dev launch, desktop build launch, offline launch after install where practical, and exit behavior.

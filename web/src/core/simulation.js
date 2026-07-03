@@ -33,6 +33,7 @@ export function createAttempt({ level = 1, seed = `level-${level}`, spawnRules =
   const trashCount = spawnRules.trash ?? 9 + level * 3;
   const patchCount = spawnRules.patches ?? 2 + Math.min(level, 5);
   const quota = spawnRules.minionQuota ?? 1 + Math.min(level, 5);
+  const bossRequired = spawnRules.bossRequired ?? true;
   const trash = [];
   const patches = [];
   const decor = [];
@@ -80,6 +81,7 @@ export function createAttempt({ level = 1, seed = `level-${level}`, spawnRules =
     converted: 0,
     spawned: 0,
     quota,
+    bossRequired,
     bossSpawned: false,
     bossSpawnTimer: 4,
     spawnTimer: 2,
@@ -268,7 +270,7 @@ function updatePlayer(attempt, dt) {
 }
 
 function updateVillains(attempt, dt) {
-  if (!attempt.bossSpawned) {
+  if (attempt.bossRequired && !attempt.bossSpawned) {
     attempt.bossSpawnTimer -= dt;
     if (attempt.bossSpawnTimer <= 0) spawnVillain(attempt, true);
   }
@@ -324,8 +326,7 @@ function updateWin(attempt) {
     attempt.patches.every((patch) => patch.planted) &&
     attempt.converted >= attempt.quota &&
     attempt.spawned >= attempt.quota &&
-    attempt.bossSpawned &&
-    !attempt.boss;
+    (!attempt.bossRequired || (attempt.bossSpawned && !attempt.boss));
   if (complete) {
     attempt.status = 'complete';
     addScore(attempt, 50 + attempt.level * 10);

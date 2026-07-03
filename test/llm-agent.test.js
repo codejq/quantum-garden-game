@@ -43,3 +43,27 @@ test('LLM agent supports mode and level selection actions', () => {
   assert.equal(levelObservation.level, 2);
   assert.equal(levelObservation.seed, 'level-two');
 });
+
+test('LLM agent can complete basic objectives without DOM or WebGL control', () => {
+  const agent = new QuantumGardenAgent({ tick: 1 / 30 });
+  let observation = agent.reset({
+    levelId: 1,
+    seed: 'basic-objectives',
+    spawnRules: { trash: 1, patches: 1, minionQuota: 0, bossRequired: false },
+  });
+
+  for (let frame = 0; frame < 900 && observation.status !== 'complete'; frame += 1) {
+    if (observation.objectives.trashLeft > 0) {
+      observation = agent.step({ type: 'moveToNearestTrash' });
+    } else if (observation.objectives.trees.done < observation.objectives.trees.total) {
+      observation = agent.step({ type: 'moveToNearestPatch' });
+      observation = agent.step({ type: 'plantNearest' });
+    } else {
+      observation = agent.step();
+    }
+  }
+
+  assert.equal(observation.objectives.trashLeft, 0);
+  assert.equal(observation.objectives.trees.done, observation.objectives.trees.total);
+  assert.equal(observation.status, 'complete');
+});
