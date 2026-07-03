@@ -450,8 +450,8 @@
   - [ ] Phase 1 tests: headless simulation startup, seeded same-layout replay, different-seed different layout, fixed-timestep frame-rate independence, and teardown/disposal smoke test.
   - [ ] Phase 1 exit gate: gameplay simulation can run without WebGL, rendering syncs from simulation state, a level attempt can build/play/teardown/rebuild from seed, and the legacy parity checklist still passes.
 - [ ] Phase 2: Replace CDN dependencies with offline local dependencies.
-  - [ ] Phase 2 depends on Phase 1 or an agreed minimal module split.
-  - [ ] Phase 2 tests: local build loads with network blocked, local Three r128 is used, local font is used, and no external runtime request is required.
+  - [x] Phase 2 depends on Phase 1 or an agreed minimal module split.
+  - [x] Phase 2 tests: local build loads with network blocked, local Three r128 is used, local font is used, and no external runtime request is required.
   - [ ] Phase 2 exit gate: the browser build runs fully offline and matches the frozen baseline visually within accepted tolerance.
 - [x] Phase 3: Add i18n and make English the default.
   - [x] Phase 3 depends on Phase 1 UI/module boundaries.
