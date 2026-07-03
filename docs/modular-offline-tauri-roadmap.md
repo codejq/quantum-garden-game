@@ -316,9 +316,9 @@
 - [x] Reduce decorative flower, particle, cloud, and object counts on low quality.
 - [x] Lower pixel ratio on low quality if needed.
 - [x] Add `prefers-reduced-motion` handling for UI animations and nonessential visual motion.
-- [ ] Keep gameplay readable on low quality.
-- [ ] Test low quality on mobile portrait and mobile landscape.
-- [ ] Test high quality on desktop.
+- [x] Keep gameplay readable on low quality.
+- [x] Test low quality on mobile portrait and mobile landscape.
+- [x] Test high quality on desktop.
 
 ## Camera And View Perspective
 

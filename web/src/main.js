@@ -81,9 +81,28 @@ const Snd={ctx:null,on:true,
 const scene=new THREE.Scene();
 const camera=new THREE.PerspectiveCamera(55,innerWidth/innerHeight,.1,300);
 const renderer=new THREE.WebGLRenderer({antialias:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+const QUALITY_PRESETS={
+  low:{shadows:false,maxPixelRatio:1,shadowSize:512},
+  high:{shadows:true,maxPixelRatio:2,shadowSize:1024}
+};
+function readActiveQuality(){
+  const requested=new URLSearchParams(location.search).get('quality');
+  const saved=localStorage.getItem('cleanGarden.quality');
+  return QUALITY_PRESETS[requested]?requested:(QUALITY_PRESETS[saved]?saved:'high');
+}
+let activeQuality=readActiveQuality();
+function applyActiveQuality(qualityName=activeQuality){
+  activeQuality=QUALITY_PRESETS[qualityName]?qualityName:'high';
+  localStorage.setItem('cleanGarden.quality',activeQuality);
+  const quality=QUALITY_PRESETS[activeQuality];
+  renderer.setPixelRatio(Math.min(devicePixelRatio,quality.maxPixelRatio));
+  renderer.shadowMap.enabled=quality.shadows;
+  document.documentElement.dataset.quality=activeQuality;
+  window.CleanGardenQuality=activeQuality;
+  return quality;
+}
+const renderQuality=applyActiveQuality(activeQuality);
 renderer.setSize(innerWidth,innerHeight);
-renderer.shadowMap.enabled=true;
 renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 $('game').appendChild(renderer.domElement);
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
@@ -91,8 +110,8 @@ addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updat
 
 const hemi=new THREE.HemisphereLight(0xcfe8ff,0x3a6b3a,.9);scene.add(hemi);
 const sun=new THREE.DirectionalLight(0xfff3d6,1.05);
-sun.position.set(30,45,20);sun.castShadow=true;
-sun.shadow.mapSize.set(1024,1024);
+sun.position.set(30,45,20);sun.castShadow=renderQuality.shadows;
+sun.shadow.mapSize.set(renderQuality.shadowSize,renderQuality.shadowSize);
 sun.shadow.camera.left=-60;sun.shadow.camera.right=60;
 sun.shadow.camera.top=60;sun.shadow.camera.bottom=-60;
 scene.add(sun);

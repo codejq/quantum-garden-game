@@ -16,3 +16,11 @@ test('visual viewport smoke covers desktop and mobile orientations offline', () 
   assert.match(scriptSource, /name: 'mobile-landscape'/);
   assert.match(scriptSource, /dist-\$\{viewport\.name\}\.png/);
 });
+
+test('visual viewport smoke covers quality tiers', () => {
+  assert.match(scriptSource, /name: 'quality-high-desktop'/);
+  assert.match(scriptSource, /query: '\?quality=high'/);
+  assert.match(scriptSource, /name: 'quality-low-mobile-portrait'/);
+  assert.match(scriptSource, /name: 'quality-low-mobile-landscape'/);
+  assert.match(scriptSource, /query: '\?quality=low'/);
+});

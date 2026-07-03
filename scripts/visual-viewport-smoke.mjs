@@ -26,6 +26,9 @@ const viewports = [
   { name: 'desktop', size: '1365,768', minBytes: 20000 },
   { name: 'mobile-portrait', size: '390,844', minBytes: 12000 },
   { name: 'mobile-landscape', size: '844,390', minBytes: 12000 },
+  { name: 'quality-high-desktop', size: '1365,768', minBytes: 20000, query: '?quality=high' },
+  { name: 'quality-low-mobile-portrait', size: '390,844', minBytes: 12000, query: '?quality=low' },
+  { name: 'quality-low-mobile-landscape', size: '844,390', minBytes: 12000, query: '?quality=low' },
 ];
 
 for (const viewport of viewports) {
@@ -39,7 +42,7 @@ for (const viewport of viewports) {
       '--host-resolver-rules=MAP * 0.0.0.0',
       `--window-size=${viewport.size}`,
       `--screenshot=${screenshot}`,
-      url,
+      `${url}${viewport.query ?? ''}`,
     ],
     { encoding: 'utf8' },
   );
