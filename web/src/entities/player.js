@@ -1,9 +1,20 @@
 const PLAYER_SPEED = 8;
 const WORLD_RADIUS = 42;
 const CENTER_BLOCK_RADIUS = 2.6;
+const MOVE_LAG = 0.06;
+const STOP_LAG = 0.09;
 
 function length(x, z) {
   return Math.hypot(x, z);
+}
+
+function advanceVelocity(current, target, lag, dt) {
+  const safeLag = Math.max(lag, 0.0001);
+  const t = 1 - Math.exp(-dt / safeLag);
+  return {
+    velocity: current + (target - current) * t,
+    distance: target * dt + (current - target) * safeLag * t,
+  };
 }
 
 export function createPlayer(pos = { x: 6, z: 6 }) {
@@ -16,10 +27,13 @@ export function createPlayer(pos = { x: 6, z: 6 }) {
 }
 
 export function updatePlayer(player, input, dt) {
-  player.vel.x = input.moveX * PLAYER_SPEED;
-  player.vel.z = input.moveZ * PLAYER_SPEED;
-  player.pos.x += player.vel.x * dt;
-  player.pos.z += player.vel.z * dt;
+  const lag = input.moveX || input.moveZ ? MOVE_LAG : STOP_LAG;
+  const x = advanceVelocity(player.vel.x, input.moveX * PLAYER_SPEED, lag, dt);
+  const z = advanceVelocity(player.vel.z, input.moveZ * PLAYER_SPEED, lag, dt);
+  player.vel.x = x.velocity;
+  player.vel.z = z.velocity;
+  player.pos.x += x.distance;
+  player.pos.z += z.distance;
 
   const outerDistance = length(player.pos.x, player.pos.z);
   if (outerDistance > WORLD_RADIUS + 6) {

@@ -12,6 +12,18 @@ test('player entity moves and updates yaw', () => {
   assert.equal(Number(player.yaw.toFixed(3)), 1.571);
 });
 
+test('player entity preserves legacy smoothed acceleration and stopping', () => {
+  const player = createPlayer({ x: 6, z: 6 });
+  updatePlayer(player, { moveX: 1, moveZ: 0 }, 1 / 60);
+  assert.ok(player.vel.x > 0);
+  assert.ok(player.vel.x < 8);
+  const movingVelocity = player.vel.x;
+
+  updatePlayer(player, { moveX: 0, moveZ: 0 }, 1 / 60);
+  assert.ok(player.vel.x > 0);
+  assert.ok(player.vel.x < movingVelocity);
+});
+
 test('trash entity collection separates collected and remaining items', () => {
   const result = collectTrashItems(
     [
@@ -38,4 +50,3 @@ test('villain entity moves and can be hit by player', () => {
   assert.equal(hitVillain(villain, villain.pos), true);
   assert.equal(villain.state, 'converted');
 });
-
