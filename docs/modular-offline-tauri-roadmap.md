@@ -125,11 +125,11 @@
 - [ ] Create `web/src/camera/camera-controller.js` for follow camera, orbit camera, zoom, and perspective changes.
 - [ ] Create `web/src/ui/hud.js` for score, mission, meter, prompt, and notifications.
 - [ ] Create `web/src/ui/overlays.js` for start, level-complete, pause, mode select, language select, and exit screens.
-- [ ] Create `web/src/i18n/index.js` for translation loading, locale selection, interpolation, and document direction.
-- [ ] Create `web/src/i18n/locales/en.json`.
-- [ ] Create `web/src/i18n/locales/ar.json`.
-- [ ] Create `web/src/i18n/locales/es.json`.
-- [ ] Create `web/src/i18n/locales/fr.json`.
+- [x] Create `web/src/i18n/index.js` for translation loading, locale selection, interpolation, and document direction.
+- [x] Create `web/src/i18n/locales/en.json`.
+- [x] Create `web/src/i18n/locales/ar.json`.
+- [x] Create `web/src/i18n/locales/es.json`.
+- [x] Create `web/src/i18n/locales/fr.json`.
 - [x] Create `web/src/modes/single-player.js`.
 - [ ] Create `web/src/modes/two-player-race.js`.
 - [x] Create `web/src/levels/level-registry.js`.
@@ -191,19 +191,19 @@
 ## Localization
 
 - [ ] Define translation keys for every visible UI string.
-- [ ] Add English translations as the default source.
-- [ ] Add Arabic translations.
-- [ ] Add Spanish translations.
-- [ ] Add French translations.
-- [ ] Add localized mission text.
+- [x] Add English translations as the default source.
+- [x] Add Arabic translations.
+- [x] Add Spanish translations.
+- [x] Add French translations.
+- [x] Add localized mission text.
 - [ ] Add localized tutorial text.
-- [ ] Add localized buttons.
+- [x] Add localized buttons.
 - [ ] Add localized level-complete messages.
 - [ ] Add localized gameplay notification lines.
 - [ ] Add localized accessibility labels.
 - [ ] Add a language selector on the start/pause/settings screen.
 - [ ] Save the selected language locally for offline reuse.
-- [ ] Fall back to English for missing keys.
+- [x] Fall back to English for missing keys.
 - [ ] Verify Arabic layout does not overlap in RTL.
 - [ ] Verify English, Spanish, and French text fits in buttons, HUD chips, and overlays.
 
@@ -423,9 +423,9 @@
 - [ ] Add CI to run headless simulation tests, determinism tests, i18n checks, and offline build checks on push.
 - [ ] Add smoke tests for app startup.
 - [x] Add headless simulation tests that run without WebGL.
-- [ ] Add tests for i18n key coverage in all four languages.
-- [ ] Add tests for fallback to English.
-- [ ] Add tests for RTL document direction in Arabic.
+- [x] Add tests for i18n key coverage in all four languages.
+- [x] Add tests for fallback to English.
+- [x] Add tests for RTL document direction in Arabic.
 - [x] Add tests for seeded random determinism.
 - [x] Add tests proving simulation results do not change with render frame rate.
 - [x] Add tests that two runs with different seeds produce different layouts.

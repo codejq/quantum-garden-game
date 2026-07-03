@@ -1,0 +1,22 @@
+{
+  "app.title": "الحديقة النظيفة",
+  "app.titleBilingual": "الحديقة النظيفة | Clean Garden",
+  "app.tagline": "مغامرة ثلاثية الأبعاد لإنقاذ الحديقة!",
+  "actions.start": "ابدأ المغامرة",
+  "actions.nextLevel": "المستوى التالي",
+  "actions.exit": "خروج",
+  "actions.pause": "إيقاف مؤقت",
+  "hud.score": "النقاط",
+  "hud.trees": "الأشجار",
+  "hud.trash": "القمامة",
+  "hud.level": "المستوى",
+  "hud.cleanliness": "نظافة الحديقة",
+  "mission.trashLeft": "قمامة متبقية: {count}",
+  "mission.trees": "أشجار: {done}/{total}",
+  "mission.minions": "أتباع مترميش: {done}/{total}",
+  "mission.boss": "مترميش الكبير",
+  "modes.singlePlayer.name": "لاعب واحد",
+  "modes.twoPlayerRace.name": "سباق لاعبين",
+  "levels.level001.name": "الحديقة الأولى"
+}
+

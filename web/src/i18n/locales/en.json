@@ -1,0 +1,22 @@
+{
+  "app.title": "Clean Garden",
+  "app.titleBilingual": "Clean Garden | الحديقة النظيفة",
+  "app.tagline": "A 3D adventure to save the garden!",
+  "actions.start": "Start Adventure",
+  "actions.nextLevel": "Next Level",
+  "actions.exit": "Exit",
+  "actions.pause": "Pause",
+  "hud.score": "Score",
+  "hud.trees": "Trees",
+  "hud.trash": "Trash",
+  "hud.level": "Level",
+  "hud.cleanliness": "Garden cleanliness",
+  "mission.trashLeft": "Trash left: {count}",
+  "mission.trees": "Trees: {done}/{total}",
+  "mission.minions": "Mtermish minions: {done}/{total}",
+  "mission.boss": "Big Mtermish",
+  "modes.singlePlayer.name": "Single Player",
+  "modes.twoPlayerRace.name": "Two Player Race",
+  "levels.level001.name": "First Garden"
+}
+

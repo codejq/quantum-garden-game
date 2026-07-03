@@ -1,0 +1,22 @@
+{
+  "app.title": "Jardin Limpio",
+  "app.titleBilingual": "Jardin Limpio | Clean Garden",
+  "app.tagline": "Una aventura 3D para salvar el jardin.",
+  "actions.start": "Iniciar aventura",
+  "actions.nextLevel": "Siguiente nivel",
+  "actions.exit": "Salir",
+  "actions.pause": "Pausa",
+  "hud.score": "Puntos",
+  "hud.trees": "Arboles",
+  "hud.trash": "Basura",
+  "hud.level": "Nivel",
+  "hud.cleanliness": "Limpieza del jardin",
+  "mission.trashLeft": "Basura restante: {count}",
+  "mission.trees": "Arboles: {done}/{total}",
+  "mission.minions": "Secuaces de Mtermish: {done}/{total}",
+  "mission.boss": "Gran Mtermish",
+  "modes.singlePlayer.name": "Un jugador",
+  "modes.twoPlayerRace.name": "Carrera de dos jugadores",
+  "levels.level001.name": "Primer jardin"
+}
+

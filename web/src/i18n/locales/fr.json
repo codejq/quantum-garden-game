@@ -1,0 +1,22 @@
+{
+  "app.title": "Jardin Propre",
+  "app.titleBilingual": "Jardin Propre | Clean Garden",
+  "app.tagline": "Une aventure 3D pour sauver le jardin.",
+  "actions.start": "Lancer l'aventure",
+  "actions.nextLevel": "Niveau suivant",
+  "actions.exit": "Quitter",
+  "actions.pause": "Pause",
+  "hud.score": "Score",
+  "hud.trees": "Arbres",
+  "hud.trash": "Dechets",
+  "hud.level": "Niveau",
+  "hud.cleanliness": "Proprete du jardin",
+  "mission.trashLeft": "Dechets restants : {count}",
+  "mission.trees": "Arbres : {done}/{total}",
+  "mission.minions": "Sbires de Mtermish : {done}/{total}",
+  "mission.boss": "Grand Mtermish",
+  "modes.singlePlayer.name": "Solo",
+  "modes.twoPlayerRace.name": "Course a deux joueurs",
+  "levels.level001.name": "Premier jardin"
+}
+
