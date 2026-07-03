@@ -57,7 +57,7 @@
 - [x] Make each level attempt self-contained: build from seed, play, complete or exit, tear down, dispose, and rebuild.
 - [ ] Make simulation data the source of truth.
 - [ ] Store player, trash, patches, villains, boss, objectives, timers, score, and level seed as plain JavaScript data.
-- [ ] Do not store authoritative gameplay state only on Three.js meshes.
+- [x] Do not store authoritative gameplay state only on Three.js meshes.
 - [ ] Make rendering read simulation state and sync mesh transforms each frame.
 - [x] Add a fixed simulation tick such as `1/60` or `1/30` seconds.
 - [x] Use an accumulator in the visual loop so rendering can run at any frame rate while simulation advances deterministically.

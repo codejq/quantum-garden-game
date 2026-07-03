@@ -59,3 +59,16 @@ test('active villain gameplay reads plain position data instead of mesh-owned st
   assert.match(source, /v\.target\.copy\(v\.pos\)\.add\(away\)/);
   assert.match(source, /villains:nearestList\(villains,'villain',v=>v\.pos/);
 });
+
+test('active browser does not keep authoritative interaction positions only on meshes', () => {
+  assert.match(source, /player=\{mesh:buildNaqi\(\),pos:new THREE\.Vector3/);
+  assert.match(source, /trash\.push\(\{pos:trashPos,mesh:m\}\)/);
+  assert.match(source, /patches\.push\(\{pos:patchPos,mesh:g/);
+  assert.match(source, /const v=\{pos:villainPos,mesh:m/);
+  assert.doesNotMatch(source, /t\.mesh\.position\.distanceTo\(player\.pos\)/);
+  assert.doesNotMatch(source, /p\.mesh\.position\.distanceTo\(player\.pos\)/);
+  assert.doesNotMatch(source, /v\.mesh\.position\.distanceTo\(player\.pos\)/);
+  assert.doesNotMatch(source, /nearestList\(trash,'trash',t=>t\.mesh\.position/);
+  assert.doesNotMatch(source, /nearestList\(patches,'patch',p=>p\.mesh\.position/);
+  assert.doesNotMatch(source, /nearestList\(villains,'villain',v=>v\.mesh\.position/);
+});
