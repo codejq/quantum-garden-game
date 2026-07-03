@@ -268,7 +268,7 @@
 - [x] Show winner and time difference.
 - [x] Save both player results locally until the race summary is dismissed.
 - [x] Add optional player names.
-- [ ] For future real-time race, define separate input maps for Player 1 and Player 2.
+- [x] For future real-time race, define separate input maps for Player 1 and Player 2.
 - [ ] For future real-time race, support separate entities, independent collision checks, and shared objective ownership.
 - [ ] Treat real-time split-screen or same-arena competition as a later mode after the simulation/render split is stable.
 
