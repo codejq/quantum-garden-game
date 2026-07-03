@@ -5,10 +5,48 @@ export const singlePlayerMode = {
   id: 'single-player',
   nameKey: 'modes.singlePlayer.name',
 
+  getObjectives() {
+    return [
+      {
+        id: 'trash',
+        labelKey: 'trashLeft',
+        icon: '🗑️',
+        completeIcon: '✅',
+        value: (state) => String(state.trash.length),
+        done: (state) => state.trash.length === 0,
+      },
+      {
+        id: 'trees',
+        labelKey: 'trees',
+        icon: '🌱',
+        completeIcon: '✅',
+        value: (state) => `${state.treesLevel}/${state.patches.length}`,
+        done: (state) => state.patches.every((patch) => patch.planted),
+      },
+      {
+        id: 'minions',
+        labelKey: 'minions',
+        icon: '😈',
+        completeIcon: '✅',
+        value: (state) => `${state.converted}/${state.quota}`,
+        done: (state) => state.converted >= state.quota,
+      },
+      {
+        id: 'boss',
+        labelKey: 'boss',
+        icon: '🎩',
+        completeIcon: '✅',
+        value: () => '',
+        done: (state) => state.bossSpawned && !state.boss,
+      },
+    ];
+  },
+
   setup({ levelId = 'level-001', seed = levelId } = {}) {
     const level = getLevel(levelId);
     return {
       level,
+      objectives: this.getObjectives(),
       session: new GameSession({
         mode: this.id,
         levelId: level.difficulty,
@@ -48,4 +86,3 @@ export const singlePlayerMode = {
     };
   },
 };
-

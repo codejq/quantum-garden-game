@@ -250,7 +250,7 @@
 
 ## Single Player Mode
 
-- [ ] Preserve current single-player objective set: collect trash, plant trees, convert minions, defeat boss.
+- [x] Preserve current single-player objective set: collect trash, plant trees, convert minions, defeat boss.
 - [x] Add elapsed-time tracking.
 - [x] Add best-time tracking per level and seed type.
 - [x] Add pause/resume.

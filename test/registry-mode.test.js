@@ -30,3 +30,12 @@ test('single-player mode can setup and start a headless session', () => {
   assert.equal(results.complete, false);
 });
 
+test('single-player mode declares the current cleanup objective set', () => {
+  const mode = getMode('single-player');
+  const context = mode.setup({ levelId: 'level-001', seed: 'objective-seed' });
+  const objectiveIds = context.objectives.map((objective) => objective.id);
+
+  assert.deepEqual(objectiveIds, ['trash', 'trees', 'minions', 'boss']);
+  assert.ok(context.objectives.every((objective) => typeof objective.done === 'function'));
+  assert.ok(context.objectives.every((objective) => typeof objective.value === 'function'));
+});

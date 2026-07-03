@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { cleanlinessPercent, meterGradient, missionRows, renderMissionHtml } from '../web/src/ui/hud.js';
+import { cleanlinessPercent, meterGradient, missionRows, objectiveRows, renderMissionHtml } from '../web/src/ui/hud.js';
 import { hide, levelSummary, setText, show } from '../web/src/ui/overlays.js';
 
 test('missionRows and renderMissionHtml create localized mission output', () => {
@@ -12,6 +12,25 @@ test('missionRows and renderMissionHtml create localized mission output', () => 
   assert.equal(rows[0].done, true);
   assert.match(html, /Trash left/);
   assert.match(html, /Trees: <b>1\/2<\/b>/);
+});
+
+test('objectiveRows renders mode-provided objective definitions', () => {
+  const rows = objectiveRows(
+    [
+      {
+        id: 'trash',
+        labelKey: 'trashLeft',
+        icon: '🗑️',
+        completeIcon: '✅',
+        value: (state) => String(state.trash.length),
+        done: (state) => state.trash.length === 0,
+      },
+    ],
+    { trash: [] },
+    (key) => ({ trashLeft: 'Trash left' })[key],
+  );
+
+  assert.deepEqual(rows, [{ id: 'trash', done: true, icon: '✅', label: 'Trash left', value: '0' }]);
 });
 
 test('cleanliness meter helpers clamp and colorize values', () => {
@@ -37,4 +56,3 @@ test('levelSummary identifies best times', () => {
   assert.equal(levelSummary({ elapsed: 10, bestTime: 12 }).isBest, true);
   assert.equal(levelSummary({ elapsed: 15, bestTime: 12 }).isBest, false);
 });
-

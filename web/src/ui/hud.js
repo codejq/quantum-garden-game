@@ -7,6 +7,20 @@ export function missionRows({ trashLeft, treesDone, treesTotal, minionsDone, min
   ];
 }
 
+export function objectiveRows(objectives, state, t = (key) => key) {
+  return objectives.map((objective) => {
+    const done = Boolean(objective.done(state));
+    const value = objective.value ? objective.value(state) : '';
+    return {
+      id: objective.id,
+      done,
+      icon: done ? (objective.completeIcon ?? '✅') : objective.icon,
+      label: t(objective.labelKey),
+      value,
+    };
+  });
+}
+
 export function renderMissionHtml(rows) {
   return rows
     .map((row) => `<div class="${row.done ? 'done' : ''}">${row.icon} ${row.label}${row.value ? `: <b>${row.value}</b>` : ''}</div>`)
@@ -22,4 +36,3 @@ export function meterGradient(percent) {
   if (percent > 33) return 'linear-gradient(90deg,#ffd166,#f59f00)';
   return 'linear-gradient(90deg,#a3742f,#7a5230)';
 }
-
