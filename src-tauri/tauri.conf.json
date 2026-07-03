@@ -26,6 +26,10 @@
   "bundle": {
     "active": true,
     "targets": "all",
+    "icon": [
+      "icons/icon.png",
+      "icons/icon.ico"
+    ],
     "category": "Game",
     "shortDescription": "A 3D garden cleanup game",
     "longDescription": "Clean Garden is an offline 3D garden cleanup and tree planting game."

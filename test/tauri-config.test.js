@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const config = JSON.parse(readFileSync(join(root, 'src-tauri/tauri.conf.json'), 'utf8'));
+const packageJson = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
 const tauriLibSource = readFileSync(join(root, 'src-tauri/src/lib.rs'), 'utf8');
 
 test('Tauri packages the local offline web bundle', () => {
@@ -17,6 +18,14 @@ test('Tauri packages the local offline web bundle', () => {
 test('Tauri desktop window launches fullscreen for gameplay', () => {
   assert.equal(config.app.windows[0].fullscreen, true);
   assert.equal(config.app.windows[0].resizable, true);
+});
+
+test('Tauri bundle declares platform icon assets', () => {
+  assert.deepEqual(config.bundle.icon, ['icons/icon.png', 'icons/icon.ico']);
+});
+
+test('Tauri desktop launch smoke script is available', () => {
+  assert.equal(packageJson.scripts['test:tauri-launch'], 'node scripts/tauri-desktop-launch-smoke.mjs');
 });
 
 test('Tauri exposes a native close command for desktop exit', () => {

@@ -14,6 +14,7 @@
     "tauri:android:build": "tauri android build",
     "tauri:ios:dev": "tauri ios dev",
     "tauri:ios:build": "tauri ios build",
+    "test:tauri-launch": "node scripts/tauri-desktop-launch-smoke.mjs",
     "test": "node --test",
     "test:offline-build": "npm run build && node scripts/verify-offline-build.mjs && node scripts/offline-load-smoke.mjs && node scripts/visual-viewport-smoke.mjs && node scripts/localized-viewport-smoke.mjs && node scripts/camera-view-smoke.mjs && node scripts/playability-smoke.mjs",
     "snapshot:baseline": "node scripts/baseline-snapshot.mjs"

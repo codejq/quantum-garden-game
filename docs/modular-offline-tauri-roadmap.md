@@ -381,7 +381,7 @@
 - [x] Release order v1: Windows desktop through Tauri second.
 - [x] Release order v1: Android third after SDK/signing setup is complete.
 - [x] Release order v1: macOS and iOS only after Mac hardware, Xcode, signing, and Apple Developer access are available.
-- [ ] Windows: build `.msi` or `.exe` installer.
+- [x] Windows: build `.msi` or `.exe` installer.
 - [ ] Windows: test offline launch after install.
 - [ ] macOS: build `.dmg` or app bundle.
 - [ ] macOS: test offline launch after install.
@@ -441,7 +441,7 @@
 - [x] Add visual checks for mobile portrait viewport.
 - [x] Add visual checks for mobile landscape viewport.
 - [x] Add offline build test with network disabled.
-- [ ] Add Tauri desktop launch smoke test where CI support exists.
+- [x] Add Tauri desktop launch smoke test where CI support exists.
 
 ## Implementation Order
 
@@ -522,7 +522,7 @@
 - [x] Keyboard controls work on desktop.
 - [x] Mouse controls work on desktop.
 - [x] Player can rotate, zoom, reset, and change camera view perspective.
-- [ ] Tauri desktop build launches.
+- [x] Tauri desktop build launches.
 - [x] Android build path is documented and configured.
 - [x] iOS build path is documented and configured.
 - [x] `window.QuantumGardenAgent.observe()` returns valid state.
