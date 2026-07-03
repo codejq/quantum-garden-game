@@ -40,4 +40,8 @@ test('offline build verification runs camera view smoke across viewports', () =>
   assert.match(cameraScriptSource, /QuantumGardenAgent\.act\(\{ type: 'setCamera', mode \}\)/);
   assert.match(cameraScriptSource, /assertControlsDoNotOverlap/);
   assert.match(cameraScriptSource, /Camera controls overlap/);
+  assert.match(cameraScriptSource, /assertHudTargetsStayInViewport/);
+  assert.match(cameraScriptSource, /Camera HUD targets left the viewport/);
+  assert.match(cameraScriptSource, /ensureBuiltStylesApplied/);
+  assert.match(cameraScriptSource, /page\.addStyleTag\(\{ path: builtCssPath \}\)/);
 });

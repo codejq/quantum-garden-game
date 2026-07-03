@@ -335,7 +335,7 @@
 - [x] Make camera controls work with mouse on desktop.
 - [x] Make camera controls work with touch gestures on mobile where practical.
 - [x] Make camera controls available to the LLM API through observation metadata and optional camera actions.
-- [ ] Prevent camera movement from leaving the player, objectives, or action prompts off-screen.
+- [x] Prevent camera movement from leaving the player, objectives, or action prompts off-screen.
 - [x] Prevent camera UI from overlapping exit, sound, joystick, action, or mission controls.
 - [x] Verify all view modes on desktop, mobile portrait, and mobile landscape.
 

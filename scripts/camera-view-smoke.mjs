@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, statSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright-core';
@@ -20,6 +20,10 @@ if (!executablePath) {
 
 const outDir = resolve(root, 'docs/smoke-screenshots/camera');
 mkdirSync(outDir, { recursive: true });
+const distAssetsDir = resolve(root, 'dist/web/assets');
+const builtCssPath = readdirSync(distAssetsDir)
+  .filter((file) => file.endsWith('.css'))
+  .map((file) => resolve(distAssetsDir, file))[0];
 
 const pageUrl = 'file:///' + resolve(root, 'dist/web/index.html').replaceAll('\\', '/');
 const cases = [
@@ -95,11 +99,51 @@ async function assertControlsDoNotOverlap(page, smokeName) {
   }
 }
 
+async function assertHudTargetsStayInViewport(page, smokeName) {
+  const result = await page.evaluate(() => {
+    document.getElementById('prompt').style.setProperty('display', 'block', 'important');
+    const ids = ['missionCard', 'prompt'];
+    const failures = [];
+    const rects = ids.map((id) => {
+      const element = document.getElementById(id);
+      const rect = element.getBoundingClientRect();
+      const visible =
+        getComputedStyle(element).display !== 'none' &&
+        rect.width > 0 &&
+        rect.height > 0;
+      const inside =
+        visible &&
+        rect.left >= 0 &&
+        rect.top >= 0 &&
+        rect.right <= window.innerWidth &&
+        rect.bottom <= window.innerHeight;
+      if (!inside) failures.push(id);
+      return { id, visible, left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom };
+    });
+    return { ok: failures.length === 0, failures, rects, viewport: { width: window.innerWidth, height: window.innerHeight } };
+  });
+
+  if (!result.ok) {
+    throw new Error(
+      `Camera HUD targets left the viewport in ${smokeName}: ${JSON.stringify(result.failures)} ` +
+        `with rects ${JSON.stringify(result.rects)} and viewport ${JSON.stringify(result.viewport)}`,
+    );
+  }
+}
+
+async function ensureBuiltStylesApplied(page) {
+  const styled = await page.evaluate(() => getComputedStyle(document.getElementById('missionCard')).position === 'absolute');
+  if (styled) return;
+  await page.addStyleTag({ path: builtCssPath });
+  await page.waitForFunction(() => getComputedStyle(document.getElementById('missionCard')).position === 'absolute');
+}
+
 const browser = await chromium.launch({ executablePath, headless: true });
 try {
   for (const smoke of cases) {
     const page = await browser.newPage({ viewport: smoke.viewport });
     await page.goto(pageUrl, { waitUntil: 'load' });
+    await ensureBuiltStylesApplied(page);
     await page.waitForFunction(() => !!window.QuantumGardenAgent);
     await page.evaluate((mode) => {
       window.QuantumGardenAgent.reset({ levelId: 1, seed: `camera-${mode}` });
@@ -107,6 +151,7 @@ try {
       window.QuantumGardenAgent.step({ frames: 8 });
     }, smoke.mode);
     await assertControlsDoNotOverlap(page, smoke.name);
+    await assertHudTargetsStayInViewport(page, smoke.name);
     const screenshot = resolve(outDir, `${smoke.name}.png`);
     await page.screenshot({ path: screenshot });
     await page.close();
