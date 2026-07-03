@@ -60,3 +60,30 @@ test('single-player mode declares the current cleanup objective set', () => {
   assert.ok(context.objectives.every((objective) => typeof objective.done === 'function'));
   assert.ok(context.objectives.every((objective) => typeof objective.value === 'function'));
 });
+
+test('single-player mode completes when all cleanup objectives are satisfied', () => {
+  const mode = getMode('single-player');
+  const context = mode.setup({ levelId: 'level-001', seed: 'single-player-win' });
+  mode.start(context);
+  const attempt = context.session.attempt;
+  const scoreBeforeCompletion = attempt.score;
+
+  attempt.trash = [];
+  attempt.patches.forEach((patch) => {
+    patch.planted = true;
+  });
+  attempt.treesLevel = attempt.patches.length;
+  attempt.converted = attempt.quota;
+  attempt.spawned = attempt.quota;
+  attempt.bossSpawned = true;
+  attempt.boss = null;
+  attempt.villains = [];
+
+  mode.update(context, 1 / 60);
+  const results = mode.getResults(context);
+
+  assert.equal(mode.isComplete(context), true);
+  assert.equal(results.complete, true);
+  assert.equal(results.trees, attempt.patches.length);
+  assert.ok(results.score > scoreBeforeCompletion);
+});

@@ -430,7 +430,7 @@
 - [x] Add tests for seeded random determinism.
 - [x] Add tests proving simulation results do not change with render frame rate.
 - [x] Add tests that two runs with different seeds produce different layouts.
-- [ ] Add tests for single-player win conditions.
+- [x] Add tests for single-player win conditions.
 - [x] Add tests for two-player race result comparison.
 - [x] Add tests for LLM `observe()` schema.
 - [x] Add tests for LLM raw movement and planting actions.
