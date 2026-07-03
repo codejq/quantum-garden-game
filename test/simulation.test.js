@@ -31,11 +31,12 @@ test('different seeds create different attempt layouts', () => {
 test('simulation can step without DOM, canvas, or WebGL', () => {
   const session = new GameSession({ level: 1, seed: 'headless' });
   session.start();
+  const before = session.snapshot().player.x;
   session.setMove(1, 0);
   session.run(1);
   const snapshot = session.snapshot();
   assert.equal(snapshot.status, 'running');
-  assert.ok(snapshot.player.x > 6);
+  assert.ok(snapshot.player.x > before);
 });
 
 test('fixed total time produces the same result with different frame slices', () => {

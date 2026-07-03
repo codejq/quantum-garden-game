@@ -113,7 +113,7 @@
 - [x] Create `web/src/render/sync.js` for mapping simulation entities to Three.js meshes.
 - [x] Create `web/src/render/materials.js` for shared material creation and disposal helpers.
 - [ ] Create `web/src/world/builders.js` for trees, flowers, rocks, trash, player, villains, and other mesh builders.
-- [ ] Create `web/src/world/spawners.js` for level object placement.
+- [x] Create `web/src/world/spawners.js` for level object placement.
 - [x] Create `web/src/entities/player.js` for player entity state and animation.
 - [x] Create `web/src/entities/villain.js` for minion and boss behavior.
 - [x] Create `web/src/entities/trash.js` for trash behavior.
@@ -236,7 +236,7 @@
 - [ ] Randomize planting patch placement each attempt.
 - [ ] Randomize decorative flowers, rocks, trees, clouds, and scene details each attempt.
 - [ ] Randomize villain spawn timing within level-defined limits.
-- [ ] Randomize player starting position within valid spawn zones.
+- [x] Randomize player starting position within valid spawn zones.
 - [ ] Prevent random placement from blocking objectives.
 - [x] Add post-placement solvability checks before accepting a generated layout.
 - [x] Verify the player can reach all required trash, planting patches, villains, and boss interaction zones.

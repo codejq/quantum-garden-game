@@ -3,8 +3,7 @@ import { createPlayer, updatePlayer as updatePlayerEntity } from '../entities/pl
 import { collectTrashItems, spawnTrashItem } from '../entities/trash.js';
 import { plantNearestPatch, updatePatchGrowth } from '../entities/patch.js';
 import { hitVillain, moveVillainTowardTarget } from '../entities/villain.js';
-
-const WORLD_RADIUS = 42;
+import { WORLD_RADIUS, makeId, randomPlayerStart, randomPoint } from '../world/spawners.js';
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
@@ -14,21 +13,8 @@ function len2(x, z) {
   return Math.hypot(x, z);
 }
 
-function pointFrom(rng, minRadius, maxRadius) {
-  const angle = rng.float(0, Math.PI * 2);
-  const radius = rng.float(minRadius, maxRadius);
-  return {
-    x: Math.cos(angle) * radius,
-    z: Math.sin(angle) * radius,
-  };
-}
-
 function targetFrom(rng) {
-  return pointFrom(rng, 5, WORLD_RADIUS - 3);
-}
-
-function makeId(prefix, n) {
-  return `${prefix}-${String(n).padStart(3, '0')}`;
+  return randomPoint(rng, 5, WORLD_RADIUS - 3);
 }
 
 export function createAttempt({ level = 1, seed = `level-${level}` } = {}) {
@@ -44,7 +30,7 @@ export function createAttempt({ level = 1, seed = `level-${level}` } = {}) {
     trash.push({
       ...spawnTrashItem({
         id: makeId('trash', i + 1),
-        pos: pointFrom(rng, 4, WORLD_RADIUS - 2),
+        pos: randomPoint(rng, 4, WORLD_RADIUS - 2),
         kind: rng.pick(['can', 'wrapper', 'paper', 'bottle', 'slice']),
       }),
     });
@@ -53,7 +39,7 @@ export function createAttempt({ level = 1, seed = `level-${level}` } = {}) {
   for (let i = 0; i < patchCount; i += 1) {
     patches.push({
       id: makeId('patch', i + 1),
-      pos: pointFrom(rng, 7, WORLD_RADIUS - 6),
+      pos: randomPoint(rng, 7, WORLD_RADIUS - 6),
       planted: false,
       grow: 0,
     });
@@ -63,7 +49,7 @@ export function createAttempt({ level = 1, seed = `level-${level}` } = {}) {
     decor.push({
       id: makeId('flower', i + 1),
       type: 'flower',
-      pos: pointFrom(rng, 5, WORLD_RADIUS + 4),
+      pos: randomPoint(rng, 5, WORLD_RADIUS + 4),
       color: rng.pick(['pink', 'yellow', 'orange', 'purple', 'white', 'blue']),
     });
   }
@@ -84,7 +70,7 @@ export function createAttempt({ level = 1, seed = `level-${level}` } = {}) {
     bossSpawned: false,
     bossSpawnTimer: 4,
     spawnTimer: 2,
-    player: createPlayer(),
+    player: createPlayer(randomPlayerStart(rng)),
     input: {
       moveX: 0,
       moveZ: 0,
@@ -204,7 +190,7 @@ function addScore(attempt, value) {
 }
 
 function spawnVillain(attempt, boss = false) {
-  const pos = pointFrom(attempt.rng, WORLD_RADIUS + 4, WORLD_RADIUS + 4);
+  const pos = randomPoint(attempt.rng, WORLD_RADIUS + 4, WORLD_RADIUS + 4);
   const villain = {
     id: boss ? 'boss-001' : makeId('villain', attempt.spawned + 1),
     boss,

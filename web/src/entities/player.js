@@ -6,10 +6,10 @@ function length(x, z) {
   return Math.hypot(x, z);
 }
 
-export function createPlayer() {
+export function createPlayer(pos = { x: 6, z: 6 }) {
   return {
     id: 'player-001',
-    pos: { x: 6, z: 6 },
+    pos: { x: pos.x, z: pos.z },
     vel: { x: 0, z: 0 },
     yaw: 0,
   };
@@ -39,4 +39,3 @@ export function updatePlayer(player, input, dt) {
     player.yaw = Math.atan2(player.vel.x, player.vel.z);
   }
 }
-
