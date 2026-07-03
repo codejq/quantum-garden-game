@@ -457,10 +457,10 @@
   - [x] Phase 3 depends on Phase 1 UI/module boundaries.
   - [x] Phase 3 tests: i18n key coverage, English fallback, Arabic RTL direction, and text-fit checks for English, Arabic, Spanish, and French.
   - [x] Phase 3 exit gate: English is default, all four languages can be selected, Arabic uses RTL, and no required UI string remains hard-coded in Arabic.
-- [ ] Phase 4: Add mode registry and migrate current game to single-player mode.
+- [x] Phase 4: Add mode registry and migrate current game to single-player mode.
   - [x] Phase 4 depends on Phase 1 sessions and simulation state.
   - [x] Phase 4 tests: mode registry loads, single-player mode starts, objectives update, and win conditions complete.
-  - [ ] Phase 4 exit gate: current gameplay runs through the mode registry with no mode-specific logic hard-coded in the app shell.
+  - [x] Phase 4 exit gate: current gameplay runs through the mode registry with no mode-specific logic hard-coded in the app shell.
 - [x] Phase 5: Add level registry, seeded randomization, and deterministic replay.
   - [x] Phase 5 depends on Phase 1 simulation separation and seeded random helpers.
   - [x] Phase 5 tests: same seed produces same gameplay/decorative layout, different seeds vary layout, bad placements are rejected, and replay can reproduce a completed run.

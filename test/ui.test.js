@@ -37,10 +37,10 @@ test('objectiveRows renders mode-provided objective definitions', () => {
 });
 
 test('active HUD mission card renders objective-provided rows', () => {
-  assert.match(mainSource, /const activeObjectives=\[/);
+  assert.match(mainSource, /function activeModeObjectives\(\)/);
   assert.match(mainSource, /function activeObjectiveRows\(objectives,state\)/);
   assert.match(mainSource, /function renderActiveMissionHtml\(rows\)/);
-  assert.match(mainSource, /\$\('missionCard'\)\.innerHTML=renderActiveMissionHtml\(activeObjectiveRows\(activeObjectives,activeMissionState\(\)\)\)/);
+  assert.match(mainSource, /\$\('missionCard'\)\.innerHTML=renderActiveMissionHtml\(activeObjectiveRows\(activeModeObjectives\(\),activeMissionState\(\)\)\)/);
   assert.doesNotMatch(mainSource, /tr\('trashLeft'\): <b>/);
 });
 

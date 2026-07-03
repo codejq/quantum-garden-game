@@ -38,3 +38,17 @@ test('mode selector has compact button styling and the roadmap task is marked co
   assert.match(cssSource, /\.modeOption\[aria-disabled="true"\]/);
   assert.match(roadmapSource, /- \[x\] Add a mode select screen before starting the game\./);
 });
+
+test('active browser gameplay reads objectives and scores from the selected mode', () => {
+  assert.match(browserModeRegistrySource, /objectives:\[/);
+  assert.match(browserModeRegistrySource, /scoring:\{/);
+  assert.match(browserModeRegistrySource, /levelComplete:attempt=>50\+attempt\.level\*10/);
+  assert.match(mainSource, /function currentActiveModeDefinition\(\)/);
+  assert.match(mainSource, /function activeModeObjectives\(\)/);
+  assert.match(mainSource, /function activeModeScore\(rule\)/);
+  assert.match(mainSource, /activeObjectiveRows\(activeModeObjectives\(\),activeMissionState\(\)\)/);
+  assert.match(mainSource, /this\.addScore\(activeModeScore\('levelComplete'\)\)/);
+  assert.doesNotMatch(mainSource, /const activeObjectives=\[/);
+  assert.doesNotMatch(mainSource, /this\.addScore\(25,plainToVector\(p\.pos,2\)\)/);
+  assert.doesNotMatch(mainSource, /Game\.addScore\(10,plainToVector\(t\.pos,1\.4\)\)/);
+});

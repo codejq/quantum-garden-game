@@ -24,6 +24,6 @@ Use this checklist against `web/legacy/index.html` and the active game before ma
 
 ## Automated Evidence
 
-- Active built game parity verified by `npm run test:baseline-parity` at 2026-07-03T23:54:15.520Z.
+- Active built game parity verified by `npm run test:baseline-parity` at 2026-07-03T23:58:13.014Z.
 - Target: `dist/web/index.html`.
 - Frozen legacy structure remains captured in `docs/baseline-snapshot.json` and `web/legacy/index.html`.

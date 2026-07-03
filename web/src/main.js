@@ -12,6 +12,9 @@ function isKnownActiveMode(mode){
 function normalizeActiveMode(mode){
   return isKnownActiveMode(mode)?mode:DEFAULT_ACTIVE_MODE;
 }
+function currentActiveModeDefinition(){
+  return ACTIVE_MODE_REGISTRY.getMode(activeMode);
+}
 let activeSeed='menu-'+Date.now().toString(36);
 let activeRngState=hashSeed(activeSeed);
 let activeAttempt=0;
@@ -668,41 +671,6 @@ function removeVillainView(villain){
   removeAttemptObject(villainView(villain)?.mesh);
 }
 
-const activeObjectives=[
-  {
-    id:'trash',
-    labelKey:'trashLeft',
-    icon:'🗑️',
-    completeIcon:'✅',
-    value:state=>String(state.trash.length),
-    done:state=>state.trash.length===0,
-  },
-  {
-    id:'trees',
-    labelKey:'trees',
-    icon:'🌱',
-    completeIcon:'✅',
-    value:state=>`${state.patches.filter(p=>p.planted).length}/${state.patches.length}`,
-    done:state=>state.patches.every(p=>p.planted),
-  },
-  {
-    id:'minions',
-    labelKey:'minions',
-    icon:'😈',
-    completeIcon:'✅',
-    value:state=>`${state.converted}/${state.quota}`,
-    done:state=>state.converted>=state.quota,
-  },
-  {
-    id:'boss',
-    labelKey:'boss',
-    icon:'🎩',
-    completeIcon:'✅',
-    value:()=> '',
-    done:state=>state.spawnedBoss&&!state.boss,
-  },
-];
-
 function activeMissionState(){
   return {
     trash:Game.state.trash,
@@ -712,6 +680,13 @@ function activeMissionState(){
     spawnedBoss:Game.spawnedBoss,
     boss:Game.state.mtermish,
   };
+}
+function activeModeObjectives(){
+  return currentActiveModeDefinition().objectives||[];
+}
+function activeModeScore(rule){
+  const value=currentActiveModeDefinition().scoring?.[rule]??0;
+  return typeof value==='function'?value(Game):value;
 }
 function activeObjectiveRows(objectives,state){
   return objectives.map(objective=>{
@@ -891,7 +866,7 @@ return {
     if(!this.running||!this.nearPatch||this.plantCd>0)return;
     const p=this.nearPatch;p.planted=true;p.grow=0;
     plantPatchView(p);
-    this.trees++;this.lifetimeTrees++;this.addScore(25,plainToVector(p.pos,2));
+    this.trees++;this.lifetimeTrees++;this.addScore(activeModeScore('plant'),plainToVector(p.pos,2));
     this.plantCd=.6;
     Snd.plant();burst(plainToVector(p.pos,1),0x9ef01a,18,3.5);
     note(line('plant'),true);
@@ -907,7 +882,7 @@ return {
     return clamp(total/(this.polMax||60)*100,0,100);},
 
   updateMission(){
-    $('missionCard').innerHTML=renderActiveMissionHtml(activeObjectiveRows(activeObjectives,activeMissionState()));
+    $('missionCard').innerHTML=renderActiveMissionHtml(activeObjectiveRows(activeModeObjectives(),activeMissionState()));
   },
   bossDefeated(){return this.spawnedBoss&&(!this.state.mtermish);},
 
@@ -916,7 +891,7 @@ return {
        this.converted>=this.quota&&this.spawned>=this.quota&&this.bossDefeated()){
       this.complete();
       Snd.fanfare();confetti();
-      this.addScore(50+this.level*10);
+      this.addScore(activeModeScore('levelComplete'));
       const result=recordBestTime(this.level,this.elapsed);
       $('stScore').textContent=this.score;
       $('stTrees').textContent=this.trees;
@@ -1012,10 +987,10 @@ function villainsUpdate(dt){
           if(v.hp<=0){
             v.state='convert';v.t=0;Snd.convert();
             convertVillainView(v);
-            if(v.boss){note(line('mtermishDown'),true,3000);Game.addScore(100,plainToVector(v.pos,2.5));}
-            else{note(line('minion'),true);Game.addScore(30,plainToVector(v.pos,2));}
+            if(v.boss){note(line('mtermishDown'),true,3000);Game.addScore(activeModeScore('bossDefeat'),plainToVector(v.pos,2.5));}
+            else{note(line('minion'),true);Game.addScore(activeModeScore('minionConvert'),plainToVector(v.pos,2));}
           }else{Snd.bonk();note(line('mtermishHit'),false,2000);
-            Game.addScore(15,plainToVector(v.pos,2.5));
+            Game.addScore(activeModeScore('villainHit'),plainToVector(v.pos,2.5));
             const awayX=v.pos.x-Game.state.player.pos.x,awayZ=v.pos.z-Game.state.player.pos.z;
             const awayLen=Math.max(Math.hypot(awayX,awayZ),.001);
             v.target.x=v.pos.x+(awayX/awayLen)*9;v.target.y=0;v.target.z=v.pos.z+(awayZ/awayLen)*9;}
@@ -1045,7 +1020,7 @@ function trashUpdate(dt){
       burst(plainToVector(t.pos,.6),0xffd166,10,3);
       Snd.pickup();
       Game.trashGot++;$('uiTrash').textContent=Game.trashGot;
-      Game.addScore(10,plainToVector(t.pos,1.4));
+      Game.addScore(activeModeScore('trash'),plainToVector(t.pos,1.4));
       if(random()<.3)note(line('pickup'),true,1500);
       removeTrashView(t);Game.state.trash.splice(i,1);
       Game.updateMission();Game.checkWin();

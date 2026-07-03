@@ -39,7 +39,7 @@ test('active trash gameplay reads plain position data instead of mesh-owned stat
   assert.match(source, /createTrashView\(item\)/);
   assert.match(source, /if\(plainDistance\(t\.pos,Game.state\.player\.pos\)<1\.35\)/);
   assert.match(source, /burst\(plainToVector\(t\.pos,\s*\.6\)/);
-  assert.match(source, /Game\.addScore\(10,plainToVector\(t\.pos,1\.4\)\)/);
+  assert.match(source, /Game\.addScore\(activeModeScore\('trash'\),plainToVector\(t\.pos,1\.4\)\)/);
   assert.match(source, /trash:nearestList\(Game.state\.trash,'trash',t=>t\.pos/);
 });
 
@@ -51,7 +51,7 @@ test('active patch gameplay reads plain position data instead of mesh-owned stat
   assert.match(source, /function plantPatchView\(patch\)\{/);
   assert.match(source, /plantPatchView\(p\)/);
   assert.match(source, /setObjectPosition\(view\.tree,p\.pos\)/);
-  assert.match(source, /this\.addScore\(25,plainToVector\(p\.pos,2\)\)/);
+  assert.match(source, /this\.addScore\(activeModeScore\('plant'\),plainToVector\(p\.pos,2\)\)/);
   assert.match(source, /burst\(plainToVector\(p\.pos,1\),0x9ef01a/);
   assert.match(source, /setObjectPosition\(view\.mesh,p\.pos\)/);
   assert.match(source, /if\(plainDistance\(p\.pos,Game.state\.player\.pos\)<2\.2\)Game\.nearPatch=p/);
@@ -71,7 +71,7 @@ test('active villain gameplay reads plain position data instead of mesh-owned st
   assert.match(source, /const dropResult=inD<WORLD_R\?spawnTrash\(v\.pos\)/);
   assert.match(source, /const dist=plainDistance\(v\.pos,Game.state\.player\.pos\)/);
   assert.match(source, /burst\(plainToVector\(v\.pos,1\.2\)/);
-  assert.match(source, /Game\.addScore\(100,plainToVector\(v\.pos,2\.5\)\)/);
+  assert.match(source, /Game\.addScore\(activeModeScore\('bossDefeat'\),plainToVector\(v\.pos,2\.5\)\)/);
   assert.match(source, /v\.target\.x=v\.pos\.x\+\(awayX\/awayLen\)\*9/);
   assert.match(source, /villains:nearestList\(Game.state\.villains,'villain',v=>v\.pos/);
 });
