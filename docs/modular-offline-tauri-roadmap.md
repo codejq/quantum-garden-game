@@ -109,9 +109,9 @@
 - [x] Add a storage schema version field to all persisted settings, progress, best times, language, and camera preferences.
 - [x] Add storage migration helpers so future save-data changes do not corrupt old saves.
 - [x] Create `web/src/core/disposal.js` for Three.js geometry, material, texture, and object cleanup.
-- [ ] Create `web/src/render/scene.js` for Three.js scene, renderer, camera, lights, fog, and resize handling.
-- [ ] Create `web/src/render/sync.js` for mapping simulation entities to Three.js meshes.
-- [ ] Create `web/src/render/materials.js` for shared material creation and disposal helpers.
+- [x] Create `web/src/render/scene.js` for Three.js scene, renderer, camera, lights, fog, and resize handling.
+- [x] Create `web/src/render/sync.js` for mapping simulation entities to Three.js meshes.
+- [x] Create `web/src/render/materials.js` for shared material creation and disposal helpers.
 - [ ] Create `web/src/world/builders.js` for trees, flowers, rocks, trash, player, villains, and other mesh builders.
 - [ ] Create `web/src/world/spawners.js` for level object placement.
 - [ ] Create `web/src/entities/player.js` for player entity state and animation.
@@ -178,7 +178,7 @@
 - [ ] Move villain positions, IDs, HP, target, behavior state, timers, and boss/minion type into plain simulation data.
 - [ ] Move objective progress and win checks into the simulation layer.
 - [ ] Keep Three.js mesh objects inside the render layer only.
-- [ ] Add a render sync layer that creates, updates, and removes meshes to match simulation entities.
+- [x] Add a render sync layer that creates, updates, and removes meshes to match simulation entities.
 - [x] Add fixed-timestep simulation stepping.
 - [x] Add headless simulation tests that run without DOM, canvas, or WebGL.
 - [ ] Ensure `Game.running`, pause, and level completion are simulation states, not only UI flags.
