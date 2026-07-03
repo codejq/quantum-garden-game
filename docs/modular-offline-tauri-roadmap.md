@@ -414,7 +414,7 @@
 - [x] Add first-class turn-stepped headless mode for model evaluation.
 - [x] Add real-time browser mode for demos.
 - [x] Allow raw low-level movement actions and higher-level intent actions.
-- [ ] Add a Playwright-based agent harness that can call the browser API.
+- [x] Add a Playwright-based agent harness that can call the browser API.
 - [x] Add sample scripts showing how an external LLM agent can observe and act.
 - [x] Add a safety boundary: the LLM API can control only the game, not the filesystem, OS, or Tauri commands.
 - [x] For Tauri, expose the same browser-side API and avoid privileged native commands for LLM control.
