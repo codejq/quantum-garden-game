@@ -2,17 +2,18 @@
 
 ## Current State
 
-- [ ] Review [web/index.html](../web/index.html) before implementation work starts.
-- [ ] Confirm the current prototype is a single HTML file with inline CSS, inline JavaScript, Arabic-first UI, CDN-loaded Three.js, CDN-loaded Google font, keyboard controls, touch joystick, level completion overlay, generated 3D assets, sound synthesis, and randomized trash/tree/villain placement.
-- [ ] Preserve the current strengths during refactor: smooth camera/player motion, lightweight procedural art, generated WebAudio sound, and low asset weight.
-- [ ] Confirm current simulation and rendering are tightly coupled: entity state is stored on Three.js meshes and the game advances only inside `requestAnimationFrame`.
-- [ ] Confirm current randomization uses `Math.random()` across gameplay, cosmetics, and mesh builders, which prevents deterministic replay.
-- [ ] Confirm the current game assumes one persistent scene across a continuous session.
-- [ ] Treat the current game as the behavior baseline until tests and screenshots prove otherwise.
+- [x] Review [web/index.html](../web/index.html) before implementation work starts.
+- [x] Confirm the current prototype is a single HTML file with inline CSS, inline JavaScript, Arabic-first UI, CDN-loaded Three.js, CDN-loaded Google font, keyboard controls, touch joystick, level completion overlay, generated 3D assets, sound synthesis, and randomized trash/tree/villain placement.
+- [x] Preserve the current strengths during refactor: smooth camera/player motion, lightweight procedural art, generated WebAudio sound, and low asset weight.
+- [x] Confirm current simulation and rendering are tightly coupled: entity state is stored on Three.js meshes and the game advances only inside `requestAnimationFrame`.
+- [x] Confirm current randomization uses `Math.random()` across gameplay, cosmetics, and mesh builders, which prevents deterministic replay.
+- [x] Confirm the current game assumes one persistent scene across a continuous session.
+- [x] Treat the current game as the behavior baseline until tests and screenshots prove otherwise.
+- [ ] Change teh name of teh game to be Clean Garden both in arabic and in eglish .
 
 ## Goals
 
-- [ ] Protect the current working prototype before large refactors begin.
+- [x] Protect the current working prototype before large refactors begin.
 - [ ] Split the single HTML file into standard HTML, CSS, and JavaScript modules.
 - [ ] Separate simulation from rendering so gameplay state is plain data and Three.js only visualizes that state.
 - [ ] Add a fixed-timestep simulation loop so tests, replay, two-player race, and LLM play are deterministic.
@@ -56,9 +57,9 @@
 - [ ] Store player, trash, patches, villains, boss, objectives, timers, score, and level seed as plain JavaScript data.
 - [ ] Do not store authoritative gameplay state only on Three.js meshes.
 - [ ] Make rendering read simulation state and sync mesh transforms each frame.
-- [ ] Add a fixed simulation tick such as `1/60` or `1/30` seconds.
+- [x] Add a fixed simulation tick such as `1/60` or `1/30` seconds.
 - [ ] Use an accumulator in the visual loop so rendering can run at any frame rate while simulation advances deterministically.
-- [ ] Allow tests and LLM agents to call `step()` without creating a WebGL renderer.
+- [x] Allow tests and LLM agents to call `step()` without creating a WebGL renderer.
 - [ ] Use a seeded random generator for all gameplay and cosmetic generation.
 - [ ] Use fully seeded world generation for reproducible LLM evaluation and bug reports.
 - [ ] Add stable object IDs for all interactive objects.
@@ -91,7 +92,7 @@
 - [ ] Remove `maximum-scale=1.0` and `user-scalable=no` unless a platform-specific reason requires them.
 - [ ] Add accessible labels for emoji-only buttons.
 - [ ] Replace global singleton assumptions with instantiable game/session objects.
-- [ ] Support creating a fresh `GameSession({ mode, levelId, seed })` for tests, LLM evaluation, retries, and races.
+- [x] Support creating a fresh `GameSession({ mode, levelId, seed })` for tests, LLM evaluation, retries, and races.
 
 ## Target Project Structure
 
@@ -99,11 +100,11 @@
 - [ ] Create `web/styles/main.css` for global layout, HUD, overlays, controls, and responsive behavior.
 - [ ] Create `web/src/main.js` as the browser entry point.
 - [ ] Create `web/src/core/game.js` for game lifecycle, state transitions, scoring, win checks, and pause/resume.
-- [ ] Create `web/src/core/session.js` for instantiable `GameSession` creation, reset, retry, and teardown.
-- [ ] Create `web/src/core/simulation.js` for the renderer-independent fixed-timestep simulation.
+- [x] Create `web/src/core/session.js` for instantiable `GameSession` creation, reset, retry, and teardown.
+- [x] Create `web/src/core/simulation.js` for the renderer-independent fixed-timestep simulation.
 - [ ] Create `web/src/core/loop.js` for the render/update loop.
 - [ ] Create `web/src/core/events.js` for a small internal event bus.
-- [ ] Create `web/src/core/random.js` for seeded random generation.
+- [x] Create `web/src/core/random.js` for seeded random generation.
 - [ ] Create `web/src/core/storage.js` for local save data, settings, and best times.
 - [ ] Add a storage schema version field to all persisted settings, progress, best times, language, and camera preferences.
 - [ ] Add storage migration helpers so future save-data changes do not corrupt old saves.
@@ -141,7 +142,7 @@
 
 ## Build Tooling
 
-- [ ] Add `package.json` for web build scripts and dependency management.
+- [x] Add `package.json` for web build scripts and dependency management.
 - [ ] Add Vite or an equivalent lightweight bundler.
 - [ ] Vendor the current Three.js r128 build locally first instead of loading it from a CDN.
 - [ ] Keep the visual baseline stable while removing CDN dependencies.
@@ -154,7 +155,7 @@
 - [ ] Add `npm run build` to produce a static offline build.
 - [ ] Add `npm run preview` to test the built output.
 - [ ] Add `npm run lint` if lint tooling is introduced.
-- [ ] Add `npm run test` once tests exist.
+- [x] Add `npm run test` once tests exist.
 
 ## HTML, CSS, JavaScript Separation
 
@@ -178,8 +179,8 @@
 - [ ] Move objective progress and win checks into the simulation layer.
 - [ ] Keep Three.js mesh objects inside the render layer only.
 - [ ] Add a render sync layer that creates, updates, and removes meshes to match simulation entities.
-- [ ] Add fixed-timestep simulation stepping.
-- [ ] Add headless simulation tests that run without DOM, canvas, or WebGL.
+- [x] Add fixed-timestep simulation stepping.
+- [x] Add headless simulation tests that run without DOM, canvas, or WebGL.
 - [ ] Ensure `Game.running`, pause, and level completion are simulation states, not only UI flags.
 - [ ] Keep environment animation that is purely visual in the render layer.
 - [ ] Keep gameplay-affecting timers in the simulation layer.
@@ -224,7 +225,7 @@
 - [ ] Create a level registry.
 - [ ] Support finite authored levels.
 - [ ] Support generated levels after authored levels are complete.
-- [ ] Add seeded random generation per level attempt.
+- [x] Add seeded random generation per level attempt.
 - [ ] Store the active seed in game state.
 - [ ] Show or log the seed for debugging.
 - [ ] Replace all `Math.random()` calls with seeded random helpers.
@@ -421,13 +422,13 @@
 
 - [ ] Add CI to run headless simulation tests, determinism tests, i18n checks, and offline build checks on push.
 - [ ] Add smoke tests for app startup.
-- [ ] Add headless simulation tests that run without WebGL.
+- [x] Add headless simulation tests that run without WebGL.
 - [ ] Add tests for i18n key coverage in all four languages.
 - [ ] Add tests for fallback to English.
 - [ ] Add tests for RTL document direction in Arabic.
-- [ ] Add tests for seeded random determinism.
-- [ ] Add tests proving simulation results do not change with render frame rate.
-- [ ] Add tests that two runs with different seeds produce different layouts.
+- [x] Add tests for seeded random determinism.
+- [x] Add tests proving simulation results do not change with render frame rate.
+- [x] Add tests that two runs with different seeds produce different layouts.
 - [ ] Add tests for single-player win conditions.
 - [ ] Add tests for two-player race result comparison.
 - [ ] Add tests for LLM `observe()` schema.
