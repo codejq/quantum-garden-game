@@ -508,7 +508,7 @@
 - [x] English is the default language.
 - [x] Arabic, English, Spanish, and French can be selected.
 - [x] Arabic uses RTL layout.
-- [ ] The current gameplay remains playable after refactor.
+- [x] The current gameplay remains playable after refactor.
 - [x] New levels can be added by registering a new level definition.
 - [x] New modes can be added by registering a new game mode.
 - [x] Scene layout changes each attempt unless the same seed is reused.

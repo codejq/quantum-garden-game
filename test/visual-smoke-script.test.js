@@ -5,6 +5,7 @@ import { test } from 'node:test';
 const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
 const scriptSource = readFileSync(new URL('../scripts/visual-viewport-smoke.mjs', import.meta.url), 'utf8');
 const cameraScriptSource = readFileSync(new URL('../scripts/camera-view-smoke.mjs', import.meta.url), 'utf8');
+const playabilityScriptSource = readFileSync(new URL('../scripts/playability-smoke.mjs', import.meta.url), 'utf8');
 
 test('offline build verification runs visual viewport smoke', () => {
   assert.match(packageJson.scripts['test:offline-build'], /visual-viewport-smoke\.mjs/);
@@ -44,4 +45,12 @@ test('offline build verification runs camera view smoke across viewports', () =>
   assert.match(cameraScriptSource, /Camera HUD targets left the viewport/);
   assert.match(cameraScriptSource, /ensureBuiltStylesApplied/);
   assert.match(cameraScriptSource, /page\.addStyleTag\(\{ path: builtCssPath \}\)/);
+});
+
+test('offline build verification proves active gameplay remains playable', () => {
+  assert.match(packageJson.scripts['test:offline-build'], /playability-smoke\.mjs/);
+  assert.match(playabilityScriptSource, /moveToNearestTrash/);
+  assert.match(playabilityScriptSource, /plantNearest/);
+  assert.match(playabilityScriptSource, /trashChanged/);
+  assert.match(playabilityScriptSource, /treeChanged/);
 });
