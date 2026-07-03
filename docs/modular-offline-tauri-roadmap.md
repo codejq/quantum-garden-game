@@ -130,11 +130,11 @@
 - [ ] Create `web/src/i18n/locales/ar.json`.
 - [ ] Create `web/src/i18n/locales/es.json`.
 - [ ] Create `web/src/i18n/locales/fr.json`.
-- [ ] Create `web/src/modes/single-player.js`.
+- [x] Create `web/src/modes/single-player.js`.
 - [ ] Create `web/src/modes/two-player-race.js`.
-- [ ] Create `web/src/levels/level-registry.js`.
-- [ ] Create `web/src/levels/level-001.js` as the first migrated level definition.
-- [ ] Create `web/src/levels/templates.js` for reusable objective templates.
+- [x] Create `web/src/levels/level-registry.js`.
+- [x] Create `web/src/levels/level-001.js` as the first migrated level definition.
+- [x] Create `web/src/levels/templates.js` for reusable objective templates.
 - [x] Create `web/src/levels/solvability.js` for spawn validation, reachability checks, and layout rejection.
 - [ ] Create `web/assets/fonts/` for offline fonts.
 - [ ] Create `web/assets/vendor/` for offline third-party browser libraries.
@@ -209,9 +209,9 @@
 
 ## Modular Game Modes
 
-- [ ] Define a `GameMode` interface with `id`, `nameKey`, `setup()`, `start()`, `update()`, `onObjectiveEvent()`, `isComplete()`, and `getResults()`.
+- [x] Define a `GameMode` interface with `id`, `nameKey`, `setup()`, `start()`, `update()`, `onObjectiveEvent()`, `isComplete()`, and `getResults()`.
 - [ ] Move current gameplay into `single-player` mode.
-- [ ] Add a mode registry that lists available modes.
+- [x] Add a mode registry that lists available modes.
 - [ ] Add a mode select screen before starting the game.
 - [ ] Keep mode state separate from rendering state.
 - [ ] Keep scoring rules inside each mode.
@@ -220,9 +220,9 @@
 
 ## Level System
 
-- [ ] Define a `LevelDefinition` object shape with `id`, `nameKey`, `difficulty`, `world`, `objectives`, `spawnRules`, `timer`, `boss`, and `randomization`.
+- [x] Define a `LevelDefinition` object shape with `id`, `nameKey`, `difficulty`, `world`, `objectives`, `spawnRules`, `timer`, `boss`, and `randomization`.
 - [ ] Move the current level formula into level definitions.
-- [ ] Create a level registry.
+- [x] Create a level registry.
 - [ ] Support finite authored levels.
 - [ ] Support generated levels after authored levels are complete.
 - [x] Add seeded random generation per level attempt.

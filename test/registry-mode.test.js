@@ -1,0 +1,32 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { getLevel, listLevels, registerLevel } from '../web/src/levels/level-registry.js';
+import { getMode, listModes, registerMode } from '../web/src/modes/mode-registry.js';
+
+test('level registry exposes the first level and supports registration', () => {
+  assert.equal(getLevel('level-001').id, 'level-001');
+  registerLevel({ id: 'test-level', difficulty: 99 });
+  assert.equal(getLevel('test-level').difficulty, 99);
+  assert.ok(listLevels().some((level) => level.id === 'level-001'));
+});
+
+test('mode registry exposes single-player and supports registration', () => {
+  assert.equal(getMode('single-player').id, 'single-player');
+  registerMode({ id: 'test-mode' });
+  assert.equal(getMode('test-mode').id, 'test-mode');
+  assert.ok(listModes().some((mode) => mode.id === 'single-player'));
+});
+
+test('single-player mode can setup and start a headless session', () => {
+  const mode = getMode('single-player');
+  const context = mode.setup({ levelId: 'level-001', seed: 'mode-seed' });
+  mode.start(context);
+  mode.update(context, 1 / 60);
+  const results = mode.getResults(context);
+
+  assert.equal(context.level.id, 'level-001');
+  assert.equal(context.session.mode, 'single-player');
+  assert.equal(results.mode, 'single-player');
+  assert.equal(results.complete, false);
+});
+
