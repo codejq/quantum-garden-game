@@ -53,7 +53,7 @@
 
 ## Architecture Decisions
 
-- [ ] Make each level attempt self-contained: build from seed, play, complete or exit, tear down, dispose, and rebuild.
+- [x] Make each level attempt self-contained: build from seed, play, complete or exit, tear down, dispose, and rebuild.
 - [ ] Make simulation data the source of truth.
 - [ ] Store player, trash, patches, villains, boss, objectives, timers, score, and level seed as plain JavaScript data.
 - [ ] Do not store authoritative gameplay state only on Three.js meshes.
@@ -500,7 +500,7 @@
 - [x] Gameplay simulation can run headlessly without WebGL.
 - [ ] Rendering syncs to simulation state instead of owning authoritative gameplay state.
 - [x] Simulation uses a fixed timestep.
-- [ ] A level attempt can be built, played, torn down, disposed, and rebuilt from a seed.
+- [x] A level attempt can be built, played, torn down, disposed, and rebuilt from a seed.
 - [ ] Starting a new level does not keep stale patches, planted trees, villains, trash, or decorative objects unless explicitly designed.
 - [x] The game runs in a browser from the local build.
 - [x] The game runs without internet access.

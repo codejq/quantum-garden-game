@@ -8,6 +8,7 @@ import {
   pauseAttempt,
   resumeAttempt,
   serializeAttempt,
+  setMoveInput,
   startAttempt,
   stepAttempt,
   teardownAttempt,
@@ -153,6 +154,27 @@ test('teardown removes attempt-owned objects and marks the attempt disposed', ()
   assert.equal(attempt.patches.length, 0);
   assert.equal(attempt.decor.length, 0);
   assert.equal(removed.length, before);
+});
+
+test('level attempt can build, play, teardown, dispose, and rebuild from a seed', () => {
+  const first = createAttempt({ level: 2, seed: 'full-lifecycle' });
+  const firstLayout = serializeAttempt(first);
+  startAttempt(first);
+  setMoveInput(first, 1, 0);
+  stepAttempt(first, 1 / 60);
+  const played = serializeAttempt(first);
+  assert.equal(played.status, 'running');
+  assert.notEqual(played.elapsed, firstLayout.elapsed);
+
+  const removed = teardownAttempt(first);
+  assert.equal(first.status, 'disposed');
+  assert.ok(removed.length > 0);
+
+  const rebuilt = createAttempt({ level: 2, seed: 'full-lifecycle' });
+  const rebuiltLayout = serializeAttempt(rebuilt);
+  assert.deepEqual(rebuiltLayout.trash, firstLayout.trash);
+  assert.deepEqual(rebuiltLayout.patches, firstLayout.patches);
+  assert.deepEqual(rebuiltLayout.decor, firstLayout.decor);
 });
 
 test('GameSession supports levelId and retrying from a new seed', () => {
