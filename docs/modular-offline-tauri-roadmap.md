@@ -404,19 +404,19 @@
 - [x] Include stable object IDs in observations so the LLM can target specific trash, patches, villains, and boss entities.
 - [x] Quantize positions and distances so observations are stable and token-efficient.
 - [x] Hide rendering-only details from the LLM observation.
-- [ ] Add a browser debug panel or console hook named `window.QuantumGardenAgent`.
-- [ ] Implement `window.QuantumGardenAgent.observe()`.
-- [ ] Implement `window.QuantumGardenAgent.act(action)`.
-- [ ] Implement `window.QuantumGardenAgent.reset({ mode, levelId, seed })`.
-- [ ] Implement `window.QuantumGardenAgent.step(action)` for test runners.
-- [ ] Add rate limits or frame-step controls so the model cannot flood the game loop.
+- [x] Add a browser debug panel or console hook named `window.QuantumGardenAgent`.
+- [x] Implement `window.QuantumGardenAgent.observe()`.
+- [x] Implement `window.QuantumGardenAgent.act(action)`.
+- [x] Implement `window.QuantumGardenAgent.reset({ mode, levelId, seed })`.
+- [x] Implement `window.QuantumGardenAgent.step(action)` for test runners.
+- [x] Add rate limits or frame-step controls so the model cannot flood the game loop.
 - [x] Add first-class turn-stepped headless mode for model evaluation.
-- [ ] Add real-time browser mode for demos.
+- [x] Add real-time browser mode for demos.
 - [x] Allow raw low-level movement actions and higher-level intent actions.
 - [ ] Add a Playwright-based agent harness that can call the browser API.
 - [ ] Add sample scripts showing how an external LLM agent can observe and act.
-- [ ] Add a safety boundary: the LLM API can control only the game, not the filesystem, OS, or Tauri commands.
-- [ ] For Tauri, expose the same browser-side API and avoid privileged native commands for LLM control.
+- [x] Add a safety boundary: the LLM API can control only the game, not the filesystem, OS, or Tauri commands.
+- [x] For Tauri, expose the same browser-side API and avoid privileged native commands for LLM control.
 
 ## Testing And Verification
 
@@ -523,8 +523,8 @@
 - [ ] Tauri desktop build launches.
 - [ ] Android build path is documented and configured.
 - [ ] iOS build path is documented and configured.
-- [ ] `window.QuantumGardenAgent.observe()` returns valid state.
-- [ ] `window.QuantumGardenAgent.act()` can control the player.
+- [x] `window.QuantumGardenAgent.observe()` returns valid state.
+- [x] `window.QuantumGardenAgent.act()` can control the player.
 - [ ] LLM can use both low-level actions and high-level target actions.
 
 ## Risks And Decisions

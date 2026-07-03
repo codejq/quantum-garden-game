@@ -391,6 +391,7 @@ addEventListener('keydown',e=>{keys[e.code]=true;
   if(['Space','KeyE'].includes(e.code)){e.preventDefault();Game.tryPlant();}});
 addEventListener('keyup',e=>keys[e.code]=false);
 const joy={active:false,x:0,y:0,id:null};
+const agentInput={x:0,z:0,until:0};
 const joyEl=$('joy'),knob=$('joyKnob');
 function joyMove(t){const r=joyEl.getBoundingClientRect();
   let dx=t.clientX-(r.left+r.width/2),dy=t.clientY-(r.top+r.height/2);
@@ -592,6 +593,8 @@ function playerUpdate(dt){
   if(keys.KeyA||keys.ArrowLeft)ix-=1;
   if(keys.KeyD||keys.ArrowRight)ix+=1;
   ix+=joy.x;iz+=joy.y;
+  if(performance.now()<agentInput.until){ix+=agentInput.x;iz+=agentInput.z;}
+  else{agentInput.x=0;agentInput.z=0;}
   const L=Math.hypot(ix,iz);
   if(L>1){ix/=L;iz/=L;}
   const SPEED=8;
@@ -721,16 +724,20 @@ function envUpdate(dt,time){
   for(const fl of flowers){fl.rotation.z=fl.userData.base+Math.sin(time*1.6+fl.userData.sway)*.12;}
 }
 
-function loop(){
-  requestAnimationFrame(loop);
-  const dt=Math.min(clock.getDelta(),.05);
-  const time=clock.elapsedTime;
+function tickGameplay(dt,time){
   if(Game.running){
     playerUpdate(dt);
     villainsUpdate(dt);
     trashUpdate(dt);
     patchesUpdate(dt,time);
   }
+}
+
+function loop(){
+  requestAnimationFrame(loop);
+  const dt=Math.min(clock.getDelta(),.05);
+  const time=clock.elapsedTime;
+  tickGameplay(dt,time);
   envUpdate(dt,time);
   updateBursts(dt);
   camTarget.copy(player.pos).add(CAM_OFF);
@@ -810,3 +817,123 @@ $('resumeBtn').onclick=()=>resumeGame();
 $('retryBtn').onclick=()=>retryLevel();
 $('menuBtn').onclick=()=>exitGame();
 applyLocale(activeLocale);
+
+/* ---------------- Browser LLM/agent hook ---------------- */
+const agentIds=new WeakMap();
+const agentState={lastActAt:0,minActMs:16,maxStepFrames:30};
+function agentId(prefix,obj,index){
+  if(!obj)return null;
+  if(!agentIds.has(obj))agentIds.set(obj,`${prefix}-${String(index+1).padStart(3,'0')}`);
+  return agentIds.get(obj);
+}
+function q(n){return Math.round(n*100)/100;}
+function vecObs(v){return { x:q(v.x), y:q(v.y||0), z:q(v.z) };}
+function nearestList(items,prefix,positionOf,extra){
+  return items.map((item,index)=>{
+    const pos=positionOf(item);
+    return {
+      id:agentId(prefix,item,index),
+      position:vecObs(pos),
+      distance:q(pos.distanceTo(player.pos)),
+      ...extra(item)
+    };
+  }).sort((a,b)=>a.distance-b.distance).slice(0,8);
+}
+function observeAgent(){
+  const planted=patches.filter(p=>p.planted).length;
+  return {
+    apiVersion:1,
+    deterministic:false,
+    note:'Browser demo hook controls the live prototype. Use web/src/input/llm-agent.js for deterministic headless evaluation.',
+    running:Game.running,
+    locale:activeLocale,
+    levelId:String(Game.level),
+    seed:null,
+    score:Game.score,
+    objective:{
+      trashLeft:trash.length,
+      patchesPlanted:planted,
+      patchesTotal:patches.length,
+      minionsConverted:Game.converted,
+      minionsRequired:Game.quota,
+      bossDefeated:Game.bossDefeated()
+    },
+    player:{
+      position:vecObs(player.pos),
+      velocity:vecObs(player.vel),
+      heading:q(player.yaw)
+    },
+    nearest:{
+      trash:nearestList(trash,'trash',t=>t.mesh.position,()=>({})),
+      patches:nearestList(patches,'patch',p=>p.mesh.position,p=>({ planted:!!p.planted })),
+      villains:nearestList(villains,'villain',v=>v.mesh.position,v=>({
+        boss:!!v.boss,
+        hp:v.hp,
+        state:v.state
+      }))
+    },
+    canPlant:!!(Game.running&&Game.nearPatch&&Game.plantCd<=0),
+    limits:{ minActMs:agentState.minActMs, maxStepFrames:agentState.maxStepFrames }
+  };
+}
+function moveAgent(x,z,durationMs=250){
+  const L=Math.hypot(x,z);
+  agentInput.x=L>1?x/L:x;
+  agentInput.z=L>1?z/L:z;
+  agentInput.until=performance.now()+clamp(durationMs,16,2000);
+}
+function moveTowardAgent(target,durationMs){
+  if(!target||!target.position)return false;
+  const dx=target.position.x-player.pos.x;
+  const dz=target.position.z-player.pos.z;
+  moveAgent(dx,dz,durationMs);
+  return true;
+}
+function actAgent(action={}){
+  const now=performance.now();
+  if(now-agentState.lastActAt<agentState.minActMs)return { ok:false, reason:'rate_limited', observation:observeAgent() };
+  agentState.lastActAt=now;
+  const type=action.type||action.action;
+  if(type==='move')moveAgent(Number(action.x)||0,Number(action.z)||Number(action.y)||0,action.durationMs);
+  else if(type==='moveToward'){
+    const obs=observeAgent();
+    const all=[...obs.nearest.trash,...obs.nearest.patches,...obs.nearest.villains];
+    if(!moveTowardAgent(all.find(o=>o.id===action.targetId),action.durationMs))return { ok:false, reason:'unknown_target', observation:obs };
+  }else if(type==='moveToNearestTrash'||type==='collectNearest')moveTowardAgent(observeAgent().nearest.trash[0],action.durationMs);
+  else if(type==='moveToNearestPatch')moveTowardAgent(observeAgent().nearest.patches.find(p=>!p.planted),action.durationMs);
+  else if(type==='chaseNearestVillain'||type==='attackBoss'){
+    const villainsObs=observeAgent().nearest.villains;
+    moveTowardAgent(type==='attackBoss'?villainsObs.find(v=>v.boss):villainsObs[0],action.durationMs);
+  }else if(type==='plant'||type==='plantNearest')Game.tryPlant();
+  else if(type==='pause')pauseGame();
+  else if(type==='resume')resumeGame();
+  else if(type==='restart'||type==='retry')retryLevel();
+  else return { ok:false, reason:'unknown_action', observation:observeAgent() };
+  return { ok:true, observation:observeAgent() };
+}
+function resetAgent(options={}){
+  $('startOverlay').style.display='none';
+  $('lvlOverlay').style.display='none';
+  $('pauseOverlay').style.display='none';
+  $('hud').style.display='block';
+  $('sndBtn').style.display='block';
+  $('exitBtn').style.display='block';
+  $('pauseBtn').style.display='block';
+  const levelId=Number(options.levelId||options.level||1);
+  Game.running=true;
+  Game.startLevel(Number.isFinite(levelId)&&levelId>0?levelId:1);
+  return { ok:true, seedApplied:false, observation:observeAgent() };
+}
+function stepAgent(action){
+  const result=action?actAgent(action):{ ok:true, observation:observeAgent() };
+  const frames=clamp(Number(action&&action.frames)||1,1,agentState.maxStepFrames);
+  for(let i=0;i<frames;i++)tickGameplay(1/60,clock.elapsedTime+i/60);
+  envUpdate(1/60,clock.elapsedTime);
+  return { ...result, observation:observeAgent() };
+}
+window.QuantumGardenAgent=Object.freeze({
+  observe:observeAgent,
+  act:actAgent,
+  reset:resetAgent,
+  step:stepAgent
+});
