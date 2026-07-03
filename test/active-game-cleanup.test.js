@@ -6,17 +6,17 @@ const source = readFileSync(new URL('../web/src/main.js', import.meta.url), 'utf
 
 test('active level start tears down previous gameplay objects', () => {
   assert.match(source, /function cleanupLevelAttempt\(\)/);
-  assert.match(source, /trash\.forEach\(t=>removeAttemptObject\(trashMesh\(t\)\)\)/);
-  assert.match(source, /villains\.forEach\(v=>removeAttemptObject\(villainView\(v\)\?\.mesh\)\)/);
+  assert.match(source, /activeState\.trash\.forEach\(t=>removeAttemptObject\(trashMesh\(t\)\)\)/);
+  assert.match(source, /activeState\.villains\.forEach\(v=>removeAttemptObject\(villainView\(v\)\?\.mesh\)\)/);
   assert.match(source, /const view=patchView\(p\);\s*removeAttemptObject\(view\?\.tree\);\s*removeAttemptObject\(view\?\.mesh\);/);
   assert.match(source, /cleanupLevelAttempt\(\);\s*cleanupDecorativeWorld\(\);\s*buildDecorativeWorld\(\);\s*this\.level=n/);
 });
 
 test('active gameplay disposes collected and converted objects when they leave play', () => {
-  assert.match(source, /removeAttemptObject\(trashMesh\(t\)\);trash\.splice\(i,1\)/);
-  assert.match(source, /removeAttemptObject\(villainView\(v\)\?\.mesh\);villains\.splice\(i,1\)/);
-  assert.doesNotMatch(source, /scene\.remove\(trashMesh\(t\)\);trash\.splice\(i,1\)/);
-  assert.doesNotMatch(source, /scene\.remove\(villainView\(v\)\?\.mesh\);villains\.splice\(i,1\)/);
+  assert.match(source, /removeAttemptObject\(trashMesh\(t\)\);activeState\.trash\.splice\(i,1\)/);
+  assert.match(source, /removeAttemptObject\(villainView\(v\)\?\.mesh\);activeState\.villains\.splice\(i,1\)/);
+  assert.doesNotMatch(source, /scene\.remove\(trashMesh\(t\)\);activeState\.trash\.splice\(i,1\)/);
+  assert.doesNotMatch(source, /scene\.remove\(villainView\(v\)\?\.mesh\);activeState\.villains\.splice\(i,1\)/);
 });
 
 test('active game keeps level tree count separate from lifetime count', () => {
@@ -26,7 +26,7 @@ test('active game keeps level tree count separate from lifetime count', () => {
 });
 
 test('active trash spawns report cap failures explicitly', () => {
-  assert.match(source, /if\(trash\.length>=45\)return \{ spawned:false, reason:'cap' \}/);
+  assert.match(source, /if\(activeState\.trash\.length>=45\)return \{ spawned:false, reason:'cap' \}/);
   assert.match(source, /return \{ spawned:true, mesh:m \}/);
   assert.match(source, /dropResult\.spawned/);
 });
@@ -36,24 +36,24 @@ test('active trash gameplay reads plain position data instead of mesh-owned stat
   assert.match(source, /const trashMeshes=new WeakMap\(\)/);
   assert.match(source, /function setTrashMesh\(item,mesh\)\{trashMeshes\.set\(item,mesh\);return item;\}/);
   assert.match(source, /const item=setTrashMesh\(\{pos:trashPos,spin:m\.rotation\.y\},m\)/);
-  assert.match(source, /if\(t\.pos\.distanceTo\(player\.pos\)<1\.35\)/);
+  assert.match(source, /if\(t\.pos\.distanceTo\(activeState\.player\.pos\)<1\.35\)/);
   assert.match(source, /burst\(t\.pos\.clone\(\)\.setY\(\.6\)/);
   assert.match(source, /Game\.addScore\(10,t\.pos\.clone\(\)\.setY\(1\.4\)\)/);
-  assert.match(source, /trash:nearestList\(trash,'trash',t=>t\.pos/);
+  assert.match(source, /trash:nearestList\(activeState\.trash,'trash',t=>t\.pos/);
 });
 
 test('active patch gameplay reads plain position data instead of mesh-owned state', () => {
   assert.match(source, /const patchPos=new THREE\.Vector3\(Math\.cos\(a\)\*r,0,Math\.sin\(a\)\*r\)/);
   assert.match(source, /const patch=setPatchView\(\{pos:patchPos,planted:false,grow:0\},\{mesh:g,ring,tree:null\}\)/);
-  assert.match(source, /scene\.add\(g\);patches\.push\(patch\)/);
+  assert.match(source, /scene\.add\(g\);activeState\.patches\.push\(patch\)/);
   assert.match(source, /function plantPatchView\(patch\)\{/);
   assert.match(source, /plantPatchView\(p\)/);
   assert.match(source, /view\.tree\.position\.copy\(p\.pos\)/);
   assert.match(source, /this\.addScore\(25,p\.pos\.clone\(\)\.add\(new THREE\.Vector3\(0,2,0\)\)\)/);
   assert.match(source, /burst\(p\.pos\.clone\(\)\.setY\(1\),0x9ef01a/);
   assert.match(source, /view\.mesh\.position\.copy\(p\.pos\)/);
-  assert.match(source, /if\(p\.pos\.distanceTo\(player\.pos\)<2\.2\)Game\.nearPatch=p/);
-  assert.match(source, /patches:nearestList\(patches,'patch',p=>p\.pos/);
+  assert.match(source, /if\(p\.pos\.distanceTo\(activeState\.player\.pos\)<2\.2\)Game\.nearPatch=p/);
+  assert.match(source, /patches:nearestList\(activeState\.patches,'patch',p=>p\.pos/);
 });
 
 test('active villain gameplay reads plain position data instead of mesh-owned state', () => {
@@ -61,27 +61,34 @@ test('active villain gameplay reads plain position data instead of mesh-owned st
   assert.match(source, /const villainViews=new WeakMap\(\)/);
   assert.match(source, /function setVillainView\(villain,view\)\{villainViews\.set\(villain,view\);return villain;\}/);
   assert.match(source, /const v=setVillainView\(\{pos:villainPos,boss,hp:boss\?3:1,state:'walk'/);
-  assert.match(source, /const toP=player\.pos\.clone\(\)\.sub\(v\.pos\)/);
+  assert.match(source, /const toP=activeState\.player\.pos\.clone\(\)\.sub\(v\.pos\)/);
   assert.match(source, /const dir=v\.target\.clone\(\)\.sub\(v\.pos\);dir\.y=0/);
   assert.match(source, /v\.pos\.addScaledVector\(dir,v\.speed\*dt\)/);
   assert.match(source, /mesh\.position\.copy\(v\.pos\)/);
   assert.match(source, /const dropResult=inD<WORLD_R\?spawnTrash\(v\.pos\)/);
-  assert.match(source, /const dist=v\.pos\.distanceTo\(player\.pos\)/);
+  assert.match(source, /const dist=v\.pos\.distanceTo\(activeState\.player\.pos\)/);
   assert.match(source, /burst\(v\.pos\.clone\(\)\.setY\(1\.2\)/);
   assert.match(source, /Game\.addScore\(100,v\.pos\.clone\(\)\.setY\(2\.5\)\)/);
   assert.match(source, /v\.target\.copy\(v\.pos\)\.add\(away\)/);
-  assert.match(source, /villains:nearestList\(villains,'villain',v=>v\.pos/);
+  assert.match(source, /villains:nearestList\(activeState\.villains,'villain',v=>v\.pos/);
 });
 
 test('active browser does not keep authoritative interaction positions only on meshes', () => {
-  assert.match(source, /const player=\{pos:new THREE\.Vector3\(6,0,6\),vel:new THREE\.Vector3\(\),yaw:0,anim:0\}/);
+  assert.match(source, /function createActiveGameplayState\(\)/);
+  assert.match(source, /player:\{pos:new THREE\.Vector3\(6,0,6\),vel:new THREE\.Vector3\(\),yaw:0,anim:0\}/);
+  assert.match(source, /const activeState=createActiveGameplayState\(\)/);
+  assert.doesNotMatch(source, /\bconst player=\{/);
+  assert.doesNotMatch(source, /\bconst trash=\[\]/);
+  assert.doesNotMatch(source, /\bconst patches=\[\]/);
+  assert.doesNotMatch(source, /\bconst villains=\[\]/);
+  assert.doesNotMatch(source, /\blet mtermish=/);
   assert.match(source, /const playerMesh=buildNaqi\(\)/);
   assert.doesNotMatch(source, /player=\{[^}]*mesh/);
-  assert.match(source, /trash\.push\(item\)/);
+  assert.match(source, /activeState\.trash\.push\(item\)/);
   assert.doesNotMatch(source, /trash\.push\(\{[^}]*mesh/);
-  assert.match(source, /patches\.push\(patch\)/);
+  assert.match(source, /activeState\.patches\.push\(patch\)/);
   assert.doesNotMatch(source, /patches\.push\(\{[^}]*mesh/);
-  assert.match(source, /villains\.push\(v\)/);
+  assert.match(source, /activeState\.villains\.push\(v\)/);
   assert.doesNotMatch(source, /const v=\{[^}]*mesh/);
   assert.doesNotMatch(source, /villains\.push\(\{[^}]*mesh/);
   assert.doesNotMatch(source, /t\.mesh\.position\.distanceTo\(player\.pos\)/);
@@ -100,7 +107,7 @@ test('active browser syncs mesh transforms from gameplay data in one render step
   const trashUpdateSource = source.slice(source.indexOf('function trashUpdate'), source.indexOf('function patchesUpdate'));
   const patchesUpdateSource = source.slice(source.indexOf('function patchesUpdate'), source.indexOf('function syncGameplayMeshes'));
 
-  assert.match(syncSource, /playerMesh\.position\.copy\(player\.pos\)/);
+  assert.match(syncSource, /playerMesh\.position\.copy\(activeState\.player\.pos\)/);
   assert.match(syncSource, /const view=villainView\(v\)/);
   assert.match(syncSource, /mesh\.position\.copy\(v\.pos\)/);
   assert.match(syncSource, /const mesh=trashMesh\(t\)/);

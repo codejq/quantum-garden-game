@@ -597,16 +597,21 @@ function line(group){
 }
 
 /* ---------------- Game entities ---------------- */
-const player={pos:new THREE.Vector3(6,0,6),vel:new THREE.Vector3(),yaw:0,anim:0};
+function createActiveGameplayState(){
+  return {
+    player:{pos:new THREE.Vector3(6,0,6),vel:new THREE.Vector3(),yaw:0,anim:0},
+    trash:[],
+    patches:[],
+    villains:[],
+    mtermish:null,
+  };
+}
+const activeState=createActiveGameplayState();
 const playerMesh=buildNaqi();
 scene.add(playerMesh);
-const trash=[];
 const trashMeshes=new WeakMap();
-const patches=[];
 const patchViews=new WeakMap();
-const villains=[];
 const villainViews=new WeakMap();
-let mtermish=null;
 function setTrashMesh(item,mesh){trashMeshes.set(item,mesh);return item;}
 function trashMesh(item){return trashMeshes.get(item);}
 function setPatchView(patch,view){patchViews.set(patch,view);return patch;}
@@ -657,7 +662,14 @@ const activeObjectives=[
 ];
 
 function activeMissionState(){
-  return {trash,patches,converted:Game.converted,quota:Game.quota,spawnedBoss:Game.spawnedBoss,boss:mtermish};
+  return {
+    trash:activeState.trash,
+    patches:activeState.patches,
+    converted:Game.converted,
+    quota:Game.quota,
+    spawnedBoss:Game.spawnedBoss,
+    boss:activeState.mtermish,
+  };
 }
 function activeObjectiveRows(objectives,state){
   return objectives.map(objective=>{
@@ -671,7 +683,7 @@ function renderActiveMissionHtml(rows){
 }
 
 function spawnTrash(pos){
-  if(trash.length>=45)return { spawned:false, reason:'cap' };
+  if(activeState.trash.length>=45)return { spawned:false, reason:'cap' };
   const m=trashBuilders[randi(0,trashBuilders.length-1)]();
   m.traverse(o=>{if(o.isMesh)o.castShadow=true;});
   const trashPos=new THREE.Vector3();
@@ -681,7 +693,7 @@ function spawnTrash(pos){
   m.position.copy(trashPos);
   m.rotation.y=random()*Math.PI*2;
   const item=setTrashMesh({pos:trashPos,spin:m.rotation.y},m);
-  scene.add(m);trash.push(item);
+  scene.add(m);activeState.trash.push(item);
   return { spawned:true, mesh:m };
 }
 
@@ -696,7 +708,7 @@ function spawnPatch(){
   ring.rotation.x=-Math.PI/2;ring.position.y=.05;g.add(ring);
   g.position.copy(patchPos);
   const patch=setPatchView({pos:patchPos,planted:false,grow:0},{mesh:g,ring,tree:null});
-  scene.add(g);patches.push(patch);}
+  scene.add(g);activeState.patches.push(patch);}
 
 function spawnVillain(boss=false){
   const m=boss?buildMtermish():buildMinion();
@@ -706,8 +718,8 @@ function spawnVillain(boss=false){
   scene.add(m);
   const v=setVillainView({pos:villainPos,boss,hp:boss?3:1,state:'walk',t:0,
     target:new THREE.Vector3(),drop:rand(2.5,5),hitCd:0,speed:boss?3.4:rand(1.8,2.6)},{mesh:m});
-  newTarget(v);villains.push(v);
-  if(boss){mtermish=v;note(line('mtermishTaunt'));Snd.laugh();}
+  newTarget(v);activeState.villains.push(v);
+  if(boss){activeState.mtermish=v;note(line('mtermishTaunt'));Snd.laugh();}
   return v;}
 function newTarget(v){const a=random()*Math.PI*2,r=rand(5,WORLD_R-3);
   v.target.set(Math.cos(a)*r,0,Math.sin(a)*r);}
@@ -732,17 +744,17 @@ function removeAttemptObject(obj){
   disposeAttemptObject(obj);
 }
 function cleanupLevelAttempt(){
-  trash.forEach(t=>removeAttemptObject(trashMesh(t)));
-  trash.length=0;
-  villains.forEach(v=>removeAttemptObject(villainView(v)?.mesh));
-  villains.length=0;
-  patches.forEach(p=>{
+  activeState.trash.forEach(t=>removeAttemptObject(trashMesh(t)));
+  activeState.trash.length=0;
+  activeState.villains.forEach(v=>removeAttemptObject(villainView(v)?.mesh));
+  activeState.villains.length=0;
+  activeState.patches.forEach(p=>{
     const view=patchView(p);
     removeAttemptObject(view?.tree);
     removeAttemptObject(view?.mesh);
   });
-  patches.length=0;
-  mtermish=null;
+  activeState.patches.length=0;
+  activeState.mtermish=null;
 }
 function cleanupDecorativeWorld(){
   worldObjects.forEach(removeAttemptObject);
@@ -825,7 +837,7 @@ const Game={
     this.spawnedBoss=false;
     this.bossDelay=4;
     this.polMax=nTrash*3+nPatch*6+18;
-    player.pos.set(6,0,6);player.vel.set(0,0,0);
+    activeState.player.pos.set(6,0,6);activeState.player.vel.set(0,0,0);
     $('uiLevel').textContent=n;$('uiTrees').textContent=this.trees;
     note(tr('levelStart',n),true,3200);
     this.updateMission();
@@ -858,17 +870,17 @@ const Game={
   addScore(v,pos){this.score+=v;$('uiScore').textContent=this.score;if(pos)popText(pos,'+'+v);},
 
   pollution(){
-    const total=trash.length*3+villains.length*9+patches.filter(p=>!p.planted).length*6;
+    const total=activeState.trash.length*3+activeState.villains.length*9+activeState.patches.filter(p=>!p.planted).length*6;
     this.polMax=Math.max(this.polMax||60,total,1);
     return clamp(total/(this.polMax||60)*100,0,100);},
 
   updateMission(){
     $('missionCard').innerHTML=renderActiveMissionHtml(activeObjectiveRows(activeObjectives,activeMissionState()));
   },
-  bossDefeated(){return this.spawnedBoss&&(!mtermish);},
+  bossDefeated(){return this.spawnedBoss&&(!activeState.mtermish);},
 
   checkWin(){
-    if(trash.length===0&&patches.every(p=>p.planted)&&
+    if(activeState.trash.length===0&&activeState.patches.every(p=>p.planted)&&
        this.converted>=this.quota&&this.spawned>=this.quota&&this.bossDefeated()){
       this.complete();
       Snd.fanfare();confetti();
@@ -909,7 +921,7 @@ function playerUpdate(dt){
   else{agentInput.x=0;agentInput.z=0;}
   if(ix||iz)mouseMoveTarget.active=false;
   if(mouseMoveTarget.active){
-    const dx=mouseMoveTarget.pos.x-player.pos.x,dz=mouseMoveTarget.pos.z-player.pos.z;
+    const dx=mouseMoveTarget.pos.x-activeState.player.pos.x,dz=mouseMoveTarget.pos.z-activeState.player.pos.z;
     const dist=Math.hypot(dx,dz);
     if(dist<.45)mouseMoveTarget.active=false;
     else{ix+=dx/dist;iz+=dz/dist;}
@@ -918,27 +930,27 @@ function playerUpdate(dt){
   if(L>1){ix/=L;iz/=L;}
   const SPEED=8;
   const lag=(ix||iz)?.06:.09;
-  player.vel.x=smooth(player.vel.x,ix*SPEED,lag,dt);
-  player.vel.z=smooth(player.vel.z,iz*SPEED,lag,dt);
-  player.pos.x+=player.vel.x*dt;
-  player.pos.z+=player.vel.z*dt;
-  const d=Math.hypot(player.pos.x,player.pos.z);
-  if(d>WORLD_R+6){const s=(WORLD_R+6)/d;player.pos.x*=s;player.pos.z*=s;}
-  const dc=Math.hypot(player.pos.x,player.pos.z);
-  if(dc<2.6){const s=2.6/Math.max(dc,.001);player.pos.x*=s;player.pos.z*=s;}
-  const spd=Math.hypot(player.vel.x,player.vel.z);
-  if(spd>.4){const targetYaw=Math.atan2(player.vel.x,player.vel.z);
-    let dy=targetYaw-player.yaw;
+  activeState.player.vel.x=smooth(activeState.player.vel.x,ix*SPEED,lag,dt);
+  activeState.player.vel.z=smooth(activeState.player.vel.z,iz*SPEED,lag,dt);
+  activeState.player.pos.x+=activeState.player.vel.x*dt;
+  activeState.player.pos.z+=activeState.player.vel.z*dt;
+  const d=Math.hypot(activeState.player.pos.x,activeState.player.pos.z);
+  if(d>WORLD_R+6){const s=(WORLD_R+6)/d;activeState.player.pos.x*=s;activeState.player.pos.z*=s;}
+  const dc=Math.hypot(activeState.player.pos.x,activeState.player.pos.z);
+  if(dc<2.6){const s=2.6/Math.max(dc,.001);activeState.player.pos.x*=s;activeState.player.pos.z*=s;}
+  const spd=Math.hypot(activeState.player.vel.x,activeState.player.vel.z);
+  if(spd>.4){const targetYaw=Math.atan2(activeState.player.vel.x,activeState.player.vel.z);
+    let dy=targetYaw-activeState.player.yaw;
     while(dy>Math.PI)dy-=Math.PI*2;while(dy<-Math.PI)dy+=Math.PI*2;
-    player.yaw+=dy*Math.min(1,dt*12);}
-  player.anim+=dt*(3+spd*1.4);
+    activeState.player.yaw+=dy*Math.min(1,dt*12);}
+  activeState.player.anim+=dt*(3+spd*1.4);
 }
 
 function villainsUpdate(dt){
-  for(let i=villains.length-1;i>=0;i--){
-    const v=villains[i];v.t+=dt;v.hitCd-=dt;
+  for(let i=activeState.villains.length-1;i>=0;i--){
+    const v=activeState.villains[i];v.t+=dt;v.hitCd-=dt;
     if(v.state==='walk'){
-      if(v.boss){const toP=player.pos.clone().sub(v.pos);
+      if(v.boss){const toP=activeState.player.pos.clone().sub(v.pos);
         if(toP.length()<8){v.target.copy(v.pos).sub(toP.setY(0).normalize().multiplyScalar(12));
           const dT=Math.hypot(v.target.x,v.target.z);
           if(dT>WORLD_R-3){const s=(WORLD_R-3)/dT;v.target.x*=s;v.target.z*=s;}}}
@@ -954,7 +966,7 @@ function villainsUpdate(dt){
         if(dropResult.spawned&&random()<.25)note(line('mtermishTaunt'),false,1800);
         if(dropResult.spawned)Game.updateMission();}
       if(v.hitCd<=0){
-        const dist=v.pos.distanceTo(player.pos);
+        const dist=v.pos.distanceTo(activeState.player.pos);
         if(dist<(v.boss?2.2:1.5)){
           v.hitCd=.9;v.hp--;
           burst(v.pos.clone().setY(1.2),v.boss?0xc084fc:0xffd166,16,4.5);
@@ -965,7 +977,7 @@ function villainsUpdate(dt){
             else{note(line('minion'),true);Game.addScore(30,v.pos.clone().setY(2));}
           }else{Snd.bonk();note(line('mtermishHit'),false,2000);
             Game.addScore(15,v.pos.clone().setY(2.5));
-            const away=v.pos.clone().sub(player.pos).setY(0).normalize().multiplyScalar(9);
+            const away=v.pos.clone().sub(activeState.player.pos).setY(0).normalize().multiplyScalar(9);
             v.target.copy(v.pos).add(away);}
         }}
     }else if(v.state==='convert'){
@@ -973,8 +985,8 @@ function villainsUpdate(dt){
       if(v.t>.7)v.visualScale=s;
       if(v.t>1.2){
         burst(v.pos.clone().setY(1),0x51cf66,20,5);
-        removeAttemptObject(villainView(v)?.mesh);villains.splice(i,1);
-        if(v.boss)mtermish=null;else Game.converted++;
+        removeAttemptObject(villainView(v)?.mesh);activeState.villains.splice(i,1);
+        if(v.boss)activeState.mtermish=null;else Game.converted++;
         Game.updateMission();Game.checkWin();
       }
     }
@@ -986,42 +998,42 @@ function villainsUpdate(dt){
 }
 
 function trashUpdate(dt){
-  for(let i=trash.length-1;i>=0;i--){
-    const t=trash[i];
+  for(let i=activeState.trash.length-1;i>=0;i--){
+    const t=activeState.trash[i];
     t.spin=(t.spin||0)+dt*.8;
-    if(t.pos.distanceTo(player.pos)<1.35){
+    if(t.pos.distanceTo(activeState.player.pos)<1.35){
       burst(t.pos.clone().setY(.6),0xffd166,10,3);
       Snd.pickup();
       Game.trashGot++;$('uiTrash').textContent=Game.trashGot;
       Game.addScore(10,t.pos.clone().setY(1.4));
       if(random()<.3)note(line('pickup'),true,1500);
-      removeAttemptObject(trashMesh(t));trash.splice(i,1);
+      removeAttemptObject(trashMesh(t));activeState.trash.splice(i,1);
       Game.updateMission();Game.checkWin();
     }}}
 
 function patchesUpdate(dt,time){
   Game.plantCd-=dt;
   Game.nearPatch=null;
-  for(const p of patches){
+  for(const p of activeState.patches){
     if(p.planted){
       if(p.grow<1)p.grow=Math.min(1,p.grow+dt*.9);
       continue;}
-    if(p.pos.distanceTo(player.pos)<2.2)Game.nearPatch=p;
+    if(p.pos.distanceTo(activeState.player.pos)<2.2)Game.nearPatch=p;
   }
   $('prompt').style.display=(Game.nearPatch&&Game.running)?'block':'none';
 }
 
 function syncGameplayMeshes(dt,time){
-  playerMesh.position.copy(player.pos);
-  playerMesh.rotation.y=player.yaw;
-  const spd=Math.hypot(player.vel.x,player.vel.z);
-  const sw=Math.sin(player.anim*4)*clamp(spd/8,0,1);
+  playerMesh.position.copy(activeState.player.pos);
+  playerMesh.rotation.y=activeState.player.yaw;
+  const spd=Math.hypot(activeState.player.vel.x,activeState.player.vel.z);
+  const sw=Math.sin(activeState.player.anim*4)*clamp(spd/8,0,1);
   const {arms,legs}=playerMesh.userData;
   arms[0].rotation.x=sw*.9;arms[1].rotation.x=-sw*.9;
   legs[0].rotation.x=-sw*.8;legs[1].rotation.x=sw*.8;
-  playerMesh.position.y=Math.abs(Math.sin(player.anim*4))*.1*clamp(spd/8,0,1);
+  playerMesh.position.y=Math.abs(Math.sin(activeState.player.anim*4))*.1*clamp(spd/8,0,1);
 
-  for(const v of villains){
+  for(const v of activeState.villains){
     const view=villainView(v);
     const mesh=view?.mesh;
     if(!mesh)continue;
@@ -1037,14 +1049,14 @@ function syncGameplayMeshes(dt,time){
     }
   }
 
-  for(const t of trash){
+  for(const t of activeState.trash){
     const mesh=trashMesh(t);
     if(!mesh)continue;
     mesh.position.copy(t.pos);
     mesh.rotation.y=t.spin||0;
   }
 
-  for(const p of patches){
+  for(const p of activeState.patches){
     const view=patchView(p);
     if(!view)continue;
     view.mesh.position.copy(p.pos);
@@ -1099,13 +1111,13 @@ function loop(){
   syncGameplayMeshes(dt,time);
   if(Game.running||ALLOW_PAUSED_VISUAL_ANIMATION)envUpdate(dt,time);
   updateBursts(dt);
-  camTarget.copy(player.pos).add(currentCameraOffset());
+  camTarget.copy(activeState.player.pos).add(currentCameraOffset());
   camera.position.x=smooth(camera.position.x,camTarget.x,.18,dt);
   camera.position.y=smooth(camera.position.y,camTarget.y,.18,dt);
   camera.position.z=smooth(camera.position.z,camTarget.z,.18,dt);
-  camera.lookAt(player.pos.x,player.pos.y+1.2,player.pos.z);
-  sun.position.set(player.pos.x+30,45,player.pos.z+20);
-  sun.target.position.copy(player.pos);sun.target.updateMatrixWorld();
+  camera.lookAt(activeState.player.pos.x,activeState.player.pos.y+1.2,activeState.player.pos.z);
+  sun.position.set(activeState.player.pos.x+30,45,activeState.player.pos.z+20);
+  sun.target.position.copy(activeState.player.pos);sun.target.updateMatrixWorld();
   renderer.render(scene,camera);
 }
 loop();
@@ -1227,13 +1239,13 @@ function nearestList(items,prefix,positionOf,extra){
     return {
       id:agentId(prefix,item,index),
       position:vecObs(pos),
-      distance:q(pos.distanceTo(player.pos)),
+      distance:q(pos.distanceTo(activeState.player.pos)),
       ...extra(item)
     };
   }).sort((a,b)=>a.distance-b.distance).slice(0,8);
 }
 function observeAgent(){
-  const planted=patches.filter(p=>p.planted).length;
+  const planted=activeState.patches.filter(p=>p.planted).length;
   return {
     apiVersion:1,
     deterministic:false,
@@ -1247,17 +1259,17 @@ function observeAgent(){
     elapsed:q(Game.elapsed),
     bossDelay:q(Math.max(0,Game.bossDelay)),
     objective:{
-      trashLeft:trash.length,
+      trashLeft:activeState.trash.length,
       patchesPlanted:planted,
-      patchesTotal:patches.length,
+      patchesTotal:activeState.patches.length,
       minionsConverted:Game.converted,
       minionsRequired:Game.quota,
       bossDefeated:Game.bossDefeated()
     },
     player:{
-      position:vecObs(player.pos),
-      velocity:vecObs(player.vel),
-      heading:q(player.yaw)
+      position:vecObs(activeState.player.pos),
+      velocity:vecObs(activeState.player.vel),
+      heading:q(activeState.player.yaw)
     },
     camera:{
       mode:cameraState.mode,
@@ -1266,9 +1278,9 @@ function observeAgent(){
       actions:['toggleCamera','resetCamera','setCamera']
     },
     nearest:{
-      trash:nearestList(trash,'trash',t=>t.pos,()=>({})),
-      patches:nearestList(patches,'patch',p=>p.pos,p=>({ planted:!!p.planted })),
-      villains:nearestList(villains,'villain',v=>v.pos,v=>({
+      trash:nearestList(activeState.trash,'trash',t=>t.pos,()=>({})),
+      patches:nearestList(activeState.patches,'patch',p=>p.pos,p=>({ planted:!!p.planted })),
+      villains:nearestList(activeState.villains,'villain',v=>v.pos,v=>({
         boss:!!v.boss,
         hp:v.hp,
         state:v.state
@@ -1286,8 +1298,8 @@ function moveAgent(x,z,durationMs=250){
 }
 function moveTowardAgent(target,durationMs){
   if(!target||!target.position)return false;
-  const dx=target.position.x-player.pos.x;
-  const dz=target.position.z-player.pos.z;
+  const dx=target.position.x-activeState.player.pos.x;
+  const dz=target.position.z-activeState.player.pos.z;
   moveAgent(dx,dz,durationMs);
   return true;
 }
@@ -1346,3 +1358,4 @@ window.QuantumGardenAgent=Object.freeze({
   reset:resetAgent,
   step:stepAgent
 });
+
