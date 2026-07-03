@@ -105,6 +105,7 @@ function applyActiveQuality(qualityName=activeQuality){
   return quality;
 }
 const renderQuality=applyActiveQuality(activeQuality);
+const ALLOW_PAUSED_VISUAL_ANIMATION=true;
 renderer.setSize(innerWidth,innerHeight);
 renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 $('game').appendChild(renderer.domElement);
@@ -947,7 +948,7 @@ function loop(){
   const dt=Math.min(clock.getDelta(),.05);
   const time=clock.elapsedTime;
   tickGameplay(dt,time);
-  envUpdate(dt,time);
+  if(Game.running||ALLOW_PAUSED_VISUAL_ANIMATION)envUpdate(dt,time);
   updateBursts(dt);
   camTarget.copy(player.pos).add(currentCameraOffset());
   camera.position.x=smooth(camera.position.x,camTarget.x,.18,dt);

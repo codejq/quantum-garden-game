@@ -89,7 +89,7 @@
 - [x] Replace bare boss `setTimeout()` scheduling with simulation-owned timers.
 - [x] Store and clear any remaining browser timer handles during pause, retry, exit, or level transition.
 - [x] Ensure pause freezes gameplay timers, boss spawn timing, villain drops, elapsed time, and input effects.
-- [ ] Ensure visual-only animations can continue during pause only if intentionally allowed.
+- [x] Ensure visual-only animations can continue during pause only if intentionally allowed.
 - [x] Recalculate or redesign pollution denominator so spawned trash during a level does not make the meter misleading.
 - [x] Remove `maximum-scale=1.0` and `user-scalable=no` unless a platform-specific reason requires them.
 - [x] Add accessible labels for emoji-only buttons.
