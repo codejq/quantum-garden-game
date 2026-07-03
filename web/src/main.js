@@ -41,6 +41,12 @@ const randi=(a,b)=>Math.floor(rand(a,b+1));
 const pick=a=>a[Math.floor(random()*a.length)];
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const smooth=(cur,target,lag,dt)=>{const t=1-Math.exp(-dt/Math.max(lag,1e-4));return cur+(target-cur)*t;};
+const plainPos=(x=0,y=0,z=0)=>({x,y,z});
+function setPlainPos(pos,x,y=pos.y||0,z=pos.z||0){pos.x=x;pos.y=y;pos.z=z;return pos;}
+function plainDistance(a,b){return Math.hypot(a.x-b.x,(a.y||0)-(b.y||0),a.z-b.z);}
+function plainDistanceXZ(a,b){return Math.hypot(a.x-b.x,a.z-b.z);}
+function plainToVector(pos,y=pos.y||0){return new THREE.Vector3(pos.x,y,pos.z);}
+function setObjectPosition(obj,pos,y=pos.y||0){obj.position.set(pos.x,y,pos.z);}
 
 const ACTIVE_I18N={
   en:{dir:'ltr',title:'Clean Garden',language:'Language',tagline:'A 3D adventure to save the garden! 🌍',howto:'🗑️ <b>Pick up trash</b> — walk over it to clean it up!<br>🌱 <b>Plant trees</b> — stand on the glowing patch and press the button.<br>😈 <span class="bad">Stop Mtermish minions</span> — touch them to turn them into nature friends!<br>🎩 <span class="bad">Big Mtermish</span> needs <b>3 touches</b>... and runs fast!',start:'🚀 Start Adventure',keys:'💻 Arrow keys / WASD to move — Space or E to plant<br>📱 Joystick right — 🌱 button left',level:'Level',clean:'Garden cleanliness',prompt:'🌱 Press to plant a tree!',exit:'Exit',pause:'Pause',paused:'Paused',resume:'Resume',retry:'Retry',menu:'Menu',next:'Next Level',trashLeft:'Trash left',trees:'Trees',minions:'Mtermish minions',boss:'Big Mtermish',time:'Time',best:'Best',view:'View',resetView:'Reset',sound:'Sound',mode:'Game mode',singlePlayer:'Single Player',twoPlayerRace:'Two Player Race',levelStart:n=>`Level ${n}: clean the garden and plant trees! 🌍`,levelDone:n=>`🎉 Level ${n} complete!`,exited:'Exited the game',lines:{pickup:['Nice! One less piece of trash.','The garden says thank you.','Sparkly clean!','Fresh and tidy.','Keep going!'],plant:['A new tree! 🌳','The birds will love this.','Free oxygen for everyone.','That green looks good.'],minion:['Turned into a nature friend!','They said sorry.','One less Mtermish minion.'],mtermishHit:['Mtermish: Ouch! My hat!','Mtermish: You will not catch me!','Mtermish: Fine... maybe I will litter less.'],mtermishDown:['Mtermish: I promise to use the bin!','Mtermish gave up. Next level!'],mtermishTaunt:['Mtermish: More trash!','Mtermish: Clean gardens are boring!','Mtermish: Try to catch me!'],quotes:['Plant a tree, plant hope.','Clean today, protect tomorrow.','Every bin helps the planet.','Trees are homes for birds.','You are the garden hero.']}},
@@ -599,7 +605,7 @@ function line(group){
 /* ---------------- Game entities ---------------- */
 function createActiveGameplayState(){
   return {
-    player:{pos:new THREE.Vector3(6,0,6),vel:new THREE.Vector3(),yaw:0,anim:0},
+    player:{pos:plainPos(6,0,6),vel:plainPos(0,0,0),yaw:0,anim:0},
     trash:[],
     patches:[],
     villains:[],
@@ -685,11 +691,11 @@ function spawnTrash(pos){
   if(Game.state.trash.length>=45)return { spawned:false, reason:'cap' };
   const m=trashBuilders[randi(0,trashBuilders.length-1)]();
   m.traverse(o=>{if(o.isMesh)o.castShadow=true;});
-  const trashPos=new THREE.Vector3();
-  if(pos)trashPos.set(pos.x,m.position.y,pos.z);
+  const trashPos=plainPos();
+  if(pos)setPlainPos(trashPos,pos.x,m.position.y,pos.z);
   else{const a=random()*Math.PI*2,r=rand(4,WORLD_R-2);
-    trashPos.set(Math.cos(a)*r,m.position.y,Math.sin(a)*r);}
-  m.position.copy(trashPos);
+    setPlainPos(trashPos,Math.cos(a)*r,m.position.y,Math.sin(a)*r);}
+  setObjectPosition(m,trashPos);
   m.rotation.y=random()*Math.PI*2;
   const item=setTrashMesh({pos:trashPos,spin:m.rotation.y},m);
   scene.add(m);Game.state.trash.push(item);
@@ -698,30 +704,30 @@ function spawnTrash(pos){
 
 function spawnPatch(){
   const a=random()*Math.PI*2,r=rand(7,WORLD_R-6);
-  const patchPos=new THREE.Vector3(Math.cos(a)*r,0,Math.sin(a)*r);
+  const patchPos=plainPos(Math.cos(a)*r,0,Math.sin(a)*r);
   const g=new THREE.Group();
   const soil=new THREE.Mesh(new THREE.CircleGeometry(1.4,20),mat(0x6d4a2f));
   soil.rotation.x=-Math.PI/2;soil.position.y=.03;g.add(soil);
   const ring=new THREE.Mesh(new THREE.RingGeometry(1.5,1.75,24),
     new THREE.MeshBasicMaterial({color:0x9ef01a,transparent:true,opacity:.8,side:THREE.DoubleSide}));
   ring.rotation.x=-Math.PI/2;ring.position.y=.05;g.add(ring);
-  g.position.copy(patchPos);
+  setObjectPosition(g,patchPos);
   const patch=setPatchView({pos:patchPos,planted:false,grow:0},{mesh:g,ring,tree:null});
   scene.add(g);Game.state.patches.push(patch);}
 
 function spawnVillain(boss=false){
   const m=boss?buildMtermish():buildMinion();
   const a=random()*Math.PI*2,r=WORLD_R+4;
-  const villainPos=new THREE.Vector3(Math.cos(a)*r,0,Math.sin(a)*r);
-  m.position.copy(villainPos);
+  const villainPos=plainPos(Math.cos(a)*r,0,Math.sin(a)*r);
+  setObjectPosition(m,villainPos);
   scene.add(m);
   const v=setVillainView({pos:villainPos,boss,hp:boss?3:1,state:'walk',t:0,
-    target:new THREE.Vector3(),drop:rand(2.5,5),hitCd:0,speed:boss?3.4:rand(1.8,2.6)},{mesh:m});
+    target:plainPos(),drop:rand(2.5,5),hitCd:0,speed:boss?3.4:rand(1.8,2.6)},{mesh:m});
   newTarget(v);Game.state.villains.push(v);
   if(boss){Game.state.mtermish=v;note(line('mtermishTaunt'));Snd.laugh();}
   return v;}
 function newTarget(v){const a=random()*Math.PI*2,r=rand(5,WORLD_R-3);
-  v.target.set(Math.cos(a)*r,0,Math.sin(a)*r);}
+  setPlainPos(v.target,Math.cos(a)*r,0,Math.sin(a)*r);}
 
 function isSharedMaterial(material){
   return Object.values(MAT).includes(material);
@@ -837,7 +843,7 @@ return {
     this.spawnedBoss=false;
     this.bossDelay=4;
     this.polMax=nTrash*3+nPatch*6+18;
-    this.state.player.pos.set(6,0,6);this.state.player.vel.set(0,0,0);
+    setPlainPos(this.state.player.pos,6,0,6);setPlainPos(this.state.player.vel,0,0,0);
     $('uiLevel').textContent=n;$('uiTrees').textContent=this.trees;
     note(tr('levelStart',n),true,3200);
     this.updateMission();
@@ -859,9 +865,9 @@ return {
     if(!this.running||!this.nearPatch||this.plantCd>0)return;
     const p=this.nearPatch;p.planted=true;p.grow=0;
     plantPatchView(p);
-    this.trees++;this.lifetimeTrees++;this.addScore(25,p.pos.clone().add(new THREE.Vector3(0,2,0)));
+    this.trees++;this.lifetimeTrees++;this.addScore(25,plainToVector(p.pos,2));
     this.plantCd=.6;
-    Snd.plant();burst(p.pos.clone().setY(1),0x9ef01a,18,3.5);
+    Snd.plant();burst(plainToVector(p.pos,1),0x9ef01a,18,3.5);
     note(line('plant'),true);
     $('uiTrees').textContent=this.trees;
     this.updateMission();
@@ -951,15 +957,21 @@ function villainsUpdate(dt){
   for(let i=Game.state.villains.length-1;i>=0;i--){
     const v=Game.state.villains[i];v.t+=dt;v.hitCd-=dt;
     if(v.state==='walk'){
-      if(v.boss){const toP=Game.state.player.pos.clone().sub(v.pos);
-        if(toP.length()<8){v.target.copy(v.pos).sub(toP.setY(0).normalize().multiplyScalar(12));
+      if(v.boss){
+        const toPlayerX=Game.state.player.pos.x-v.pos.x,toPlayerZ=Game.state.player.pos.z-v.pos.z;
+        const toPlayerDist=Math.hypot(toPlayerX,toPlayerZ);
+        if(toPlayerDist<8){
+          const scale=12/Math.max(toPlayerDist,.001);
+          v.target.x=v.pos.x-toPlayerX*scale;v.target.y=0;v.target.z=v.pos.z-toPlayerZ*scale;
           const dT=Math.hypot(v.target.x,v.target.z);
           if(dT>WORLD_R-3){const s=(WORLD_R-3)/dT;v.target.x*=s;v.target.z*=s;}}}
-      const dir=v.target.clone().sub(v.pos);dir.y=0;
-      if(dir.length()<1){newTarget(v);}
-      else{dir.normalize();
-        v.pos.addScaledVector(dir,v.speed*dt);
-        v.yaw=Math.atan2(dir.x,dir.z);}
+      const dirX=v.target.x-v.pos.x,dirZ=v.target.z-v.pos.z;
+      const dirLen=Math.hypot(dirX,dirZ);
+      if(dirLen<1){newTarget(v);}
+      else{
+        const nx=dirX/dirLen,nz=dirZ/dirLen;
+        v.pos.x+=nx*v.speed*dt;v.pos.z+=nz*v.speed*dt;
+        v.yaw=Math.atan2(nx,nz);}
       v.drop-=dt;
       if(v.drop<=0){v.drop=v.boss?rand(2,3.5):rand(3.5,6.5);
         const inD=Math.hypot(v.pos.x,v.pos.z);
@@ -967,25 +979,26 @@ function villainsUpdate(dt){
         if(dropResult.spawned&&random()<.25)note(line('mtermishTaunt'),false,1800);
         if(dropResult.spawned)Game.updateMission();}
       if(v.hitCd<=0){
-        const dist=v.pos.distanceTo(Game.state.player.pos);
+        const dist=plainDistance(v.pos,Game.state.player.pos);
         if(dist<(v.boss?2.2:1.5)){
           v.hitCd=.9;v.hp--;
-          burst(v.pos.clone().setY(1.2),v.boss?0xc084fc:0xffd166,16,4.5);
+          burst(plainToVector(v.pos,1.2),v.boss?0xc084fc:0xffd166,16,4.5);
           if(v.hp<=0){
             v.state='convert';v.t=0;Snd.convert();
             villainView(v)?.mesh?.traverse(o=>{if(o.isMesh&&o.material===mat(0x9c6bd6))o.material=mat(0x51cf66);});
-            if(v.boss){note(line('mtermishDown'),true,3000);Game.addScore(100,v.pos.clone().setY(2.5));}
-            else{note(line('minion'),true);Game.addScore(30,v.pos.clone().setY(2));}
+            if(v.boss){note(line('mtermishDown'),true,3000);Game.addScore(100,plainToVector(v.pos,2.5));}
+            else{note(line('minion'),true);Game.addScore(30,plainToVector(v.pos,2));}
           }else{Snd.bonk();note(line('mtermishHit'),false,2000);
-            Game.addScore(15,v.pos.clone().setY(2.5));
-            const away=v.pos.clone().sub(Game.state.player.pos).setY(0).normalize().multiplyScalar(9);
-            v.target.copy(v.pos).add(away);}
+            Game.addScore(15,plainToVector(v.pos,2.5));
+            const awayX=v.pos.x-Game.state.player.pos.x,awayZ=v.pos.z-Game.state.player.pos.z;
+            const awayLen=Math.max(Math.hypot(awayX,awayZ),.001);
+            v.target.x=v.pos.x+(awayX/awayLen)*9;v.target.y=0;v.target.z=v.pos.z+(awayZ/awayLen)*9;}
         }}
     }else if(v.state==='convert'){
       const s=Math.max(.01,1-(v.t-.7)*2)* (v.boss?1.7:1);
       if(v.t>.7)v.visualScale=s;
       if(v.t>1.2){
-        burst(v.pos.clone().setY(1),0x51cf66,20,5);
+        burst(plainToVector(v.pos,1),0x51cf66,20,5);
         removeAttemptObject(villainView(v)?.mesh);Game.state.villains.splice(i,1);
         if(v.boss)Game.state.mtermish=null;else Game.converted++;
         Game.updateMission();Game.checkWin();
@@ -1002,11 +1015,11 @@ function trashUpdate(dt){
   for(let i=Game.state.trash.length-1;i>=0;i--){
     const t=Game.state.trash[i];
     t.spin=(t.spin||0)+dt*.8;
-    if(t.pos.distanceTo(Game.state.player.pos)<1.35){
-      burst(t.pos.clone().setY(.6),0xffd166,10,3);
+    if(plainDistance(t.pos,Game.state.player.pos)<1.35){
+      burst(plainToVector(t.pos,.6),0xffd166,10,3);
       Snd.pickup();
       Game.trashGot++;$('uiTrash').textContent=Game.trashGot;
-      Game.addScore(10,t.pos.clone().setY(1.4));
+      Game.addScore(10,plainToVector(t.pos,1.4));
       if(random()<.3)note(line('pickup'),true,1500);
       removeAttemptObject(trashMesh(t));Game.state.trash.splice(i,1);
       Game.updateMission();Game.checkWin();
@@ -1019,13 +1032,13 @@ function patchesUpdate(dt,time){
     if(p.planted){
       if(p.grow<1)p.grow=Math.min(1,p.grow+dt*.9);
       continue;}
-    if(p.pos.distanceTo(Game.state.player.pos)<2.2)Game.nearPatch=p;
+    if(plainDistance(p.pos,Game.state.player.pos)<2.2)Game.nearPatch=p;
   }
   $('prompt').style.display=(Game.nearPatch&&Game.running)?'block':'none';
 }
 
 function syncGameplayMeshes(dt,time){
-  playerMesh.position.copy(Game.state.player.pos);
+  setObjectPosition(playerMesh,Game.state.player.pos);
   playerMesh.rotation.y=Game.state.player.yaw;
   const spd=Math.hypot(Game.state.player.vel.x,Game.state.player.vel.z);
   const sw=Math.sin(Game.state.player.anim*4)*clamp(spd/8,0,1);
@@ -1038,7 +1051,7 @@ function syncGameplayMeshes(dt,time){
     const view=villainView(v);
     const mesh=view?.mesh;
     if(!mesh)continue;
-    mesh.position.copy(v.pos);
+    setObjectPosition(mesh,v.pos);
     if(v.state==='walk'){
       if(Number.isFinite(v.yaw))mesh.rotation.y=v.yaw;
       mesh.position.y=Math.abs(Math.sin(v.t*8))*.12;
@@ -1053,17 +1066,17 @@ function syncGameplayMeshes(dt,time){
   for(const t of Game.state.trash){
     const mesh=trashMesh(t);
     if(!mesh)continue;
-    mesh.position.copy(t.pos);
+    setObjectPosition(mesh,t.pos);
     mesh.rotation.y=t.spin||0;
   }
 
   for(const p of Game.state.patches){
     const view=patchView(p);
     if(!view)continue;
-    view.mesh.position.copy(p.pos);
+    setObjectPosition(view.mesh,p.pos);
     if(p.planted&&view.tree){
       const e=1-Math.pow(1-p.grow,3);
-      view.tree.position.copy(p.pos);
+      setObjectPosition(view.tree,p.pos);
       view.tree.scale.setScalar(p.grow>=1?1:.01+e*(0.85+Math.sin(p.grow*Math.PI)*.25));
     }
     if(!p.planted){
@@ -1112,7 +1125,7 @@ function loop(){
   syncGameplayMeshes(dt,time);
   if(Game.running||ALLOW_PAUSED_VISUAL_ANIMATION)envUpdate(dt,time);
   updateBursts(dt);
-  camTarget.copy(Game.state.player.pos).add(currentCameraOffset());
+  camTarget.set(Game.state.player.pos.x,Game.state.player.pos.y||0,Game.state.player.pos.z).add(currentCameraOffset());
   camera.position.x=smooth(camera.position.x,camTarget.x,.18,dt);
   camera.position.y=smooth(camera.position.y,camTarget.y,.18,dt);
   camera.position.z=smooth(camera.position.z,camTarget.z,.18,dt);
@@ -1240,7 +1253,7 @@ function nearestList(items,prefix,positionOf,extra){
     return {
       id:agentId(prefix,item,index),
       position:vecObs(pos),
-      distance:q(pos.distanceTo(Game.state.player.pos)),
+      distance:q(plainDistance(pos,Game.state.player.pos)),
       ...extra(item)
     };
   }).sort((a,b)=>a.distance-b.distance).slice(0,8);
