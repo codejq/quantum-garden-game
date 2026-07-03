@@ -593,10 +593,13 @@ scene.add(player.mesh);
 const trash=[];
 const trashMeshes=new WeakMap();
 const patches=[];
+const patchViews=new WeakMap();
 const villains=[];
 let mtermish=null;
 function setTrashMesh(item,mesh){trashMeshes.set(item,mesh);return item;}
 function trashMesh(item){return trashMeshes.get(item);}
+function setPatchView(patch,view){patchViews.set(patch,view);return patch;}
+function patchView(patch){return patchViews.get(patch);}
 
 function spawnTrash(pos){
   if(trash.length>=45)return { spawned:false, reason:'cap' };
@@ -623,7 +626,8 @@ function spawnPatch(){
     new THREE.MeshBasicMaterial({color:0x9ef01a,transparent:true,opacity:.8,side:THREE.DoubleSide}));
   ring.rotation.x=-Math.PI/2;ring.position.y=.05;g.add(ring);
   g.position.copy(patchPos);
-  scene.add(g);patches.push({pos:patchPos,mesh:g,ring,planted:false,tree:null,grow:0});}
+  const patch=setPatchView({pos:patchPos,planted:false,grow:0},{mesh:g,ring,tree:null});
+  scene.add(g);patches.push(patch);}
 
 function spawnVillain(boss=false){
   const m=boss?buildMtermish():buildMinion();
@@ -664,8 +668,9 @@ function cleanupLevelAttempt(){
   villains.forEach(v=>removeAttemptObject(v.mesh));
   villains.length=0;
   patches.forEach(p=>{
-    removeAttemptObject(p.tree);
-    removeAttemptObject(p.mesh);
+    const view=patchView(p);
+    removeAttemptObject(view?.tree);
+    removeAttemptObject(view?.mesh);
   });
   patches.length=0;
   mtermish=null;
@@ -772,9 +777,10 @@ const Game={
   tryPlant(){
     if(!this.running||!this.nearPatch||this.plantCd>0)return;
     const p=this.nearPatch;p.planted=true;p.grow=0;
-    p.tree=makeTree();p.tree.scale.setScalar(.01);
-    p.tree.position.copy(p.pos);scene.add(p.tree);
-    p.ring.visible=false;
+    const view=patchView(p);
+    view.tree=makeTree();view.tree.scale.setScalar(.01);
+    view.tree.position.copy(p.pos);scene.add(view.tree);
+    view.ring.visible=false;
     this.trees++;this.lifetimeTrees++;this.addScore(25,p.pos.clone().add(new THREE.Vector3(0,2,0)));
     this.plantCd=.6;
     Snd.plant();burst(p.pos.clone().setY(1),0x9ef01a,18,3.5);
@@ -976,15 +982,17 @@ function syncGameplayMeshes(dt,time){
   }
 
   for(const p of patches){
-    p.mesh.position.copy(p.pos);
-    if(p.planted&&p.tree){
+    const view=patchView(p);
+    if(!view)continue;
+    view.mesh.position.copy(p.pos);
+    if(p.planted&&view.tree){
       const e=1-Math.pow(1-p.grow,3);
-      p.tree.position.copy(p.pos);
-      p.tree.scale.setScalar(p.grow>=1?1:.01+e*(0.85+Math.sin(p.grow*Math.PI)*.25));
+      view.tree.position.copy(p.pos);
+      view.tree.scale.setScalar(p.grow>=1?1:.01+e*(0.85+Math.sin(p.grow*Math.PI)*.25));
     }
     if(!p.planted){
-      p.ring.material.opacity=.55+Math.sin(time*4)*.3;
-      p.ring.scale.setScalar(1+Math.sin(time*4)*.06);
+      view.ring.material.opacity=.55+Math.sin(time*4)*.3;
+      view.ring.scale.setScalar(1+Math.sin(time*4)*.06);
     }
   }
 }
