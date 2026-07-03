@@ -1,0 +1,537 @@
+# Quantum Garden Game Modular Offline Tauri Roadmap
+
+## Current State
+
+- [ ] Review [web/index.html](../web/index.html) before implementation work starts.
+- [ ] Confirm the current prototype is a single HTML file with inline CSS, inline JavaScript, Arabic-first UI, CDN-loaded Three.js, CDN-loaded Google font, keyboard controls, touch joystick, level completion overlay, generated 3D assets, sound synthesis, and randomized trash/tree/villain placement.
+- [ ] Preserve the current strengths during refactor: smooth camera/player motion, lightweight procedural art, generated WebAudio sound, and low asset weight.
+- [ ] Confirm current simulation and rendering are tightly coupled: entity state is stored on Three.js meshes and the game advances only inside `requestAnimationFrame`.
+- [ ] Confirm current randomization uses `Math.random()` across gameplay, cosmetics, and mesh builders, which prevents deterministic replay.
+- [ ] Confirm the current game assumes one persistent scene across a continuous session.
+- [ ] Treat the current game as the behavior baseline until tests and screenshots prove otherwise.
+
+## Goals
+
+- [ ] Protect the current working prototype before large refactors begin.
+- [ ] Split the single HTML file into standard HTML, CSS, and JavaScript modules.
+- [ ] Separate simulation from rendering so gameplay state is plain data and Three.js only visualizes that state.
+- [ ] Add a fixed-timestep simulation loop so tests, replay, two-player race, and LLM play are deterministic.
+- [ ] Support `en`, `ar`, `es`, and `fr`.
+- [ ] Make English the default language.
+- [ ] Preserve Arabic RTL support.
+- [ ] Make game modes and levels modular so more modes and levels can be added without editing the core loop.
+- [ ] Add a Tauri project so the game can be packaged for Windows, macOS, Linux, Android, and iOS.
+- [ ] Make the game work fully offline.
+- [ ] Make the game full screen during play and provide an in-game exit button.
+- [ ] Support mobile touch and desktop keyboard/mouse input.
+- [ ] Add single-player mode.
+- [ ] Add two-player race mode where players compete for fastest completion time.
+- [ ] Randomize level start conditions and scene layout each time a level is played.
+- [ ] Add an LLM-playable interface so an external model can observe game state and send actions.
+
+## Task Zero: Baseline Protection
+
+- [x] Initialize git before changing gameplay code.
+- [ ] Commit the current working prototype as the baseline.
+- [ ] Create a branch per phase or per milestone.
+- [x] Copy the current `web/index.html` to `web/legacy/index.html` as a frozen reference build.
+- [x] Add a short note in `web/legacy/README.md` explaining that the legacy build is for parity checks only.
+- [x] Add a simple parity snapshot script that records key baseline behavior from the legacy build.
+- [ ] Capture baseline screenshots for desktop and mobile viewport sizes.
+- [x] Capture a short baseline gameplay checklist: start game, collect trash, plant tree, convert minion, defeat boss, finish level.
+- [x] Do not edit `web/legacy/index.html` except when intentionally updating the frozen reference after a signed-off milestone.
+- [ ] Task zero exit gate: git exists, baseline commit exists, frozen legacy reference exists, and baseline screenshots/checklist are saved.
+
+## MVP Line
+
+- [ ] Define v0.1 MVP as a playable offline web game with modular code, self-contained levels, seeded/randomized level attempts, English default, Arabic support, full-screen play, exit/pause, keyboard/touch controls, and single-player mode.
+- [ ] Treat Phases 1, 2, 3, 4, 5, and 6 as the v0.1 MVP path.
+- [ ] Treat mouse camera polish, view presets, two-player race, LLM play, Tauri desktop, Android, iOS, and macOS as post-MVP expansion unless a release decision changes priority.
+- [ ] v0.1 exit gate: game builds locally, runs offline in browser, supports English and Arabic, can start and finish a single-player level, supports desktop and mobile input, and can safely exit or pause.
+
+## Architecture Decisions
+
+- [ ] Make each level attempt self-contained: build from seed, play, complete or exit, tear down, dispose, and rebuild.
+- [ ] Make simulation data the source of truth.
+- [ ] Store player, trash, patches, villains, boss, objectives, timers, score, and level seed as plain JavaScript data.
+- [ ] Do not store authoritative gameplay state only on Three.js meshes.
+- [ ] Make rendering read simulation state and sync mesh transforms each frame.
+- [ ] Add a fixed simulation tick such as `1/60` or `1/30` seconds.
+- [ ] Use an accumulator in the visual loop so rendering can run at any frame rate while simulation advances deterministically.
+- [ ] Allow tests and LLM agents to call `step()` without creating a WebGL renderer.
+- [ ] Use a seeded random generator for all gameplay and cosmetic generation.
+- [ ] Use fully seeded world generation for reproducible LLM evaluation and bug reports.
+- [ ] Add stable object IDs for all interactive objects.
+- [ ] Add teardown/disposal rules for every scene object created during a level attempt.
+- [ ] Vendor current Three.js r128 locally first to remove CDN usage without changing behavior.
+- [ ] Treat upgrading Three.js as a separate future migration after the modular/offline baseline is stable.
+- [ ] Make two-player race v1 a sequential same-seed time trial.
+- [ ] Gate iOS and macOS release work behind access to macOS, Xcode, signing certificates, and Apple Developer account.
+
+## Prototype Cleanup And Known Issues
+
+- [ ] Fix cumulative world state across levels.
+- [ ] Move decorative world generation into the level-attempt lifecycle instead of running it only once at module load.
+- [ ] Clear old planted patches and planted trees when starting a new level attempt unless a future mode explicitly needs persistent progression.
+- [ ] Reset per-level patch counts so the mission card does not show trees from previous levels.
+- [ ] Decide whether `Game.trees` is lifetime total, per-level total, or both.
+- [ ] If lifetime and per-level tree counts are both needed, track them as separate fields.
+- [ ] Add a level-attempt cleanup function that removes all gameplay objects.
+- [ ] Add a world cleanup function that removes all decorative objects created for the attempt.
+- [ ] Dispose geometries, materials, and textures for removed objects.
+- [ ] Review the shared material cache and define which materials are global and which are attempt-scoped.
+- [ ] Avoid silent trash spawn failure when the trash cap is reached.
+- [ ] Replace `spawnTrash()` no-op behavior with an explicit result such as `{ spawned: true }` or `{ spawned: false, reason: "cap" }`.
+- [ ] Make villain litter behavior react to failed trash spawns instead of pretending trash was dropped.
+- [ ] Replace bare boss `setTimeout()` scheduling with simulation-owned timers.
+- [ ] Store and clear any remaining browser timer handles during pause, retry, exit, or level transition.
+- [ ] Ensure pause freezes gameplay timers, boss spawn timing, villain drops, elapsed time, and input effects.
+- [ ] Ensure visual-only animations can continue during pause only if intentionally allowed.
+- [ ] Recalculate or redesign pollution denominator so spawned trash during a level does not make the meter misleading.
+- [ ] Remove `maximum-scale=1.0` and `user-scalable=no` unless a platform-specific reason requires them.
+- [ ] Add accessible labels for emoji-only buttons.
+- [ ] Replace global singleton assumptions with instantiable game/session objects.
+- [ ] Support creating a fresh `GameSession({ mode, levelId, seed })` for tests, LLM evaluation, retries, and races.
+
+## Target Project Structure
+
+- [ ] Create `web/index.html` as the minimal document shell.
+- [ ] Create `web/styles/main.css` for global layout, HUD, overlays, controls, and responsive behavior.
+- [ ] Create `web/src/main.js` as the browser entry point.
+- [ ] Create `web/src/core/game.js` for game lifecycle, state transitions, scoring, win checks, and pause/resume.
+- [ ] Create `web/src/core/session.js` for instantiable `GameSession` creation, reset, retry, and teardown.
+- [ ] Create `web/src/core/simulation.js` for the renderer-independent fixed-timestep simulation.
+- [ ] Create `web/src/core/loop.js` for the render/update loop.
+- [ ] Create `web/src/core/events.js` for a small internal event bus.
+- [ ] Create `web/src/core/random.js` for seeded random generation.
+- [ ] Create `web/src/core/storage.js` for local save data, settings, and best times.
+- [ ] Add a storage schema version field to all persisted settings, progress, best times, language, and camera preferences.
+- [ ] Add storage migration helpers so future save-data changes do not corrupt old saves.
+- [ ] Create `web/src/core/disposal.js` for Three.js geometry, material, texture, and object cleanup.
+- [ ] Create `web/src/render/scene.js` for Three.js scene, renderer, camera, lights, fog, and resize handling.
+- [ ] Create `web/src/render/sync.js` for mapping simulation entities to Three.js meshes.
+- [ ] Create `web/src/render/materials.js` for shared material creation and disposal helpers.
+- [ ] Create `web/src/world/builders.js` for trees, flowers, rocks, trash, player, villains, and other mesh builders.
+- [ ] Create `web/src/world/spawners.js` for level object placement.
+- [ ] Create `web/src/entities/player.js` for player entity state and animation.
+- [ ] Create `web/src/entities/villain.js` for minion and boss behavior.
+- [ ] Create `web/src/entities/trash.js` for trash behavior.
+- [ ] Create `web/src/entities/patch.js` for planting patch behavior.
+- [ ] Create `web/src/input/keyboard.js` for desktop movement and actions.
+- [ ] Create `web/src/input/mouse.js` for desktop mouse movement, camera control, pointer selection, and click actions.
+- [ ] Create `web/src/input/touch.js` for mobile joystick and action button.
+- [ ] Create `web/src/input/llm-agent.js` for model-controlled actions.
+- [ ] Create `web/src/camera/camera-controller.js` for follow camera, orbit camera, zoom, and perspective changes.
+- [ ] Create `web/src/ui/hud.js` for score, mission, meter, prompt, and notifications.
+- [ ] Create `web/src/ui/overlays.js` for start, level-complete, pause, mode select, language select, and exit screens.
+- [ ] Create `web/src/i18n/index.js` for translation loading, locale selection, interpolation, and document direction.
+- [ ] Create `web/src/i18n/locales/en.json`.
+- [ ] Create `web/src/i18n/locales/ar.json`.
+- [ ] Create `web/src/i18n/locales/es.json`.
+- [ ] Create `web/src/i18n/locales/fr.json`.
+- [ ] Create `web/src/modes/single-player.js`.
+- [ ] Create `web/src/modes/two-player-race.js`.
+- [ ] Create `web/src/levels/level-registry.js`.
+- [ ] Create `web/src/levels/level-001.js` as the first migrated level definition.
+- [ ] Create `web/src/levels/templates.js` for reusable objective templates.
+- [ ] Create `web/src/levels/solvability.js` for spawn validation, reachability checks, and layout rejection.
+- [ ] Create `web/assets/fonts/` for offline fonts.
+- [ ] Create `web/assets/vendor/` for offline third-party browser libraries.
+- [ ] Create `web/assets/audio/` only if generated synth audio is replaced by fixed assets.
+
+## Build Tooling
+
+- [ ] Add `package.json` for web build scripts and dependency management.
+- [ ] Add Vite or an equivalent lightweight bundler.
+- [ ] Vendor the current Three.js r128 build locally first instead of loading it from a CDN.
+- [ ] Keep the visual baseline stable while removing CDN dependencies.
+- [ ] Add a separate later task to migrate from Three.js r128 to a modern npm Three.js release.
+- [ ] Remove the Google Fonts network dependency.
+- [ ] Self-host the current `Baloo Bhaijaan 2` font because it supports Arabic and Latin text for the required locales.
+- [ ] Add local font files under `web/assets/fonts/`.
+- [ ] Add CSS `@font-face` rules for offline fonts.
+- [ ] Add `npm run dev` for browser development.
+- [ ] Add `npm run build` to produce a static offline build.
+- [ ] Add `npm run preview` to test the built output.
+- [ ] Add `npm run lint` if lint tooling is introduced.
+- [ ] Add `npm run test` once tests exist.
+
+## HTML, CSS, JavaScript Separation
+
+- [ ] Move all `<style>` content from `web/index.html` into `web/styles/main.css`.
+- [ ] Move all inline `<script>` game logic into JavaScript modules under `web/src/`.
+- [ ] Keep `web/index.html` focused on root containers, metadata, and script/style references.
+- [ ] Replace hard-coded Arabic text in HTML with UI rendering from the i18n system.
+- [ ] Ensure `document.documentElement.lang` updates when the selected locale changes.
+- [ ] Ensure `document.documentElement.dir` is `rtl` for Arabic and `ltr` for English, Spanish, and French.
+- [ ] Replace direction-specific CSS such as `text-align:right`, `left`, `right`, and directional margins with logical CSS such as `text-align:start`, `inset-inline`, `margin-inline`, and `padding-inline`.
+- [ ] Preserve the current touch controls and keyboard controls after the split.
+- [ ] Preserve the current visual behavior after the split.
+
+## Simulation And Rendering Separation
+
+- [ ] Replace module-global gameplay singletons with session-owned state.
+- [ ] Move player position, velocity, yaw, animation time, and input state into plain simulation data.
+- [ ] Move trash positions, IDs, collected state, and scoring values into plain simulation data.
+- [ ] Move patch positions, IDs, planted state, tree growth state, and interaction radius into plain simulation data.
+- [ ] Move villain positions, IDs, HP, target, behavior state, timers, and boss/minion type into plain simulation data.
+- [ ] Move objective progress and win checks into the simulation layer.
+- [ ] Keep Three.js mesh objects inside the render layer only.
+- [ ] Add a render sync layer that creates, updates, and removes meshes to match simulation entities.
+- [ ] Add fixed-timestep simulation stepping.
+- [ ] Add headless simulation tests that run without DOM, canvas, or WebGL.
+- [ ] Ensure `Game.running`, pause, and level completion are simulation states, not only UI flags.
+- [ ] Keep environment animation that is purely visual in the render layer.
+- [ ] Keep gameplay-affecting timers in the simulation layer.
+- [ ] Add object lifecycle hooks for spawn, update, complete, remove, and dispose.
+- [ ] Add level-attempt lifecycle hooks: `buildAttempt(seed)`, `startAttempt()`, `pauseAttempt()`, `completeAttempt()`, `exitAttempt()`, and `teardownAttempt()`.
+- [ ] Verify the browser game still behaves like the original prototype after the separation.
+
+## Localization
+
+- [ ] Define translation keys for every visible UI string.
+- [ ] Add English translations as the default source.
+- [ ] Add Arabic translations.
+- [ ] Add Spanish translations.
+- [ ] Add French translations.
+- [ ] Add localized mission text.
+- [ ] Add localized tutorial text.
+- [ ] Add localized buttons.
+- [ ] Add localized level-complete messages.
+- [ ] Add localized gameplay notification lines.
+- [ ] Add localized accessibility labels.
+- [ ] Add a language selector on the start/pause/settings screen.
+- [ ] Save the selected language locally for offline reuse.
+- [ ] Fall back to English for missing keys.
+- [ ] Verify Arabic layout does not overlap in RTL.
+- [ ] Verify English, Spanish, and French text fits in buttons, HUD chips, and overlays.
+
+## Modular Game Modes
+
+- [ ] Define a `GameMode` interface with `id`, `nameKey`, `setup()`, `start()`, `update()`, `onObjectiveEvent()`, `isComplete()`, and `getResults()`.
+- [ ] Move current gameplay into `single-player` mode.
+- [ ] Add a mode registry that lists available modes.
+- [ ] Add a mode select screen before starting the game.
+- [ ] Keep mode state separate from rendering state.
+- [ ] Keep scoring rules inside each mode.
+- [ ] Make the HUD read mode-provided objectives instead of hard-coded mission rows.
+- [ ] Add clear extension docs for adding a new mode.
+
+## Level System
+
+- [ ] Define a `LevelDefinition` object shape with `id`, `nameKey`, `difficulty`, `world`, `objectives`, `spawnRules`, `timer`, `boss`, and `randomization`.
+- [ ] Move the current level formula into level definitions.
+- [ ] Create a level registry.
+- [ ] Support finite authored levels.
+- [ ] Support generated levels after authored levels are complete.
+- [ ] Add seeded random generation per level attempt.
+- [ ] Store the active seed in game state.
+- [ ] Show or log the seed for debugging.
+- [ ] Replace all `Math.random()` calls with seeded random helpers.
+- [ ] Route mesh builder variation such as tree type, bark color, petal count, petal color, trash type, and cloud placement through seeded random helpers.
+- [ ] Rebuild the full gameplay and decorative scene for each level attempt.
+- [ ] Do not let authored or generated level attempts inherit stale objects from previous attempts.
+- [ ] Randomize trash placement each attempt.
+- [ ] Randomize planting patch placement each attempt.
+- [ ] Randomize decorative flowers, rocks, trees, clouds, and scene details each attempt.
+- [ ] Randomize villain spawn timing within level-defined limits.
+- [ ] Randomize player starting position within valid spawn zones.
+- [ ] Prevent random placement from blocking objectives.
+- [ ] Add post-placement solvability checks before accepting a generated layout.
+- [ ] Verify the player can reach all required trash, planting patches, villains, and boss interaction zones.
+- [ ] Reject and regenerate layouts that fail reachability or objective constraints.
+- [ ] Limit regeneration attempts and report a clear layout-generation error if no valid seed/layout can be found.
+- [ ] Add deterministic replay support by reusing a saved seed.
+- [ ] Add seeded layout snapshots for debugging failed tests or bug reports.
+- [ ] Add explicit cleanup before loading a new level attempt.
+- [ ] Dispose removed Three.js geometries, materials, textures, and generated objects to avoid GPU memory leaks.
+
+## Single Player Mode
+
+- [ ] Preserve current single-player objective set: collect trash, plant trees, convert minions, defeat boss.
+- [ ] Add elapsed-time tracking.
+- [ ] Add best-time tracking per level and seed type.
+- [ ] Add pause/resume.
+- [ ] Add retry level.
+- [ ] Add return-to-menu.
+- [ ] Add level-complete summary with score, trees, trash, time, and best time.
+
+## Two Player Race Mode
+
+- [ ] Implement the first version as local sequential same-seed time trial.
+- [ ] For sequential race, let Player 1 complete the level, then Player 2 plays the same level seed.
+- [ ] Add a handoff screen between players so Player 2 does not watch Player 1's route on the same seed.
+- [ ] Add a ready button before Player 2 starts.
+- [ ] Compare completion times.
+- [ ] Show winner and time difference.
+- [ ] Save both player results locally until the race summary is dismissed.
+- [ ] Add optional player names.
+- [ ] For future real-time race, define separate input maps for Player 1 and Player 2.
+- [ ] For future real-time race, support separate entities, independent collision checks, and shared objective ownership.
+- [ ] Treat real-time split-screen or same-arena competition as a later mode after the simulation/render split is stable.
+
+## Full Screen And Exit
+
+- [ ] Add a full-screen request when gameplay starts on supported browsers.
+- [ ] Add fallback CSS that always fills the viewport when full-screen permission is denied.
+- [ ] Add an exit button inside the HUD.
+- [ ] Make the exit button available on mobile touch and desktop.
+- [ ] On web, exit should pause the game and return to the menu or confirmation overlay.
+- [ ] On Tauri desktop, exit should optionally close the window after confirmation.
+- [ ] On mobile, exit should return to the main menu unless platform rules require different behavior.
+- [ ] Add a pause/settings button if exit needs a confirmation path.
+- [ ] Make sure exit controls do not overlap the joystick, action button, or HUD.
+
+## Mobile And Desktop Input
+
+- [ ] Keep WASD and arrow movement.
+- [ ] Keep Space and E for planting.
+- [ ] Add mouse support for desktop players.
+- [ ] Add mouse click support for planting or interacting when the player is near an actionable object.
+- [ ] Add mouse drag support for rotating the camera view.
+- [ ] Add mouse wheel support for zooming the camera in and out.
+- [ ] Add optional click-to-move support if it feels good during playtesting.
+- [ ] Add click/tap support for menu and overlay controls.
+- [ ] Keep touch joystick for movement.
+- [ ] Keep touch action button for planting.
+- [ ] Add touch drag support for changing camera view on mobile if it does not conflict with joystick controls.
+- [ ] Add pinch zoom support for mobile camera zoom if playtesting confirms it is comfortable.
+- [ ] Add responsive placement for joystick and action button in portrait and landscape.
+- [ ] Add pointer events support so one input layer works across mouse, pen, and touch where practical.
+- [ ] Add input abstraction so keyboard, mouse, touch, and LLM all emit the same actions.
+- [ ] Add accessibility labels for controls.
+- [ ] Test desktop Chrome or Edge.
+- [ ] Test mobile viewport in browser dev tools.
+- [ ] Test Android WebView through Tauri.
+- [ ] Test iOS WebView through Tauri when macOS build access exists.
+
+## Performance And Quality Tiers
+
+- [ ] Add a quality setting with at least `low` and `high` presets.
+- [ ] Default mobile devices to a conservative quality preset when needed.
+- [ ] Allow users to change quality from settings.
+- [ ] Reduce or disable expensive shadows on low quality.
+- [ ] Reduce decorative flower, particle, cloud, and object counts on low quality.
+- [ ] Lower pixel ratio on low quality if needed.
+- [ ] Add `prefers-reduced-motion` handling for UI animations and nonessential visual motion.
+- [ ] Keep gameplay readable on low quality.
+- [ ] Test low quality on mobile portrait and mobile landscape.
+- [ ] Test high quality on desktop.
+
+## Camera And View Perspective
+
+- [ ] Add a camera controller that owns camera position, zoom, rotation, smoothing, and target tracking.
+- [ ] Preserve the current follow-camera behavior as the default view.
+- [ ] Add player-controlled camera rotation.
+- [ ] Add player-controlled camera zoom.
+- [ ] Add a reset-view button that returns to the default follow camera.
+- [ ] Add a view toggle button in the HUD or pause/settings screen.
+- [ ] Support at least two view presets: angled follow view and top-down view.
+- [ ] Consider adding an optional close third-person view after the controller is stable.
+- [ ] Save the selected view preset locally.
+- [ ] Make camera controls work with mouse on desktop.
+- [ ] Make camera controls work with touch gestures on mobile where practical.
+- [ ] Make camera controls available to the LLM API through observation metadata and optional camera actions.
+- [ ] Prevent camera movement from leaving the player, objectives, or action prompts off-screen.
+- [ ] Prevent camera UI from overlapping exit, sound, joystick, action, or mission controls.
+- [ ] Verify all view modes on desktop, mobile portrait, and mobile landscape.
+
+## Offline Support
+
+- [ ] Remove all CDN scripts.
+- [ ] Remove all remote font links.
+- [ ] Bundle or vendor Three.js r128 locally for the first offline milestone.
+- [ ] Do not combine the first offline milestone with a Three.js major-version upgrade.
+- [ ] Bundle fonts locally.
+- [ ] Keep audio fully generated or bundle local audio assets.
+- [ ] Avoid network calls during gameplay.
+- [ ] Add a test that blocks network and verifies the game loads.
+- [ ] Add a service worker only if the web build must also support installable PWA behavior.
+- [ ] For Tauri builds, load the local static bundle from the app package.
+- [ ] Confirm no runtime dependency on Google Fonts, CDNJS, or external APIs.
+
+## Tauri Project
+
+- [ ] Install Tauri CLI and required Rust tooling.
+- [ ] Add `src-tauri/`.
+- [ ] Configure Tauri to use the built web output.
+- [ ] Set app name, identifier, icons, window title, and default dimensions.
+- [ ] Configure desktop full-screen behavior.
+- [ ] Add commands for app exit, platform info, and optional file-safe local settings if needed.
+- [ ] Keep gameplay logic in web code so all platforms share the same implementation.
+- [ ] Add `npm run tauri:dev`.
+- [ ] Add `npm run tauri:build`.
+- [ ] Add Windows build configuration.
+- [ ] Add macOS build configuration.
+- [ ] Add Linux build configuration if the team wants it alongside Windows/macOS.
+- [ ] Add Android Tauri setup.
+- [ ] Add iOS Tauri setup.
+- [ ] Document that iOS and macOS builds require macOS and Xcode.
+- [ ] Document that iOS App Store/TestFlight distribution requires an Apple Developer account.
+- [ ] Document that Android builds require Android Studio, SDK, NDK, and signing setup.
+- [ ] Add platform-specific icon assets.
+- [ ] Add signing/notarization tasks for release builds.
+
+## Platform Release Tasks
+
+- [ ] Release order v1: Web offline build first.
+- [ ] Release order v1: Windows desktop through Tauri second.
+- [ ] Release order v1: Android third after SDK/signing setup is complete.
+- [ ] Release order v1: macOS and iOS only after Mac hardware, Xcode, signing, and Apple Developer access are available.
+- [ ] Windows: build `.msi` or `.exe` installer.
+- [ ] Windows: test offline launch after install.
+- [ ] macOS: build `.dmg` or app bundle.
+- [ ] macOS: test offline launch after install.
+- [ ] macOS: complete signing and notarization for distribution.
+- [ ] Android: configure package id.
+- [ ] Android: configure app icons and splash assets.
+- [ ] Android: test on emulator.
+- [ ] Android: test on a physical device.
+- [ ] Android: configure release signing.
+- [ ] iOS: configure bundle id.
+- [ ] iOS: configure app icons and launch assets.
+- [ ] iOS: test on simulator.
+- [ ] iOS: test on a physical device.
+- [ ] iOS: configure signing and provisioning profiles.
+
+## LLM Play Interface
+
+- [ ] Add an internal action API that accepts normalized actions: `move`, `plant`, `pause`, `resume`, `selectMode`, `selectLevel`, and `restart`.
+- [ ] Add high-level LLM actions: `moveToward(targetId)`, `collectNearest()`, `moveToNearestTrash()`, `moveToNearestPatch()`, `plantNearest()`, `chaseNearestVillain()`, and `attackBoss()`.
+- [ ] Add a game observation API that returns compact JSON state.
+- [ ] Include player position, velocity, heading, nearby trash, nearby patches, nearby villains, boss state, objectives, score, elapsed time, and level seed in observations.
+- [ ] Include stable object IDs in observations so the LLM can target specific trash, patches, villains, and boss entities.
+- [ ] Quantize positions and distances so observations are stable and token-efficient.
+- [ ] Hide rendering-only details from the LLM observation.
+- [ ] Add a browser debug panel or console hook named `window.QuantumGardenAgent`.
+- [ ] Implement `window.QuantumGardenAgent.observe()`.
+- [ ] Implement `window.QuantumGardenAgent.act(action)`.
+- [ ] Implement `window.QuantumGardenAgent.reset({ mode, levelId, seed })`.
+- [ ] Implement `window.QuantumGardenAgent.step(action)` for test runners.
+- [ ] Add rate limits or frame-step controls so the model cannot flood the game loop.
+- [ ] Add first-class turn-stepped headless mode for model evaluation.
+- [ ] Add real-time browser mode for demos.
+- [ ] Allow raw low-level movement actions and higher-level intent actions.
+- [ ] Add a Playwright-based agent harness that can call the browser API.
+- [ ] Add sample scripts showing how an external LLM agent can observe and act.
+- [ ] Add a safety boundary: the LLM API can control only the game, not the filesystem, OS, or Tauri commands.
+- [ ] For Tauri, expose the same browser-side API and avoid privileged native commands for LLM control.
+
+## Testing And Verification
+
+- [ ] Add CI to run headless simulation tests, determinism tests, i18n checks, and offline build checks on push.
+- [ ] Add smoke tests for app startup.
+- [ ] Add headless simulation tests that run without WebGL.
+- [ ] Add tests for i18n key coverage in all four languages.
+- [ ] Add tests for fallback to English.
+- [ ] Add tests for RTL document direction in Arabic.
+- [ ] Add tests for seeded random determinism.
+- [ ] Add tests proving simulation results do not change with render frame rate.
+- [ ] Add tests that two runs with different seeds produce different layouts.
+- [ ] Add tests for single-player win conditions.
+- [ ] Add tests for two-player race result comparison.
+- [ ] Add tests for LLM `observe()` schema.
+- [ ] Add tests for LLM raw movement and planting actions.
+- [ ] Add tests for LLM high-level actions such as `moveToward(targetId)` and `plantNearest()`.
+- [ ] Add tests for scene teardown and Three.js disposal where practical.
+- [ ] Add visual checks for desktop viewport.
+- [ ] Add visual checks for mobile portrait viewport.
+- [ ] Add visual checks for mobile landscape viewport.
+- [ ] Add offline build test with network disabled.
+- [ ] Add Tauri desktop launch smoke test where CI support exists.
+
+## Implementation Order
+
+- [ ] Phase 1: Create build tooling, make level attempts self-contained, add teardown/disposal, move the current game into modules, separate simulation from rendering, and add fixed-timestep stepping.
+  - [ ] Phase 1 depends on Task Zero baseline protection.
+  - [ ] Phase 1 tests: headless simulation startup, seeded same-layout replay, different-seed different layout, fixed-timestep frame-rate independence, and teardown/disposal smoke test.
+  - [ ] Phase 1 exit gate: gameplay simulation can run without WebGL, rendering syncs from simulation state, a level attempt can build/play/teardown/rebuild from seed, and the legacy parity checklist still passes.
+- [ ] Phase 2: Replace CDN dependencies with offline local dependencies.
+  - [ ] Phase 2 depends on Phase 1 or an agreed minimal module split.
+  - [ ] Phase 2 tests: local build loads with network blocked, local Three r128 is used, local font is used, and no external runtime request is required.
+  - [ ] Phase 2 exit gate: the browser build runs fully offline and matches the frozen baseline visually within accepted tolerance.
+- [ ] Phase 3: Add i18n and make English the default.
+  - [ ] Phase 3 depends on Phase 1 UI/module boundaries.
+  - [ ] Phase 3 tests: i18n key coverage, English fallback, Arabic RTL direction, and text-fit checks for English, Arabic, Spanish, and French.
+  - [ ] Phase 3 exit gate: English is default, all four languages can be selected, Arabic uses RTL, and no required UI string remains hard-coded in Arabic.
+- [ ] Phase 4: Add mode registry and migrate current game to single-player mode.
+  - [ ] Phase 4 depends on Phase 1 sessions and simulation state.
+  - [ ] Phase 4 tests: mode registry loads, single-player mode starts, objectives update, and win conditions complete.
+  - [ ] Phase 4 exit gate: current gameplay runs through the mode registry with no mode-specific logic hard-coded in the app shell.
+- [ ] Phase 5: Add level registry, seeded randomization, and deterministic replay.
+  - [ ] Phase 5 depends on Phase 1 simulation separation and seeded random helpers.
+  - [ ] Phase 5 tests: same seed produces same gameplay/decorative layout, different seeds vary layout, bad placements are rejected, and replay can reproduce a completed run.
+  - [ ] Phase 5 exit gate: new levels can be registered, accepted layouts pass solvability checks, and deterministic replay works.
+- [ ] Phase 6: Add full-screen handling, pause, exit, and responsive control refinements.
+  - [ ] Phase 6 depends on Phase 1 lifecycle hooks and Phase 3 localized UI.
+  - [ ] Phase 6 tests: pause freezes gameplay timers, exit clears pending timers, fullscreen fallback fills viewport, and controls do not overlap on desktop/mobile.
+  - [ ] Phase 6 exit gate: player can pause, resume, exit, retry, and return to menu without stale timers or state leaks.
+- [ ] Phase 7: Add mouse controls and camera perspective/view controls.
+  - [ ] Phase 7 depends on Phase 1 input abstraction and Phase 6 responsive HUD placement.
+  - [ ] Phase 7 tests: mouse click interaction, mouse camera drag, mouse wheel zoom, view reset, top-down view, follow view, and storage of selected view preset.
+  - [ ] Phase 7 exit gate: keyboard, mouse, and touch can all play a level; player can rotate, zoom, reset, and change camera view.
+- [ ] Phase 8: Add two-player race mode.
+  - [ ] Phase 8 depends on Phase 4 mode registry and Phase 5 deterministic same-seed replay.
+  - [ ] Phase 8 tests: Player 1 and Player 2 receive the same seed, handoff screen hides the route, both times are recorded, and winner comparison is correct.
+  - [ ] Phase 8 exit gate: two local players can complete a sequential same-seed race and see a correct winner summary.
+- [ ] Phase 9: Add LLM observation/action API and Playwright harness.
+  - [ ] Phase 9 depends on Phase 1 headless stepping and Phase 5 stable seeded IDs/layouts.
+  - [ ] Phase 9 tests: `observe()` schema, raw movement action, high-level target action, `plantNearest()`, reset by seed, and deterministic stepped evaluation.
+  - [ ] Phase 9 exit gate: an external harness can reset, observe, act, step, and complete basic objectives without direct DOM or WebGL control.
+- [ ] Phase 10: Add Tauri desktop project.
+  - [ ] Phase 10 depends on Phase 2 offline build and v0.1 web stability.
+  - [ ] Phase 10 tests: Tauri dev launch, desktop build launch, offline launch after install where practical, and exit behavior.
+  - [ ] Phase 10 exit gate: Windows desktop build launches offline from packaged local assets.
+- [ ] Phase 11: Add Android and iOS Tauri setup.
+  - [ ] Phase 11 depends on Phase 10 Tauri configuration and available mobile toolchains.
+  - [ ] Phase 11 tests: Android emulator/device smoke test, iOS simulator/device smoke test when Mac/Xcode/signing are available.
+  - [ ] Phase 11 exit gate: Android build path is proven; iOS remains gated until Apple requirements are satisfied.
+- [ ] Phase 12: Add packaging docs, platform release tasks, and final verification.
+  - [ ] Phase 12 depends on the target platform phases selected for release.
+  - [ ] Phase 12 tests: release checklist per platform, offline launch, settings persistence migration, and smoke gameplay.
+  - [ ] Phase 12 exit gate: selected release platforms have documented build, signing, test, and distribution steps.
+
+## Acceptance Criteria
+
+- [ ] `web/index.html` has no inline game logic.
+- [ ] `web/index.html` has no inline CSS.
+- [ ] Gameplay simulation can run headlessly without WebGL.
+- [ ] Rendering syncs to simulation state instead of owning authoritative gameplay state.
+- [ ] Simulation uses a fixed timestep.
+- [ ] A level attempt can be built, played, torn down, disposed, and rebuilt from a seed.
+- [ ] Starting a new level does not keep stale patches, planted trees, villains, trash, or decorative objects unless explicitly designed.
+- [ ] The game runs in a browser from the local build.
+- [ ] The game runs without internet access.
+- [ ] English is the default language.
+- [ ] Arabic, English, Spanish, and French can be selected.
+- [ ] Arabic uses RTL layout.
+- [ ] The current gameplay remains playable after refactor.
+- [ ] New levels can be added by registering a new level definition.
+- [ ] New modes can be added by registering a new game mode.
+- [ ] Scene layout changes each attempt unless the same seed is reused.
+- [ ] Same seed produces the same gameplay and decorative layout.
+- [ ] Level unload disposes generated Three.js resources.
+- [ ] Single-player mode records completion time.
+- [ ] Two-player race mode declares the faster player.
+- [ ] The game enters full-screen or viewport-filling play mode.
+- [ ] An exit button is visible and usable during gameplay.
+- [ ] Touch controls work on mobile.
+- [ ] Keyboard controls work on desktop.
+- [ ] Mouse controls work on desktop.
+- [ ] Player can rotate, zoom, reset, and change camera view perspective.
+- [ ] Tauri desktop build launches.
+- [ ] Android build path is documented and configured.
+- [ ] iOS build path is documented and configured.
+- [ ] `window.QuantumGardenAgent.observe()` returns valid state.
+- [ ] `window.QuantumGardenAgent.act()` can control the player.
+- [ ] LLM can use both low-level actions and high-level target actions.
+
+## Risks And Decisions
+
+- [ ] Decide whether to use Vite or keep a no-bundler ES module setup.
+- [ ] Decide whether to add a service worker for the web version or rely only on Tauri packaging for offline distribution.
+- [ ] Decide whether LLM play should be turn-stepped for evaluation, real-time for demos, or support both.
+- [ ] Confirm target Tauri version before mobile setup because mobile support requirements can change.
+- [ ] Treat deterministic simulation as the highest-risk part of the refactor because the current code mixes random generation, gameplay state, and rendering.
+- [ ] Treat modern Three.js upgrade as out of scope for the first offline milestone unless a blocker requires it.
+- [ ] Track Apple platform work as blocked until required hardware and account access are confirmed.

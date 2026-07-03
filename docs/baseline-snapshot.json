@@ -1,0 +1,32 @@
+{
+  "file": "web/legacy/index.html",
+  "sha256": "a301dace1781536a4be254cdca0281b7fe52ba295bc2f44af92cb854eb4cc448",
+  "bytes": 46063,
+  "title": "نقي ومترميش — مغامرة الطبيعة",
+  "htmlLang": "ar",
+  "htmlDir": "rtl",
+  "inlineStyleBlocks": 1,
+  "inlineScriptBlocks": 1,
+  "externalScripts": [
+    "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
+  ],
+  "externalStyles": [
+    "https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@600;800&display=swap"
+  ],
+  "importantIds": [
+    "actBtn",
+    "game",
+    "hud",
+    "joy",
+    "lvlOverlay",
+    "missionCard",
+    "nextBtn",
+    "sndBtn",
+    "startBtn",
+    "startOverlay",
+    "uiLevel",
+    "uiScore",
+    "uiTrash",
+    "uiTrees"
+  ]
+}
