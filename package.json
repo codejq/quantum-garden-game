@@ -4,8 +4,14 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build && node scripts/copy-static-assets.mjs",
+    "preview": "vite preview --host 127.0.0.1",
     "test": "node --test",
+    "test:offline-build": "npm run build && node scripts/verify-offline-build.mjs && node scripts/offline-load-smoke.mjs",
     "snapshot:baseline": "node scripts/baseline-snapshot.mjs"
+  },
+  "devDependencies": {
+    "vite": "^8.1.3"
   }
 }
-

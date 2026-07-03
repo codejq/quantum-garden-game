@@ -136,14 +136,14 @@
 - [x] Create `web/src/levels/level-001.js` as the first migrated level definition.
 - [x] Create `web/src/levels/templates.js` for reusable objective templates.
 - [x] Create `web/src/levels/solvability.js` for spawn validation, reachability checks, and layout rejection.
-- [ ] Create `web/assets/fonts/` for offline fonts.
-- [ ] Create `web/assets/vendor/` for offline third-party browser libraries.
+- [x] Create `web/assets/fonts/` for offline fonts.
+- [x] Create `web/assets/vendor/` for offline third-party browser libraries.
 - [ ] Create `web/assets/audio/` only if generated synth audio is replaced by fixed assets.
 
 ## Build Tooling
 
 - [x] Add `package.json` for web build scripts and dependency management.
-- [ ] Add Vite or an equivalent lightweight bundler.
+- [x] Add Vite or an equivalent lightweight bundler.
 - [x] Vendor the current Three.js r128 build locally first instead of loading it from a CDN.
 - [x] Keep the visual baseline stable while removing CDN dependencies.
 - [ ] Add a separate later task to migrate from Three.js r128 to a modern npm Three.js release.
@@ -151,9 +151,9 @@
 - [x] Self-host the current `Baloo Bhaijaan 2` font because it supports Arabic and Latin text for the required locales.
 - [x] Add local font files under `web/assets/fonts/`.
 - [x] Add CSS `@font-face` rules for offline fonts.
-- [ ] Add `npm run dev` for browser development.
-- [ ] Add `npm run build` to produce a static offline build.
-- [ ] Add `npm run preview` to test the built output.
+- [x] Add `npm run dev` for browser development.
+- [x] Add `npm run build` to produce a static offline build.
+- [x] Add `npm run preview` to test the built output.
 - [ ] Add `npm run lint` if lint tooling is introduced.
 - [x] Add `npm run test` once tests exist.
 
@@ -346,7 +346,7 @@
 - [x] Bundle fonts locally.
 - [ ] Keep audio fully generated or bundle local audio assets.
 - [ ] Avoid network calls during gameplay.
-- [ ] Add a test that blocks network and verifies the game loads.
+- [x] Add a test that blocks network and verifies the game loads.
 - [ ] Add a service worker only if the web build must also support installable PWA behavior.
 - [ ] For Tauri builds, load the local static bundle from the app package.
 - [x] Confirm no runtime dependency on Google Fonts, CDNJS, or external APIs.
@@ -438,7 +438,7 @@
 - [ ] Add visual checks for desktop viewport.
 - [ ] Add visual checks for mobile portrait viewport.
 - [ ] Add visual checks for mobile landscape viewport.
-- [ ] Add offline build test with network disabled.
+- [x] Add offline build test with network disabled.
 - [ ] Add Tauri desktop launch smoke test where CI support exists.
 
 ## Implementation Order
