@@ -192,7 +192,7 @@
 
 ## Localization
 
-- [ ] Define translation keys for every visible UI string.
+- [x] Define translation keys for every visible UI string.
 - [x] Add English translations as the default source.
 - [x] Add Arabic translations.
 - [x] Add Spanish translations.

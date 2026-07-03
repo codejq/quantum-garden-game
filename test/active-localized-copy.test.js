@@ -31,3 +31,13 @@ test('active gameplay notification lines are locale-aware', () => {
     assert.match(mainSource, new RegExp(call));
   }
 });
+
+test('active browser defines translation keys for visible UI strings', () => {
+  assert.match(mainSource, /const ACTIVE_I18N_KEYS=\[/);
+  assert.match(mainSource, /const ACTIVE_I18N_LINE_KEYS=\[/);
+  assert.match(mainSource, /sound:'Sound'/);
+  assert.match(mainSource, /sound:'الصوت'/);
+  assert.match(mainSource, /sound:'Sonido'/);
+  assert.match(mainSource, /sound:'Son'/);
+  assert.match(mainSource, /\$\('sndBtn'\)\.setAttribute\('aria-label',tr\('sound'\)\)/);
+});
