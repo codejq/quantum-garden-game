@@ -108,7 +108,7 @@
 - [x] Create `web/src/core/storage.js` for local save data, settings, and best times.
 - [x] Add a storage schema version field to all persisted settings, progress, best times, language, and camera preferences.
 - [x] Add storage migration helpers so future save-data changes do not corrupt old saves.
-- [ ] Create `web/src/core/disposal.js` for Three.js geometry, material, texture, and object cleanup.
+- [x] Create `web/src/core/disposal.js` for Three.js geometry, material, texture, and object cleanup.
 - [ ] Create `web/src/render/scene.js` for Three.js scene, renderer, camera, lights, fog, and resize handling.
 - [ ] Create `web/src/render/sync.js` for mapping simulation entities to Three.js meshes.
 - [ ] Create `web/src/render/materials.js` for shared material creation and disposal helpers.
@@ -434,7 +434,7 @@
 - [x] Add tests for LLM `observe()` schema.
 - [x] Add tests for LLM raw movement and planting actions.
 - [x] Add tests for LLM high-level actions such as `moveToward(targetId)` and `plantNearest()`.
-- [ ] Add tests for scene teardown and Three.js disposal where practical.
+- [x] Add tests for scene teardown and Three.js disposal where practical.
 - [ ] Add visual checks for desktop viewport.
 - [ ] Add visual checks for mobile portrait viewport.
 - [ ] Add visual checks for mobile landscape viewport.
