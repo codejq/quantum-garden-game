@@ -9,12 +9,12 @@
 - [x] Confirm current randomization uses `Math.random()` across gameplay, cosmetics, and mesh builders, which prevents deterministic replay.
 - [x] Confirm the current game assumes one persistent scene across a continuous session.
 - [x] Treat the current game as the behavior baseline until tests and screenshots prove otherwise.
-- [ ] Change teh name of teh game to be Clean Garden both in arabic and in eglish .
+- [x] Change teh name of teh game to be Clean Garden both in arabic and in eglish .
 
 ## Goals
 
 - [x] Protect the current working prototype before large refactors begin.
-- [ ] Split the single HTML file into standard HTML, CSS, and JavaScript modules.
+- [x] Split the single HTML file into standard HTML, CSS, and JavaScript modules.
 - [ ] Separate simulation from rendering so gameplay state is plain data and Three.js only visualizes that state.
 - [ ] Add a fixed-timestep simulation loop so tests, replay, two-player race, and LLM play are deterministic.
 - [ ] Support `en`, `ar`, `es`, and `fr`.
@@ -159,9 +159,9 @@
 
 ## HTML, CSS, JavaScript Separation
 
-- [ ] Move all `<style>` content from `web/index.html` into `web/styles/main.css`.
-- [ ] Move all inline `<script>` game logic into JavaScript modules under `web/src/`.
-- [ ] Keep `web/index.html` focused on root containers, metadata, and script/style references.
+- [x] Move all `<style>` content from `web/index.html` into `web/styles/main.css`.
+- [x] Move all inline `<script>` game logic into JavaScript modules under `web/src/`.
+- [x] Keep `web/index.html` focused on root containers, metadata, and script/style references.
 - [ ] Replace hard-coded Arabic text in HTML with UI rendering from the i18n system.
 - [ ] Ensure `document.documentElement.lang` updates when the selected locale changes.
 - [ ] Ensure `document.documentElement.dir` is `rtl` for Arabic and `ltr` for English, Spanish, and French.

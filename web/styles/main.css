@@ -1,0 +1,79 @@
+:root{
+    --leaf:#3fa34d; --deep:#1d6b33; --sun:#ffd166; --sky:#8ecae6;
+    --dirt:#8d5a3b; --grape:#7b4bb7; --ink:#1e3326; --paper:#fffdf5;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{width:100%;height:100%;overflow:hidden;background:#0b2818;
+    font-family:'Baloo Bhaijaan 2','Segoe UI',Tahoma,'Arial Rounded MT Bold',sans-serif;
+    user-select:none;-webkit-user-select:none;touch-action:none}
+  #game{position:fixed;inset:0}
+  canvas{display:block}
+
+  /* ---------- HUD ---------- */
+  #hud{position:fixed;inset:0;pointer-events:none;z-index:5;display:none}
+  .hud-top{position:absolute;top:10px;right:10px;left:10px;display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap}
+  .chip{background:rgba(255,253,245,.92);border:3px solid var(--deep);border-radius:16px;
+    padding:4px 12px;font-weight:800;color:var(--ink);font-size:15px;display:flex;gap:6px;align-items:center;
+    box-shadow:0 3px 0 rgba(0,0,0,.25)}
+  .chip .n{color:var(--deep);font-size:17px;min-width:20px;text-align:center}
+  #meterWrap{background:rgba(255,253,245,.92);border:3px solid var(--deep);border-radius:16px;
+    padding:5px 12px;min-width:170px;flex:1;max-width:260px;box-shadow:0 3px 0 rgba(0,0,0,.25)}
+  #meterWrap .lbl{font-size:12px;font-weight:800;color:var(--ink);display:flex;justify-content:space-between}
+  #meterBar{height:12px;border-radius:8px;background:#e2dccb;overflow:hidden;margin-top:3px;border:2px solid #c9c2ac}
+  #meterFill{height:100%;width:100%;border-radius:6px;background:linear-gradient(90deg,#7a5230,#a3742f);transition:width .4s}
+  #missionCard{position:absolute;top:64px;right:10px;background:rgba(255,253,245,.92);border:3px solid var(--deep);
+    border-radius:16px;padding:8px 12px;color:var(--ink);font-size:13px;font-weight:700;box-shadow:0 3px 0 rgba(0,0,0,.25);max-width:210px}
+  #missionCard div{display:flex;gap:6px;align-items:center;margin:2px 0}
+  #missionCard .done{color:var(--deep)}
+  #notes{position:absolute;top:12px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;
+    gap:6px;align-items:center;width:min(92vw,460px)}
+  .note{background:var(--paper);border:3px solid var(--grape);color:#3b2358;border-radius:18px;padding:6px 16px;
+    font-weight:800;font-size:15px;box-shadow:0 4px 0 rgba(0,0,0,.25);animation:notein .3s ease-out;text-align:center}
+  .note.good{border-color:var(--deep);color:var(--ink)}
+  @keyframes notein{from{transform:translateY(-16px) scale(.8);opacity:0}to{transform:none;opacity:1}}
+  .note.out{transition:all .4s;opacity:0;transform:translateY(-10px) scale(.9)}
+  .pop{position:absolute;font-weight:900;font-size:20px;color:var(--paper);
+    text-shadow:0 2px 0 var(--deep),0 0 8px rgba(0,0,0,.3);animation:popfly 1s ease-out forwards;pointer-events:none;z-index:6}
+  @keyframes popfly{0%{transform:translate(-50%,0) scale(.6);opacity:0}20%{opacity:1;transform:translate(-50%,-16px) scale(1.15)}
+    100%{transform:translate(-50%,-70px) scale(1);opacity:0}}
+  #prompt{position:absolute;bottom:150px;left:50%;transform:translateX(-50%);background:var(--sun);
+    border:3px solid #b8860b;color:#5a3d00;border-radius:20px;padding:8px 20px;font-weight:900;font-size:17px;
+    box-shadow:0 4px 0 rgba(0,0,0,.3);display:none;animation:bounce 1s infinite}
+  @keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-6px)}}
+
+  /* ---------- touch controls ---------- */
+  #joy{position:fixed;bottom:26px;right:26px;width:120px;height:120px;border-radius:50%;
+    background:rgba(255,253,245,.25);border:3px solid rgba(255,253,245,.6);display:none;z-index:8}
+  #joyKnob{position:absolute;top:50%;left:50%;width:52px;height:52px;border-radius:50%;
+    background:rgba(255,253,245,.9);border:3px solid var(--deep);transform:translate(-50%,-50%);box-shadow:0 3px 0 rgba(0,0,0,.3)}
+  #actBtn{position:fixed;bottom:44px;left:26px;width:86px;height:86px;border-radius:50%;background:var(--leaf);
+    border:4px solid var(--deep);color:#fff;font-size:36px;display:none;align-items:center;justify-content:center;
+    z-index:8;box-shadow:0 5px 0 rgba(0,0,0,.35);font-family:inherit}
+  #actBtn:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.35)}
+  #sndBtn{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:8;background:rgba(255,253,245,.85);
+    border:3px solid var(--deep);border-radius:14px;font-size:18px;padding:3px 12px;display:none;font-family:inherit}
+
+  /* ---------- overlays ---------- */
+  .overlay{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(circle at 50% 30%,#2f8f4e 0%,#14532d 70%,#0b2818 100%)}
+  .card{background:var(--paper);border:5px solid var(--deep);border-radius:28px;padding:26px 30px;max-width:min(92vw,520px);
+    text-align:center;color:var(--ink);box-shadow:0 10px 0 rgba(0,0,0,.35);animation:cardpop .45s cubic-bezier(.34,1.56,.64,1)}
+  @keyframes cardpop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  .card h1{font-size:clamp(26px,7vw,40px);color:var(--deep);letter-spacing:.5px}
+  .card h1 .vs{color:var(--grape)}
+  .card .tag{font-size:15px;font-weight:800;color:#5a6b4f;margin:4px 0 12px}
+  .howto{text-align:right;background:#eef5e6;border-radius:16px;padding:10px 14px;font-size:14px;font-weight:700;line-height:1.9;margin-bottom:14px}
+  .howto b{color:var(--deep)}
+  .howto .bad{color:var(--grape)}
+  .bigbtn{background:linear-gradient(180deg,#54c265,var(--leaf));border:4px solid var(--deep);color:#fff;
+    font-family:inherit;font-size:22px;font-weight:900;border-radius:20px;padding:10px 40px;cursor:pointer;
+    box-shadow:0 6px 0 var(--deep);transition:transform .1s}
+  .bigbtn:active{transform:translateY(4px);box-shadow:0 2px 0 var(--deep)}
+  #lvlOverlay{display:none;background:rgba(9,40,22,.75);backdrop-filter:blur(3px)}
+  #lvlOverlay .stats{display:flex;gap:10px;justify-content:center;margin:10px 0 16px;flex-wrap:wrap}
+  #lvlOverlay .stat{background:#eef5e6;border:3px solid var(--deep);border-radius:14px;padding:6px 14px;font-weight:800}
+  #lvlOverlay .stat .b{font-size:20px;color:var(--deep)}
+  .quote{font-style:italic;font-weight:700;color:var(--grape);margin-bottom:10px;font-size:15px}
+  .conf{position:fixed;top:-16px;width:10px;height:14px;z-index:30;pointer-events:none;animation:fall linear forwards}
+  @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+  #keysHint{font-size:12px;color:#7d8a70;margin-top:10px;font-weight:700}
