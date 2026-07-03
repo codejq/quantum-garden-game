@@ -122,7 +122,7 @@
 - [x] Create `web/src/input/mouse.js` for desktop mouse movement, camera control, pointer selection, and click actions.
 - [x] Create `web/src/input/touch.js` for mobile joystick and action button.
 - [x] Create `web/src/input/llm-agent.js` for model-controlled actions.
-- [ ] Create `web/src/camera/camera-controller.js` for follow camera, orbit camera, zoom, and perspective changes.
+- [x] Create `web/src/camera/camera-controller.js` for follow camera, orbit camera, zoom, and perspective changes.
 - [ ] Create `web/src/ui/hud.js` for score, mission, meter, prompt, and notifications.
 - [ ] Create `web/src/ui/overlays.js` for start, level-complete, pause, mode select, language select, and exit screens.
 - [x] Create `web/src/i18n/index.js` for translation loading, locale selection, interpolation, and document direction.
@@ -321,13 +321,13 @@
 
 ## Camera And View Perspective
 
-- [ ] Add a camera controller that owns camera position, zoom, rotation, smoothing, and target tracking.
-- [ ] Preserve the current follow-camera behavior as the default view.
-- [ ] Add player-controlled camera rotation.
-- [ ] Add player-controlled camera zoom.
+- [x] Add a camera controller that owns camera position, zoom, rotation, smoothing, and target tracking.
+- [x] Preserve the current follow-camera behavior as the default view.
+- [x] Add player-controlled camera rotation.
+- [x] Add player-controlled camera zoom.
 - [ ] Add a reset-view button that returns to the default follow camera.
 - [ ] Add a view toggle button in the HUD or pause/settings screen.
-- [ ] Support at least two view presets: angled follow view and top-down view.
+- [x] Support at least two view presets: angled follow view and top-down view.
 - [ ] Consider adding an optional close third-person view after the controller is stable.
 - [ ] Save the selected view preset locally.
 - [ ] Make camera controls work with mouse on desktop.
