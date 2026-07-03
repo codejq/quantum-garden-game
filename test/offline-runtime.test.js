@@ -38,6 +38,13 @@ test('active audio remains generated with WebAudio instead of bundled media file
   }
 });
 
+test('static runtime copy includes browser mode registry bridge', () => {
+  const copyScript = readFileSync(new URL('../scripts/copy-static-assets.mjs', import.meta.url), 'utf8');
+  assert.match(copyScript, /web\/src\/main\.js/);
+  assert.match(copyScript, /web\/src\/modes\/browser-mode-registry\.js/);
+  assert.match(copyScript, /dist\/web\/src\/modes\/browser-mode-registry\.js/);
+});
+
 test('Three.js remains vendored r128 instead of upgraded through npm', () => {
   const packageJson = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
   assert.equal(existsSync(join(root, 'web/assets/vendor/three.r128.min.js')), true);

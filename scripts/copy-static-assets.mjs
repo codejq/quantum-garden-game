@@ -6,6 +6,7 @@ const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 
 const copies = [
   ['web/src/main.js', 'dist/web/src/main.js'],
+  ['web/src/modes/browser-mode-registry.js', 'dist/web/src/modes/browser-mode-registry.js'],
   ['web/assets/vendor', 'dist/web/assets/vendor'],
 ];
 
