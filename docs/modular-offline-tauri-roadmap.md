@@ -60,8 +60,8 @@
 - [x] Add a fixed simulation tick such as `1/60` or `1/30` seconds.
 - [x] Use an accumulator in the visual loop so rendering can run at any frame rate while simulation advances deterministically.
 - [x] Allow tests and LLM agents to call `step()` without creating a WebGL renderer.
-- [ ] Use a seeded random generator for all gameplay and cosmetic generation.
-- [ ] Use fully seeded world generation for reproducible LLM evaluation and bug reports.
+- [x] Use a seeded random generator for all gameplay and cosmetic generation.
+- [x] Use fully seeded world generation for reproducible LLM evaluation and bug reports.
 - [ ] Add stable object IDs for all interactive objects.
 - [ ] Add teardown/disposal rules for every scene object created during a level attempt.
 - [x] Vendor current Three.js r128 locally first to remove CDN usage without changing behavior.
@@ -226,23 +226,23 @@
 - [ ] Support finite authored levels.
 - [ ] Support generated levels after authored levels are complete.
 - [x] Add seeded random generation per level attempt.
-- [ ] Store the active seed in game state.
-- [ ] Show or log the seed for debugging.
-- [ ] Replace all `Math.random()` calls with seeded random helpers.
-- [ ] Route mesh builder variation such as tree type, bark color, petal count, petal color, trash type, and cloud placement through seeded random helpers.
+- [x] Store the active seed in game state.
+- [x] Show or log the seed for debugging.
+- [x] Replace all `Math.random()` calls with seeded random helpers.
+- [x] Route mesh builder variation such as tree type, bark color, petal count, petal color, trash type, and cloud placement through seeded random helpers.
 - [x] Rebuild the full gameplay and decorative scene for each level attempt.
 - [x] Do not let authored or generated level attempts inherit stale objects from previous attempts.
-- [ ] Randomize trash placement each attempt.
-- [ ] Randomize planting patch placement each attempt.
+- [x] Randomize trash placement each attempt.
+- [x] Randomize planting patch placement each attempt.
 - [x] Randomize decorative flowers, rocks, trees, clouds, and scene details each attempt.
-- [ ] Randomize villain spawn timing within level-defined limits.
+- [x] Randomize villain spawn timing within level-defined limits.
 - [x] Randomize player starting position within valid spawn zones.
 - [ ] Prevent random placement from blocking objectives.
 - [x] Add post-placement solvability checks before accepting a generated layout.
 - [x] Verify the player can reach all required trash, planting patches, villains, and boss interaction zones.
 - [x] Reject and regenerate layouts that fail reachability or objective constraints.
 - [ ] Limit regeneration attempts and report a clear layout-generation error if no valid seed/layout can be found.
-- [ ] Add deterministic replay support by reusing a saved seed.
+- [x] Add deterministic replay support by reusing a saved seed.
 - [ ] Add seeded layout snapshots for debugging failed tests or bug reports.
 - [x] Add explicit cleanup before loading a new level attempt.
 - [x] Dispose removed Three.js geometries, materials, textures, and generated objects to avoid GPU memory leaks.
@@ -509,8 +509,8 @@
 - [ ] The current gameplay remains playable after refactor.
 - [ ] New levels can be added by registering a new level definition.
 - [ ] New modes can be added by registering a new game mode.
-- [ ] Scene layout changes each attempt unless the same seed is reused.
-- [ ] Same seed produces the same gameplay and decorative layout.
+- [x] Scene layout changes each attempt unless the same seed is reused.
+- [x] Same seed produces the same gameplay and decorative layout.
 - [x] Level unload disposes generated Three.js resources.
 - [x] Single-player mode records completion time.
 - [ ] Two-player race mode declares the faster player.

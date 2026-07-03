@@ -3,9 +3,33 @@
 ============================================================ */
 'use strict';
 const $=id=>document.getElementById(id);
-const rand=(a,b)=>a+Math.random()*(b-a);
+let activeSeed='menu-'+Date.now().toString(36);
+let activeRngState=hashSeed(activeSeed);
+let activeAttempt=0;
+function hashSeed(seed){
+  let h=2166136261>>>0;
+  for(const ch of String(seed)){h^=ch.charCodeAt(0);h=Math.imul(h,16777619);}
+  return h>>>0||1;
+}
+function setActiveSeed(seed){
+  activeSeed=String(seed&&String(seed).trim()?seed:'seed-1');
+  activeRngState=hashSeed(activeSeed);
+  return activeSeed;
+}
+function makeAttemptSeed(level){
+  activeAttempt++;
+  return `level-${level}-attempt-${activeAttempt}-${Date.now().toString(36)}`;
+}
+function random(){
+  activeRngState=(activeRngState+0x6D2B79F5)>>>0;
+  let t=activeRngState;
+  t=Math.imul(t^(t>>>15),t|1);
+  t^=t+Math.imul(t^(t>>>7),t|61);
+  return ((t^(t>>>14))>>>0)/4294967296;
+}
+const rand=(a,b)=>a+random()*(b-a);
 const randi=(a,b)=>Math.floor(rand(a,b+1));
-const pick=a=>a[Math.floor(Math.random()*a.length)];
+const pick=a=>a[Math.floor(random()*a.length)];
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const smooth=(cur,target,lag,dt)=>{const t=1-Math.exp(-dt/Math.max(lag,1e-4));return cur+(target-cur)*t;};
 
@@ -197,14 +221,14 @@ function makeFlower(){
   const center=new THREE.Mesh(new THREE.SphereGeometry(.07,10,10),mat(pick([0xffd43b,0xf59f00,0xffe066])));
   center.position.y=headY+.03;center.scale.y=.55;g.add(center);
   const s=rand(.85,1.35);g.scale.setScalar(s);
-  g.userData.flower=true;g.userData.sway=Math.random()*6.28;g.userData.base=g.rotation.z;
+  g.userData.flower=true;g.userData.sway=random()*6.28;g.userData.base=g.rotation.z;
   return g;}
 
 function scatter(n,maker,rMin=6,rMax=WORLD_R+6,collect){
   const created=[];
-  for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,r=rand(rMin,rMax);
+  for(let i=0;i<n;i++){const a=random()*Math.PI*2,r=rand(rMin,rMax);
     const o=maker();o.position.set(Math.cos(a)*r,o.position.y,Math.sin(a)*r);
-    o.rotation.y=Math.random()*Math.PI*2;scene.add(o);created.push(o);if(collect)collect.push(o);}
+    o.rotation.y=random()*Math.PI*2;scene.add(o);created.push(o);if(collect)collect.push(o);}
   return created;
 }
 
@@ -434,7 +458,7 @@ function confetti(){
   for(let i=0;i<70;i++){const c=document.createElement('div');c.className='conf';
     c.style.left=rand(0,100)+'vw';c.style.background=pick(cols);
     c.style.animationDuration=rand(1.6,3.2)+'s';c.style.animationDelay=rand(0,.6)+'s';
-    c.style.borderRadius=Math.random()<.5?'50%':'2px';
+    c.style.borderRadius=random()<.5?'50%':'2px';
     document.body.appendChild(c);setTimeout(()=>c.remove(),4200);}}
 
 /* sparkle particle bursts */
@@ -480,15 +504,15 @@ function spawnTrash(pos){
   const m=trashBuilders[randi(0,trashBuilders.length-1)]();
   m.traverse(o=>{if(o.isMesh)o.castShadow=true;});
   if(pos)m.position.set(pos.x,m.position.y,pos.z);
-  else{const a=Math.random()*Math.PI*2,r=rand(4,WORLD_R-2);
+  else{const a=random()*Math.PI*2,r=rand(4,WORLD_R-2);
     m.position.set(Math.cos(a)*r,m.position.y,Math.sin(a)*r);}
-  m.rotation.y=Math.random()*Math.PI*2;
+  m.rotation.y=random()*Math.PI*2;
   scene.add(m);trash.push({mesh:m});
   return { spawned:true, mesh:m };
 }
 
 function spawnPatch(){
-  const a=Math.random()*Math.PI*2,r=rand(7,WORLD_R-6);
+  const a=random()*Math.PI*2,r=rand(7,WORLD_R-6);
   const g=new THREE.Group();
   const soil=new THREE.Mesh(new THREE.CircleGeometry(1.4,20),mat(0x6d4a2f));
   soil.rotation.x=-Math.PI/2;soil.position.y=.03;g.add(soil);
@@ -500,7 +524,7 @@ function spawnPatch(){
 
 function spawnVillain(boss=false){
   const m=boss?buildMtermish():buildMinion();
-  const a=Math.random()*Math.PI*2,r=WORLD_R+4;
+  const a=random()*Math.PI*2,r=WORLD_R+4;
   m.position.set(Math.cos(a)*r,0,Math.sin(a)*r);
   scene.add(m);
   const v={mesh:m,boss,hp:boss?3:1,state:'walk',t:0,
@@ -508,7 +532,7 @@ function spawnVillain(boss=false){
   newTarget(v);villains.push(v);
   if(boss){mtermish=v;note(pick(LINES.mtermishTaunt));Snd.laugh();}
   return v;}
-function newTarget(v){const a=Math.random()*Math.PI*2,r=rand(5,WORLD_R-3);
+function newTarget(v){const a=random()*Math.PI*2,r=rand(5,WORLD_R-3);
   v.target.set(Math.cos(a)*r,0,Math.sin(a)*r);}
 
 function isSharedMaterial(material){
@@ -574,14 +598,17 @@ buildDecorativeWorld();
 /* ---------------- Game state ---------------- */
 const Game={
   running:false,level:1,score:0,trees:0,lifetimeTrees:0,trashGot:0,
-  quota:0,spawned:0,converted:0,spawnTimer:0,nearPatch:null,plantCd:0,bossDelay:0,elapsed:0,
+  quota:0,spawned:0,converted:0,spawnTimer:0,nearPatch:null,plantCd:0,bossDelay:0,elapsed:0,seed:activeSeed,
 
   clearTimers(){
     this.bossDelay=0;
   },
 
-  startLevel(n){
+  startLevel(n,options={}){
     this.clearTimers();
+    const seed=setActiveSeed(options.seed||makeAttemptSeed(n));
+    this.seed=seed;
+    console.info(`[CleanGarden] level ${n} seed: ${seed}`);
     cleanupLevelAttempt();
     cleanupDecorativeWorld();
     buildDecorativeWorld();
@@ -723,7 +750,7 @@ function villainsUpdate(dt){
       if(v.drop<=0){v.drop=v.boss?rand(2,3.5):rand(3.5,6.5);
         const inD=Math.hypot(v.mesh.position.x,v.mesh.position.z);
         const dropResult=inD<WORLD_R?spawnTrash(v.mesh.position):{ spawned:false, reason:'outside-world' };
-        if(dropResult.spawned&&Math.random()<.25)note(pick(LINES.mtermishTaunt),false,1800);
+        if(dropResult.spawned&&random()<.25)note(pick(LINES.mtermishTaunt),false,1800);
         if(dropResult.spawned)Game.updateMission();}
       if(v.hitCd<=0){
         const dist=v.mesh.position.distanceTo(player.pos);
@@ -768,7 +795,7 @@ function trashUpdate(dt){
       Snd.pickup();
       Game.trashGot++;$('uiTrash').textContent=Game.trashGot;
       Game.addScore(10,t.mesh.position.clone().setY(1.4));
-      if(Math.random()<.3)note(pick(LINES.pickup),true,1500);
+      if(random()<.3)note(pick(LINES.pickup),true,1500);
       scene.remove(t.mesh);trash.splice(i,1);
       Game.updateMission();Game.checkWin();
     }}}
@@ -931,7 +958,7 @@ function observeAgent(){
     running:Game.running,
     locale:activeLocale,
     levelId:String(Game.level),
-    seed:null,
+    seed:Game.seed,
     score:Game.score,
     elapsed:q(Game.elapsed),
     bossDelay:q(Math.max(0,Game.bossDelay)),
@@ -1006,8 +1033,8 @@ function resetAgent(options={}){
   $('pauseBtn').style.display='block';
   const levelId=Number(options.levelId||options.level||1);
   Game.running=true;
-  Game.startLevel(Number.isFinite(levelId)&&levelId>0?levelId:1);
-  return { ok:true, seedApplied:false, observation:observeAgent() };
+  Game.startLevel(Number.isFinite(levelId)&&levelId>0?levelId:1,{ seed:options.seed });
+  return { ok:true, seedApplied:!!options.seed, observation:observeAgent() };
 }
 function stepAgent(action){
   const result=action?actAgent(action):{ ok:true, observation:observeAgent() };
