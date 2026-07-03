@@ -24,6 +24,7 @@
   <div id="missionCard"></div>
   <div id="notes"></div>
   <div id="prompt">🌱 Press to plant a tree!</div>
+  <button id="pauseBtn" aria-label="Pause game">Pause</button>
   <button id="exitBtn" aria-label="Exit game">Exit</button>
 </div>
 
@@ -59,6 +60,17 @@
       <div class="stat">🗑️<div class="b" id="stTrash">0</div></div>
     </div>
     <button class="bigbtn" id="nextBtn">Next Level</button>
+  </div>
+</div>
+
+<div class="overlay" id="pauseOverlay">
+  <div class="card">
+    <h1 id="pauseTitle">Paused</h1>
+    <div class="pauseActions">
+      <button class="bigbtn" id="resumeBtn">Resume</button>
+      <button class="bigbtn altbtn" id="retryBtn">Retry</button>
+      <button class="bigbtn altbtn" id="menuBtn">Menu</button>
+    </div>
   </div>
 </div>
 

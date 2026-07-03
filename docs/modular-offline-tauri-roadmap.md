@@ -84,8 +84,8 @@
 - [ ] Avoid silent trash spawn failure when the trash cap is reached.
 - [ ] Replace `spawnTrash()` no-op behavior with an explicit result such as `{ spawned: true }` or `{ spawned: false, reason: "cap" }`.
 - [ ] Make villain litter behavior react to failed trash spawns instead of pretending trash was dropped.
-- [ ] Replace bare boss `setTimeout()` scheduling with simulation-owned timers.
-- [ ] Store and clear any remaining browser timer handles during pause, retry, exit, or level transition.
+- [x] Replace bare boss `setTimeout()` scheduling with simulation-owned timers.
+- [x] Store and clear any remaining browser timer handles during pause, retry, exit, or level transition.
 - [ ] Ensure pause freezes gameplay timers, boss spawn timing, villain drops, elapsed time, and input effects.
 - [ ] Ensure visual-only animations can continue during pause only if intentionally allowed.
 - [ ] Recalculate or redesign pollution denominator so spawned trash during a level does not make the meter misleading.
@@ -200,7 +200,7 @@
 - [x] Add localized buttons.
 - [ ] Add localized level-complete messages.
 - [ ] Add localized gameplay notification lines.
-- [ ] Add localized accessibility labels.
+- [x] Add localized accessibility labels.
 - [x] Add a language selector on the start/pause/settings screen.
 - [x] Save the selected language locally for offline reuse.
 - [x] Fall back to English for missing keys.
@@ -252,9 +252,9 @@
 - [ ] Preserve current single-player objective set: collect trash, plant trees, convert minions, defeat boss.
 - [ ] Add elapsed-time tracking.
 - [ ] Add best-time tracking per level and seed type.
-- [ ] Add pause/resume.
-- [ ] Add retry level.
-- [ ] Add return-to-menu.
+- [x] Add pause/resume.
+- [x] Add retry level.
+- [x] Add return-to-menu.
 - [ ] Add level-complete summary with score, trees, trash, time, and best time.
 
 ## Two Player Race Mode
@@ -280,7 +280,7 @@
 - [x] On web, exit should pause the game and return to the menu or confirmation overlay.
 - [ ] On Tauri desktop, exit should optionally close the window after confirmation.
 - [ ] On mobile, exit should return to the main menu unless platform rules require different behavior.
-- [ ] Add a pause/settings button if exit needs a confirmation path.
+- [x] Add a pause/settings button if exit needs a confirmation path.
 - [ ] Make sure exit controls do not overlap the joystick, action button, or HUD.
 
 ## Mobile And Desktop Input
