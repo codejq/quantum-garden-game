@@ -184,7 +184,7 @@
 - [x] Add fixed-timestep simulation stepping.
 - [x] Add headless simulation tests that run without DOM, canvas, or WebGL.
 - [x] Ensure `Game.running`, pause, and level completion are simulation states, not only UI flags.
-- [ ] Keep environment animation that is purely visual in the render layer.
+- [x] Keep environment animation that is purely visual in the render layer.
 - [x] Keep gameplay-affecting timers in the simulation layer.
 - [x] Add object lifecycle hooks for spawn, update, complete, remove, and dispose.
 - [x] Add level-attempt lifecycle hooks: `buildAttempt(seed)`, `startAttempt()`, `pauseAttempt()`, `completeAttempt()`, `exitAttempt()`, and `teardownAttempt()`.

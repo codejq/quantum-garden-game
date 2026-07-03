@@ -1051,7 +1051,7 @@ function syncGameplayMeshes(dt,time){
   }
 }
 
-function envUpdate(dt,time){
+function updatePollutionVisuals(){
   const pol=Game.pollution()/100;
   groundMat.color.lerpColors(COL.grassClean,COL.grassDirty,pol);
   scene.background.lerpColors(COL.skyClean,COL.skyDirty,pol);
@@ -1061,10 +1061,15 @@ function envUpdate(dt,time){
   const f=$('meterFill');f.style.width=pct+'%';
   f.style.background=pct>66?'linear-gradient(90deg,#51cf66,#2f9e44)':
     pct>33?'linear-gradient(90deg,#ffd166,#f59f00)':'linear-gradient(90deg,#a3742f,#7a5230)';
+}
+function updateVisualEnvironment(dt,time){
   for(const c of clouds){c.position.x+=c.userData.spd*dt;
     if(c.position.x>90)c.position.x=-90;}
-  // gentle flower sway in the breeze
   for(const fl of flowers){fl.rotation.z=fl.userData.base+Math.sin(time*1.6+fl.userData.sway)*.12;}
+}
+function envUpdate(dt,time){
+  updatePollutionVisuals();
+  updateVisualEnvironment(dt,time);
 }
 
 function tickGameplay(dt,time){
