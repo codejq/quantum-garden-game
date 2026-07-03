@@ -103,11 +103,11 @@
 - [x] Create `web/src/core/session.js` for instantiable `GameSession` creation, reset, retry, and teardown.
 - [x] Create `web/src/core/simulation.js` for the renderer-independent fixed-timestep simulation.
 - [ ] Create `web/src/core/loop.js` for the render/update loop.
-- [ ] Create `web/src/core/events.js` for a small internal event bus.
+- [x] Create `web/src/core/events.js` for a small internal event bus.
 - [x] Create `web/src/core/random.js` for seeded random generation.
-- [ ] Create `web/src/core/storage.js` for local save data, settings, and best times.
-- [ ] Add a storage schema version field to all persisted settings, progress, best times, language, and camera preferences.
-- [ ] Add storage migration helpers so future save-data changes do not corrupt old saves.
+- [x] Create `web/src/core/storage.js` for local save data, settings, and best times.
+- [x] Add a storage schema version field to all persisted settings, progress, best times, language, and camera preferences.
+- [x] Add storage migration helpers so future save-data changes do not corrupt old saves.
 - [ ] Create `web/src/core/disposal.js` for Three.js geometry, material, texture, and object cleanup.
 - [ ] Create `web/src/render/scene.js` for Three.js scene, renderer, camera, lights, fog, and resize handling.
 - [ ] Create `web/src/render/sync.js` for mapping simulation entities to Three.js meshes.
