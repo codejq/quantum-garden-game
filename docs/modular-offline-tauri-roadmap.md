@@ -238,13 +238,13 @@
 - [x] Randomize decorative flowers, rocks, trees, clouds, and scene details each attempt.
 - [x] Randomize villain spawn timing within level-defined limits.
 - [x] Randomize player starting position within valid spawn zones.
-- [ ] Prevent random placement from blocking objectives.
+- [x] Prevent random placement from blocking objectives.
 - [x] Add post-placement solvability checks before accepting a generated layout.
 - [x] Verify the player can reach all required trash, planting patches, villains, and boss interaction zones.
 - [x] Reject and regenerate layouts that fail reachability or objective constraints.
-- [ ] Limit regeneration attempts and report a clear layout-generation error if no valid seed/layout can be found.
+- [x] Limit regeneration attempts and report a clear layout-generation error if no valid seed/layout can be found.
 - [x] Add deterministic replay support by reusing a saved seed.
-- [ ] Add seeded layout snapshots for debugging failed tests or bug reports.
+- [x] Add seeded layout snapshots for debugging failed tests or bug reports.
 - [x] Add explicit cleanup before loading a new level attempt.
 - [x] Dispose removed Three.js geometries, materials, textures, and generated objects to avoid GPU memory leaks.
 

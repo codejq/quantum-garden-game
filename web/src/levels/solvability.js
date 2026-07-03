@@ -63,16 +63,51 @@ export function assertSolvableAttempt(attempt, options = {}) {
   return attempt;
 }
 
+export function layoutSnapshot(attempt, validation = validateAttemptLayout(attempt)) {
+  const point = (item) => ({
+    id: item.id,
+    x: Number(item.pos.x.toFixed(3)),
+    z: Number(item.pos.z.toFixed(3)),
+  });
+
+  return {
+    level: attempt.level,
+    seed: attempt.seed,
+    ok: validation.ok,
+    errors: validation.errors.map((error) => ({ ...error })),
+    player: {
+      id: attempt.player?.id ?? 'player',
+      x: Number(attempt.player.pos.x.toFixed(3)),
+      z: Number(attempt.player.pos.z.toFixed(3)),
+    },
+    trash: attempt.trash.map(point),
+    patches: attempt.patches.map(point),
+    villains: attempt.villains.map(point),
+    boss: attempt.boss ? point(attempt.boss) : null,
+  };
+}
+
+export class LayoutGenerationError extends Error {
+  constructor({ seed, level, maxAttempts, attempts }) {
+    const codes = attempts.at(-1)?.errors.map((error) => error.code).join(', ') || 'unknown';
+    super(`Unable to generate solvable layout for seed "${seed}" after ${maxAttempts} attempts: ${codes}`);
+    this.name = 'LayoutGenerationError';
+    this.seed = seed;
+    this.level = level;
+    this.maxAttempts = maxAttempts;
+    this.attempts = attempts;
+  }
+}
+
 export function generateSolvableAttempt(createAttempt, { level, seed, maxAttempts = 10 } = {}) {
-  let lastResult = null;
+  const attempts = [];
   for (let index = 0; index < maxAttempts; index += 1) {
     const attemptSeed = index === 0 ? seed : `${seed}:retry-${index}`;
     const attempt = createAttempt({ level, seed: attemptSeed });
     const result = validateAttemptLayout(attempt);
     if (result.ok) return attempt;
-    lastResult = result;
+    attempts.push(layoutSnapshot(attempt, result));
   }
 
-  const codes = lastResult?.errors.map((error) => error.code).join(', ') || 'unknown';
-  throw new Error(`Unable to generate solvable layout after ${maxAttempts} attempts: ${codes}`);
+  throw new LayoutGenerationError({ seed, level, maxAttempts, attempts });
 }
