@@ -177,6 +177,32 @@ test('level attempt can build, play, teardown, dispose, and rebuild from a seed'
   assert.deepEqual(rebuiltLayout.decor, firstLayout.decor);
 });
 
+test('completed run can be replayed from the same seed and action script', () => {
+  const spawnRules = { trash: 1, patches: 1, minionQuota: 0, bossRequired: false };
+  const playScript = (attempt) => {
+    startAttempt(attempt);
+
+    attempt.player.pos.x = attempt.trash[0].pos.x;
+    attempt.player.pos.z = attempt.trash[0].pos.z;
+    stepAttempt(attempt, 1 / 60);
+
+    attempt.player.pos.x = attempt.patches[0].pos.x;
+    attempt.player.pos.z = attempt.patches[0].pos.z;
+    attempt.input.plant = true;
+    stepAttempt(attempt, 1 / 60);
+
+    return serializeAttempt(attempt);
+  };
+
+  const first = createAttempt({ level: 1, seed: 'completed-replay', spawnRules });
+  const replay = createAttempt({ level: 1, seed: 'completed-replay', spawnRules });
+  const firstResult = playScript(first);
+  const replayResult = playScript(replay);
+
+  assert.equal(firstResult.status, 'complete');
+  assert.deepEqual(replayResult, firstResult);
+});
+
 test('GameSession supports levelId and retrying from a new seed', () => {
   const session = new GameSession({ levelId: 3, seed: 'first' });
   const first = session.snapshot();
