@@ -533,7 +533,7 @@
 - [x] Decide whether to use Vite or keep a no-bundler ES module setup.
 - [x] Decide whether to add a service worker for the web version or rely only on Tauri packaging for offline distribution.
 - [x] Decide whether LLM play should be turn-stepped for evaluation, real-time for demos, or support both.
-- [ ] Confirm target Tauri version before mobile setup because mobile support requirements can change.
+- [x] Confirm target Tauri version before mobile setup because mobile support requirements can change.
 - [ ] Treat deterministic simulation as the highest-risk part of the refactor because the current code mixes random generation, gameplay state, and rendering.
 - [x] Treat modern Three.js upgrade as out of scope for the first offline milestone unless a blocker requires it.
 - [x] Track Apple platform work as blocked until required hardware and account access are confirmed.

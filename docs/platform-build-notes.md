@@ -1,5 +1,7 @@
 # Platform Build Notes
 
+Target Tauri version: v2. The npm CLI package and Rust crates are kept on the Tauri 2.x line before mobile setup work proceeds.
+
 ## Release Order
 
 1. Web offline build.
