@@ -382,7 +382,7 @@
 - [x] Release order v1: Android third after SDK/signing setup is complete.
 - [x] Release order v1: macOS and iOS only after Mac hardware, Xcode, signing, and Apple Developer access are available.
 - [x] Windows: build `.msi` or `.exe` installer.
-- [ ] Windows: test offline launch after install.
+- [x] Windows: test offline launch after install.
 - [ ] macOS: build `.dmg` or app bundle.
 - [ ] macOS: test offline launch after install.
 - [ ] macOS: complete signing and notarization for distribution.

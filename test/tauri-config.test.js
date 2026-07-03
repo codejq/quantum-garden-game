@@ -28,6 +28,16 @@ test('Tauri desktop launch smoke script is available', () => {
   assert.equal(packageJson.scripts['test:tauri-launch'], 'node scripts/tauri-desktop-launch-smoke.mjs');
 });
 
+test('Tauri Windows install smoke script is available and scoped to target temp files', () => {
+  assert.equal(packageJson.scripts['test:tauri-install'], 'node scripts/tauri-windows-install-smoke.mjs');
+  const installSmokeSource = readFileSync(join(root, 'scripts/tauri-windows-install-smoke.mjs'), 'utf8');
+
+  assert.match(installSmokeSource, /src-tauri\/target\/install-smoke/);
+  assert.match(installSmokeSource, /function assertInsideSmokeRoot/);
+  assert.match(installSmokeSource, /rmSync\(installDir, \{ recursive: true, force: true \}\)/);
+  assert.match(installSmokeSource, /\/D=\$\{installDir\}/);
+});
+
 test('Tauri exposes a native close command for desktop exit', () => {
   assert.match(tauriLibSource, /fn close_window\(window: tauri::Window\) -> Result<\(\), String>/);
   assert.match(tauriLibSource, /window\.close\(\)/);
