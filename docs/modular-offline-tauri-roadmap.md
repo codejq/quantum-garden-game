@@ -183,7 +183,7 @@
 - [x] Add a render sync layer that creates, updates, and removes meshes to match simulation entities.
 - [x] Add fixed-timestep simulation stepping.
 - [x] Add headless simulation tests that run without DOM, canvas, or WebGL.
-- [ ] Ensure `Game.running`, pause, and level completion are simulation states, not only UI flags.
+- [x] Ensure `Game.running`, pause, and level completion are simulation states, not only UI flags.
 - [ ] Keep environment animation that is purely visual in the render layer.
 - [x] Keep gameplay-affecting timers in the simulation layer.
 - [x] Add object lifecycle hooks for spawn, update, complete, remove, and dispose.

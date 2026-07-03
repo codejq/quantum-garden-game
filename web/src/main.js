@@ -693,14 +693,41 @@ buildDecorativeWorld();
 
 /* ---------------- Game state ---------------- */
 const Game={
-  running:false,level:1,score:0,trees:0,lifetimeTrees:0,trashGot:0,
+  status:'menu',running:false,level:1,score:0,trees:0,lifetimeTrees:0,trashGot:0,
   quota:0,spawned:0,converted:0,spawnTimer:0,nearPatch:null,plantCd:0,bossDelay:0,elapsed:0,seed:activeSeed,
+
+  setStatus(status){
+    this.status=status;
+    this.running=status==='running';
+  },
+
+  startRunning(){
+    this.setStatus('running');
+  },
+
+  pause(){
+    if(this.status==='running')this.setStatus('paused');
+  },
+
+  resume(){
+    if(this.status==='paused')this.setStatus('running');
+  },
+
+  complete(){
+    this.setStatus('complete');
+  },
+
+  exit(){
+    this.setStatus('exited');
+    this.clearTimers();
+  },
 
   clearTimers(){
     this.bossDelay=0;
   },
 
   startLevel(n,options={}){
+    this.startRunning();
     this.clearTimers();
     const seed=setActiveSeed(options.seed||makeAttemptSeed(n));
     this.seed=seed;
@@ -769,7 +796,7 @@ const Game={
   checkWin(){
     if(trash.length===0&&patches.every(p=>p.planted)&&
        this.converted>=this.quota&&this.spawned>=this.quota&&this.bossDefeated()){
-      this.running=false;
+      this.complete();
       Snd.fanfare();confetti();
       this.addScore(50+this.level*10);
       const result=recordBestTime(this.level,this.elapsed);
@@ -1008,8 +1035,7 @@ function showMenu(){
   $('prompt').style.display='none';
 }
 async function exitGame(){
-  Game.running=false;
-  Game.clearTimers();
+  Game.exit();
   if(await closeTauriWindowAfterConfirm())return;
   exitFullscreen();
   note(tr('exited'),true,1200);
@@ -1017,16 +1043,15 @@ async function exitGame(){
 }
 function pauseGame(){
   if(!Game.running)return;
-  Game.running=false;
+  Game.pause();
   $('pauseOverlay').style.display='flex';
 }
 function resumeGame(){
   $('pauseOverlay').style.display='none';
-  Game.running=true;
+  Game.resume();
 }
 function retryLevel(){
   $('pauseOverlay').style.display='none';
-  Game.running=true;
   Game.startLevel(Game.level);
 }
 function setActiveMode(mode){
@@ -1049,7 +1074,6 @@ $('startBtn').onclick=()=>{
   $('viewBtn').style.display='block';
   $('resetViewBtn').style.display='block';
   if(isTouch){$('joy').style.display='block';$('actBtn').style.display='flex';}
-  Game.running=true;
   Game.startLevel(1);
 };
 $('nextBtn').onclick=()=>{
@@ -1058,7 +1082,6 @@ $('nextBtn').onclick=()=>{
   $('pauseBtn').style.display='block';
   $('viewBtn').style.display='block';
   $('resetViewBtn').style.display='block';
-  Game.running=true;
   Game.startLevel(Game.level+1);
 };
 $('languageSelect').onchange=e=>applyLocale(e.target.value);
@@ -1194,7 +1217,6 @@ function resetAgent(options={}){
   $('exitBtn').style.display='block';
   $('pauseBtn').style.display='block';
   const levelId=Number(options.levelId||options.level||1);
-  Game.running=true;
   Game.startLevel(Number.isFinite(levelId)&&levelId>0?levelId:1,{ seed:options.seed });
   return { ok:true, seedApplied:!!options.seed, observation:observeAgent() };
 }
