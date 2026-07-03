@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { isPlantKey, keyboardVector } from '../web/src/input/keyboard.js';
+import { createKeyboardInput, isPlantKey, keyboardVector } from '../web/src/input/keyboard.js';
 import { createMouseInput } from '../web/src/input/mouse.js';
 import { createTouchInput, joystickVector } from '../web/src/input/touch.js';
 
@@ -32,6 +32,35 @@ test('keyboardVector maps WASD and arrows to normalized movement', () => {
   assert.equal(Number(diagonal.z.toFixed(3)), -0.707);
   assert.equal(isPlantKey('Space'), true);
   assert.equal(isPlantKey('KeyE'), true);
+});
+
+test('keyboard input preserves WASD, arrows, Space, and E controls', () => {
+  const el = target();
+  const events = [];
+  const dispose = createKeyboardInput(el, {
+    move: (vector) => events.push(['move', Number(vector.x.toFixed(3)), Number(vector.z.toFixed(3))]),
+    plant: () => events.push(['plant']),
+  });
+
+  el.emit('keydown', { code: 'KeyW' });
+  el.emit('keydown', { code: 'ArrowRight' });
+  el.emit('keyup', { code: 'KeyW' });
+  el.emit('keydown', { code: 'Space', preventDefault: () => events.push(['prevent']) });
+  el.emit('keydown', { code: 'KeyE', preventDefault: () => events.push(['prevent']) });
+  dispose();
+
+  assert.deepEqual(events, [
+    ['move', 0, -1],
+    ['move', 0.707, -0.707],
+    ['move', 1, 0],
+    ['prevent'],
+    ['plant'],
+    ['move', 1, 0],
+    ['prevent'],
+    ['plant'],
+    ['move', 1, 0],
+  ]);
+  assert.equal(el.listenerCount(), 0);
 });
 
 test('mouse input emits camera and interaction actions', () => {

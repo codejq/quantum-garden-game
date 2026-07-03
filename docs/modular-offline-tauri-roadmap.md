@@ -286,8 +286,8 @@
 
 ## Mobile And Desktop Input
 
-- [ ] Keep WASD and arrow movement.
-- [ ] Keep Space and E for planting.
+- [x] Keep WASD and arrow movement.
+- [x] Keep Space and E for planting.
 - [x] Add mouse support for desktop players.
 - [x] Add mouse click support for planting or interacting when the player is near an actionable object.
 - [x] Add mouse drag support for rotating the camera view.
