@@ -73,22 +73,22 @@
 
 - [ ] Fix cumulative world state across levels.
 - [ ] Move decorative world generation into the level-attempt lifecycle instead of running it only once at module load.
-- [ ] Clear old planted patches and planted trees when starting a new level attempt unless a future mode explicitly needs persistent progression.
-- [ ] Reset per-level patch counts so the mission card does not show trees from previous levels.
-- [ ] Decide whether `Game.trees` is lifetime total, per-level total, or both.
-- [ ] If lifetime and per-level tree counts are both needed, track them as separate fields.
-- [ ] Add a level-attempt cleanup function that removes all gameplay objects.
+- [x] Clear old planted patches and planted trees when starting a new level attempt unless a future mode explicitly needs persistent progression.
+- [x] Reset per-level patch counts so the mission card does not show trees from previous levels.
+- [x] Decide whether `Game.trees` is lifetime total, per-level total, or both.
+- [x] If lifetime and per-level tree counts are both needed, track them as separate fields.
+- [x] Add a level-attempt cleanup function that removes all gameplay objects.
 - [ ] Add a world cleanup function that removes all decorative objects created for the attempt.
-- [ ] Dispose geometries, materials, and textures for removed objects.
-- [ ] Review the shared material cache and define which materials are global and which are attempt-scoped.
-- [ ] Avoid silent trash spawn failure when the trash cap is reached.
-- [ ] Replace `spawnTrash()` no-op behavior with an explicit result such as `{ spawned: true }` or `{ spawned: false, reason: "cap" }`.
-- [ ] Make villain litter behavior react to failed trash spawns instead of pretending trash was dropped.
+- [x] Dispose geometries, materials, and textures for removed objects.
+- [x] Review the shared material cache and define which materials are global and which are attempt-scoped.
+- [x] Avoid silent trash spawn failure when the trash cap is reached.
+- [x] Replace `spawnTrash()` no-op behavior with an explicit result such as `{ spawned: true }` or `{ spawned: false, reason: "cap" }`.
+- [x] Make villain litter behavior react to failed trash spawns instead of pretending trash was dropped.
 - [x] Replace bare boss `setTimeout()` scheduling with simulation-owned timers.
 - [x] Store and clear any remaining browser timer handles during pause, retry, exit, or level transition.
 - [ ] Ensure pause freezes gameplay timers, boss spawn timing, villain drops, elapsed time, and input effects.
 - [ ] Ensure visual-only animations can continue during pause only if intentionally allowed.
-- [ ] Recalculate or redesign pollution denominator so spawned trash during a level does not make the meter misleading.
+- [x] Recalculate or redesign pollution denominator so spawned trash during a level does not make the meter misleading.
 - [x] Remove `maximum-scale=1.0` and `user-scalable=no` unless a platform-specific reason requires them.
 - [x] Add accessible labels for emoji-only buttons.
 - [ ] Replace global singleton assumptions with instantiable game/session objects.

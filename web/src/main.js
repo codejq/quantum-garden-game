@@ -471,14 +471,16 @@ const villains=[];
 let mtermish=null;
 
 function spawnTrash(pos){
-  if(trash.length>45)return;
+  if(trash.length>=45)return { spawned:false, reason:'cap' };
   const m=trashBuilders[randi(0,trashBuilders.length-1)]();
   m.traverse(o=>{if(o.isMesh)o.castShadow=true;});
   if(pos)m.position.set(pos.x,m.position.y,pos.z);
   else{const a=Math.random()*Math.PI*2,r=rand(4,WORLD_R-2);
     m.position.set(Math.cos(a)*r,m.position.y,Math.sin(a)*r);}
   m.rotation.y=Math.random()*Math.PI*2;
-  scene.add(m);trash.push({mesh:m});}
+  scene.add(m);trash.push({mesh:m});
+  return { spawned:true, mesh:m };
+}
 
 function spawnPatch(){
   const a=Math.random()*Math.PI*2,r=rand(7,WORLD_R-6);
@@ -504,9 +506,41 @@ function spawnVillain(boss=false){
 function newTarget(v){const a=Math.random()*Math.PI*2,r=rand(5,WORLD_R-3);
   v.target.set(Math.cos(a)*r,0,Math.sin(a)*r);}
 
+function isSharedMaterial(material){
+  return Object.values(MAT).includes(material);
+}
+function disposeAttemptObject(obj){
+  if(!obj)return;
+  obj.traverse(o=>{
+    if(!o.isMesh&&!o.isPoints)return;
+    if(o.geometry)o.geometry.dispose();
+    const materials=Array.isArray(o.material)?o.material:[o.material];
+    for(const material of materials){
+      if(material&&!isSharedMaterial(material)&&material!==groundMat)material.dispose();
+    }
+  });
+}
+function removeAttemptObject(obj){
+  if(!obj)return;
+  scene.remove(obj);
+  disposeAttemptObject(obj);
+}
+function cleanupLevelAttempt(){
+  trash.forEach(t=>removeAttemptObject(t.mesh));
+  trash.length=0;
+  villains.forEach(v=>removeAttemptObject(v.mesh));
+  villains.length=0;
+  patches.forEach(p=>{
+    removeAttemptObject(p.tree);
+    removeAttemptObject(p.mesh);
+  });
+  patches.length=0;
+  mtermish=null;
+}
+
 /* ---------------- Game state ---------------- */
 const Game={
-  running:false,level:1,score:0,trees:0,trashGot:0,
+  running:false,level:1,score:0,trees:0,lifetimeTrees:0,trashGot:0,
   quota:0,spawned:0,converted:0,spawnTimer:0,nearPatch:null,plantCd:0,bossTimer:null,
 
   clearTimers(){
@@ -515,11 +549,8 @@ const Game={
 
   startLevel(n){
     this.clearTimers();
-    this.level=n;this.converted=0;this.spawned=0;this.spawnTimer=2;
-    trash.forEach(t=>scene.remove(t.mesh));trash.length=0;
-    villains.forEach(v=>scene.remove(v.mesh));villains.length=0;mtermish=null;
-    patches.forEach(p=>{if(!p.planted)scene.remove(p.mesh);});
-    for(let i=patches.length-1;i>=0;i--)if(!patches[i].planted)patches.splice(i,1);
+    cleanupLevelAttempt();
+    this.level=n;this.converted=0;this.spawned=0;this.spawnTimer=2;this.trees=0;this.nearPatch=null;this.plantCd=0;
     const nTrash=9+n*3, nPatch=2+Math.min(n,5);
     for(let i=0;i<nTrash;i++)spawnTrash();
     for(let i=0;i<nPatch;i++)spawnPatch();
@@ -527,7 +558,7 @@ const Game={
     this.spawnedBoss=false;
     this.polMax=nTrash*3+nPatch*6+18;
     player.pos.set(6,0,6);player.vel.set(0,0,0);
-    $('uiLevel').textContent=n;
+    $('uiLevel').textContent=n;$('uiTrees').textContent=this.trees;
     note(tr('levelStart',n),true,3200);
     this.bossTimer=setTimeout(()=>{this.bossTimer=null;if(this.running){this.spawnedBoss=true;spawnVillain(true);this.updateMission();}},4000);
     this.updateMission();
@@ -539,7 +570,7 @@ const Game={
     p.tree=makeTree();p.tree.scale.setScalar(.01);
     p.tree.position.copy(p.mesh.position);scene.add(p.tree);
     p.ring.visible=false;
-    this.trees++;this.addScore(25,p.mesh.position.clone().add(new THREE.Vector3(0,2,0)));
+    this.trees++;this.lifetimeTrees++;this.addScore(25,p.mesh.position.clone().add(new THREE.Vector3(0,2,0)));
     this.plantCd=.6;
     Snd.plant();burst(p.mesh.position.clone().setY(1),0x9ef01a,18,3.5);
     note(pick(LINES.plant),true);
@@ -551,6 +582,7 @@ const Game={
 
   pollution(){
     const total=trash.length*3+villains.length*9+patches.filter(p=>!p.planted).length*6;
+    this.polMax=Math.max(this.polMax||60,total,1);
     return clamp(total/(this.polMax||60)*100,0,100);},
 
   updateMission(){
@@ -640,9 +672,9 @@ function villainsUpdate(dt){
       v.drop-=dt;
       if(v.drop<=0){v.drop=v.boss?rand(2,3.5):rand(3.5,6.5);
         const inD=Math.hypot(v.mesh.position.x,v.mesh.position.z);
-        if(inD<WORLD_R)spawnTrash(v.mesh.position);
-        if(Math.random()<.25)note(pick(LINES.mtermishTaunt),false,1800);
-        Game.updateMission();}
+        const dropResult=inD<WORLD_R?spawnTrash(v.mesh.position):{ spawned:false, reason:'outside-world' };
+        if(dropResult.spawned&&Math.random()<.25)note(pick(LINES.mtermishTaunt),false,1800);
+        if(dropResult.spawned)Game.updateMission();}
       if(v.hitCd<=0){
         const dist=v.mesh.position.distanceTo(player.pos);
         if(dist<(v.boss?2.2:1.5)){
