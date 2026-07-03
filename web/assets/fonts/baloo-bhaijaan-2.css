@@ -1,0 +1,16 @@
+@font-face {
+  font-family: 'Baloo Bhaijaan 2';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('./baloo-bhaijaan-2-600.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Baloo Bhaijaan 2';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('./baloo-bhaijaan-2-800.ttf') format('truetype');
+}
+

@@ -64,7 +64,7 @@
 - [ ] Use fully seeded world generation for reproducible LLM evaluation and bug reports.
 - [ ] Add stable object IDs for all interactive objects.
 - [ ] Add teardown/disposal rules for every scene object created during a level attempt.
-- [ ] Vendor current Three.js r128 locally first to remove CDN usage without changing behavior.
+- [x] Vendor current Three.js r128 locally first to remove CDN usage without changing behavior.
 - [ ] Treat upgrading Three.js as a separate future migration after the modular/offline baseline is stable.
 - [ ] Make two-player race v1 a sequential same-seed time trial.
 - [ ] Gate iOS and macOS release work behind access to macOS, Xcode, signing certificates, and Apple Developer account.
@@ -144,13 +144,13 @@
 
 - [x] Add `package.json` for web build scripts and dependency management.
 - [ ] Add Vite or an equivalent lightweight bundler.
-- [ ] Vendor the current Three.js r128 build locally first instead of loading it from a CDN.
-- [ ] Keep the visual baseline stable while removing CDN dependencies.
+- [x] Vendor the current Three.js r128 build locally first instead of loading it from a CDN.
+- [x] Keep the visual baseline stable while removing CDN dependencies.
 - [ ] Add a separate later task to migrate from Three.js r128 to a modern npm Three.js release.
-- [ ] Remove the Google Fonts network dependency.
-- [ ] Self-host the current `Baloo Bhaijaan 2` font because it supports Arabic and Latin text for the required locales.
-- [ ] Add local font files under `web/assets/fonts/`.
-- [ ] Add CSS `@font-face` rules for offline fonts.
+- [x] Remove the Google Fonts network dependency.
+- [x] Self-host the current `Baloo Bhaijaan 2` font because it supports Arabic and Latin text for the required locales.
+- [x] Add local font files under `web/assets/fonts/`.
+- [x] Add CSS `@font-face` rules for offline fonts.
 - [ ] Add `npm run dev` for browser development.
 - [ ] Add `npm run build` to produce a static offline build.
 - [ ] Add `npm run preview` to test the built output.
@@ -339,17 +339,17 @@
 
 ## Offline Support
 
-- [ ] Remove all CDN scripts.
-- [ ] Remove all remote font links.
-- [ ] Bundle or vendor Three.js r128 locally for the first offline milestone.
-- [ ] Do not combine the first offline milestone with a Three.js major-version upgrade.
-- [ ] Bundle fonts locally.
+- [x] Remove all CDN scripts.
+- [x] Remove all remote font links.
+- [x] Bundle or vendor Three.js r128 locally for the first offline milestone.
+- [x] Do not combine the first offline milestone with a Three.js major-version upgrade.
+- [x] Bundle fonts locally.
 - [ ] Keep audio fully generated or bundle local audio assets.
 - [ ] Avoid network calls during gameplay.
 - [ ] Add a test that blocks network and verifies the game loads.
 - [ ] Add a service worker only if the web build must also support installable PWA behavior.
 - [ ] For Tauri builds, load the local static bundle from the app package.
-- [ ] Confirm no runtime dependency on Google Fonts, CDNJS, or external APIs.
+- [x] Confirm no runtime dependency on Google Fonts, CDNJS, or external APIs.
 
 ## Tauri Project
 
