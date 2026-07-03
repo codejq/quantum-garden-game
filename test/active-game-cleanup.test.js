@@ -23,3 +23,13 @@ test('active trash spawns report cap failures explicitly', () => {
   assert.match(source, /return \{ spawned:true, mesh:m \}/);
   assert.match(source, /dropResult\.spawned/);
 });
+
+test('active trash gameplay reads plain position data instead of mesh-owned state', () => {
+  assert.match(source, /const trashPos=new THREE\.Vector3\(\)/);
+  assert.match(source, /scene\.add\(m\);trash\.push\(\{pos:trashPos,mesh:m\}\)/);
+  assert.match(source, /t\.mesh\.position\.copy\(t\.pos\)/);
+  assert.match(source, /if\(t\.pos\.distanceTo\(player\.pos\)<1\.35\)/);
+  assert.match(source, /burst\(t\.pos\.clone\(\)\.setY\(\.6\)/);
+  assert.match(source, /Game\.addScore\(10,t\.pos\.clone\(\)\.setY\(1\.4\)\)/);
+  assert.match(source, /trash:nearestList\(trash,'trash',t=>t\.pos/);
+});

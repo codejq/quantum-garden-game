@@ -599,11 +599,13 @@ function spawnTrash(pos){
   if(trash.length>=45)return { spawned:false, reason:'cap' };
   const m=trashBuilders[randi(0,trashBuilders.length-1)]();
   m.traverse(o=>{if(o.isMesh)o.castShadow=true;});
-  if(pos)m.position.set(pos.x,m.position.y,pos.z);
+  const trashPos=new THREE.Vector3();
+  if(pos)trashPos.set(pos.x,m.position.y,pos.z);
   else{const a=random()*Math.PI*2,r=rand(4,WORLD_R-2);
-    m.position.set(Math.cos(a)*r,m.position.y,Math.sin(a)*r);}
+    trashPos.set(Math.cos(a)*r,m.position.y,Math.sin(a)*r);}
+  m.position.copy(trashPos);
   m.rotation.y=random()*Math.PI*2;
-  scene.add(m);trash.push({mesh:m});
+  scene.add(m);trash.push({pos:trashPos,mesh:m});
   return { spawned:true, mesh:m };
 }
 
@@ -926,11 +928,12 @@ function trashUpdate(dt){
   for(let i=trash.length-1;i>=0;i--){
     const t=trash[i];
     t.mesh.rotation.y+=dt*.8;
-    if(t.mesh.position.distanceTo(player.pos)<1.35){
-      burst(t.mesh.position.clone().setY(.6),0xffd166,10,3);
+    t.mesh.position.copy(t.pos);
+    if(t.pos.distanceTo(player.pos)<1.35){
+      burst(t.pos.clone().setY(.6),0xffd166,10,3);
       Snd.pickup();
       Game.trashGot++;$('uiTrash').textContent=Game.trashGot;
-      Game.addScore(10,t.mesh.position.clone().setY(1.4));
+      Game.addScore(10,t.pos.clone().setY(1.4));
       if(random()<.3)note(line('pickup'),true,1500);
       scene.remove(t.mesh);trash.splice(i,1);
       Game.updateMission();Game.checkWin();
@@ -1153,7 +1156,7 @@ function observeAgent(){
       actions:['toggleCamera','resetCamera','setCamera']
     },
     nearest:{
-      trash:nearestList(trash,'trash',t=>t.mesh.position,()=>({})),
+      trash:nearestList(trash,'trash',t=>t.pos,()=>({})),
       patches:nearestList(patches,'patch',p=>p.mesh.position,p=>({ planted:!!p.planted })),
       villains:nearestList(villains,'villain',v=>v.mesh.position,v=>({
         boss:!!v.boss,
