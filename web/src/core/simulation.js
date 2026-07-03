@@ -1,11 +1,10 @@
 import { SeededRandom } from './random.js';
+import { createPlayer, updatePlayer as updatePlayerEntity } from '../entities/player.js';
+import { collectTrashItems, spawnTrashItem } from '../entities/trash.js';
+import { plantNearestPatch, updatePatchGrowth } from '../entities/patch.js';
+import { hitVillain, moveVillainTowardTarget } from '../entities/villain.js';
 
 const WORLD_RADIUS = 42;
-const PLAYER_SPEED = 8;
-const TRASH_RADIUS = 1.35;
-const PATCH_RADIUS = 2.2;
-const VILLAIN_RADIUS = 1.5;
-const BOSS_RADIUS = 2.2;
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
@@ -43,10 +42,11 @@ export function createAttempt({ level = 1, seed = `level-${level}` } = {}) {
 
   for (let i = 0; i < trashCount; i += 1) {
     trash.push({
-      id: makeId('trash', i + 1),
-      pos: pointFrom(rng, 4, WORLD_RADIUS - 2),
-      kind: rng.pick(['can', 'wrapper', 'paper', 'bottle', 'slice']),
-      collected: false,
+      ...spawnTrashItem({
+        id: makeId('trash', i + 1),
+        pos: pointFrom(rng, 4, WORLD_RADIUS - 2),
+        kind: rng.pick(['can', 'wrapper', 'paper', 'bottle', 'slice']),
+      }),
     });
   }
 
@@ -84,12 +84,7 @@ export function createAttempt({ level = 1, seed = `level-${level}` } = {}) {
     bossSpawned: false,
     bossSpawnTimer: 4,
     spawnTimer: 2,
-    player: {
-      id: 'player-001',
-      pos: { x: 6, z: 6 },
-      vel: { x: 0, z: 0 },
-      yaw: 0,
-    },
+    player: createPlayer(),
     input: {
       moveX: 0,
       moveZ: 0,
@@ -230,50 +225,24 @@ function spawnVillain(attempt, boss = false) {
 }
 
 function collectTrash(attempt) {
-  for (const item of attempt.trash) {
-    if (!item.collected && len2(item.pos.x - attempt.player.pos.x, item.pos.z - attempt.player.pos.z) < TRASH_RADIUS) {
-      item.collected = true;
-      attempt.trashGot += 1;
-      addScore(attempt, 10);
-    }
-  }
-  attempt.trash = attempt.trash.filter((item) => !item.collected);
+  const result = collectTrashItems(attempt.trash, attempt.player.pos);
+  attempt.trash = result.remaining;
+  attempt.trashGot += result.collected.length;
+  addScore(attempt, result.collected.length * 10);
 }
 
 function plantNearPatch(attempt) {
   if (!attempt.input.plant) return;
   attempt.input.plant = false;
-  const patch = attempt.patches.find(
-    (item) => !item.planted && len2(item.pos.x - attempt.player.pos.x, item.pos.z - attempt.player.pos.z) < PATCH_RADIUS,
-  );
+  const patch = plantNearestPatch(attempt.patches, attempt.player.pos);
   if (!patch) return;
-  patch.planted = true;
   attempt.treesLevel += 1;
   attempt.treesTotal += 1;
   addScore(attempt, 25);
 }
 
 function updatePlayer(attempt, dt) {
-  const player = attempt.player;
-  player.vel.x = attempt.input.moveX * PLAYER_SPEED;
-  player.vel.z = attempt.input.moveZ * PLAYER_SPEED;
-  player.pos.x += player.vel.x * dt;
-  player.pos.z += player.vel.z * dt;
-  const distance = len2(player.pos.x, player.pos.z);
-  if (distance > WORLD_RADIUS + 6) {
-    const scale = (WORLD_RADIUS + 6) / distance;
-    player.pos.x *= scale;
-    player.pos.z *= scale;
-  }
-  const centerDistance = len2(player.pos.x, player.pos.z);
-  if (centerDistance < 2.6) {
-    const scale = 2.6 / Math.max(centerDistance, 0.001);
-    player.pos.x *= scale;
-    player.pos.z *= scale;
-  }
-  if (len2(player.vel.x, player.vel.z) > 0.1) {
-    player.yaw = Math.atan2(player.vel.x, player.vel.z);
-  }
+  updatePlayerEntity(attempt.player, attempt.input, dt);
 }
 
 function updateVillains(attempt, dt) {
@@ -297,16 +266,10 @@ function updateVillains(attempt, dt) {
     const distance = len2(dx, dz);
     if (distance < 1) {
       villain.target = targetFrom(attempt.rng);
-    } else {
-      villain.pos.x += (dx / distance) * villain.speed * dt;
-      villain.pos.z += (dz / distance) * villain.speed * dt;
-    }
+    } else moveVillainTowardTarget(villain, dt);
 
-    const hitRadius = villain.boss ? BOSS_RADIUS : VILLAIN_RADIUS;
-    if (len2(villain.pos.x - attempt.player.pos.x, villain.pos.z - attempt.player.pos.z) < hitRadius) {
-      villain.hp -= 1;
+    if (hitVillain(villain, attempt.player.pos)) {
       if (villain.hp <= 0) {
-        villain.state = 'converted';
         if (villain.boss) addScore(attempt, 100);
         else {
           attempt.converted += 1;
@@ -327,9 +290,7 @@ function updateVillains(attempt, dt) {
 }
 
 function updatePatches(attempt, dt) {
-  for (const patch of attempt.patches) {
-    if (patch.planted) patch.grow = clamp(patch.grow + dt * 0.9, 0, 1);
-  }
+  updatePatchGrowth(attempt.patches, dt);
 }
 
 function updateWin(attempt) {

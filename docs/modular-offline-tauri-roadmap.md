@@ -114,10 +114,10 @@
 - [x] Create `web/src/render/materials.js` for shared material creation and disposal helpers.
 - [ ] Create `web/src/world/builders.js` for trees, flowers, rocks, trash, player, villains, and other mesh builders.
 - [ ] Create `web/src/world/spawners.js` for level object placement.
-- [ ] Create `web/src/entities/player.js` for player entity state and animation.
-- [ ] Create `web/src/entities/villain.js` for minion and boss behavior.
-- [ ] Create `web/src/entities/trash.js` for trash behavior.
-- [ ] Create `web/src/entities/patch.js` for planting patch behavior.
+- [x] Create `web/src/entities/player.js` for player entity state and animation.
+- [x] Create `web/src/entities/villain.js` for minion and boss behavior.
+- [x] Create `web/src/entities/trash.js` for trash behavior.
+- [x] Create `web/src/entities/patch.js` for planting patch behavior.
 - [x] Create `web/src/input/keyboard.js` for desktop movement and actions.
 - [x] Create `web/src/input/mouse.js` for desktop mouse movement, camera control, pointer selection, and click actions.
 - [x] Create `web/src/input/touch.js` for mobile joystick and action button.
@@ -172,18 +172,18 @@
 ## Simulation And Rendering Separation
 
 - [ ] Replace module-global gameplay singletons with session-owned state.
-- [ ] Move player position, velocity, yaw, animation time, and input state into plain simulation data.
-- [ ] Move trash positions, IDs, collected state, and scoring values into plain simulation data.
-- [ ] Move patch positions, IDs, planted state, tree growth state, and interaction radius into plain simulation data.
-- [ ] Move villain positions, IDs, HP, target, behavior state, timers, and boss/minion type into plain simulation data.
-- [ ] Move objective progress and win checks into the simulation layer.
+- [x] Move player position, velocity, yaw, animation time, and input state into plain simulation data.
+- [x] Move trash positions, IDs, collected state, and scoring values into plain simulation data.
+- [x] Move patch positions, IDs, planted state, tree growth state, and interaction radius into plain simulation data.
+- [x] Move villain positions, IDs, HP, target, behavior state, timers, and boss/minion type into plain simulation data.
+- [x] Move objective progress and win checks into the simulation layer.
 - [ ] Keep Three.js mesh objects inside the render layer only.
 - [x] Add a render sync layer that creates, updates, and removes meshes to match simulation entities.
 - [x] Add fixed-timestep simulation stepping.
 - [x] Add headless simulation tests that run without DOM, canvas, or WebGL.
 - [ ] Ensure `Game.running`, pause, and level completion are simulation states, not only UI flags.
 - [ ] Keep environment animation that is purely visual in the render layer.
-- [ ] Keep gameplay-affecting timers in the simulation layer.
+- [x] Keep gameplay-affecting timers in the simulation layer.
 - [ ] Add object lifecycle hooks for spawn, update, complete, remove, and dispose.
 - [x] Add level-attempt lifecycle hooks: `buildAttempt(seed)`, `startAttempt()`, `pauseAttempt()`, `completeAttempt()`, `exitAttempt()`, and `teardownAttempt()`.
 - [ ] Verify the browser game still behaves like the original prototype after the separation.
