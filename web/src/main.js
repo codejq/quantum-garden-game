@@ -595,11 +595,14 @@ const trashMeshes=new WeakMap();
 const patches=[];
 const patchViews=new WeakMap();
 const villains=[];
+const villainViews=new WeakMap();
 let mtermish=null;
 function setTrashMesh(item,mesh){trashMeshes.set(item,mesh);return item;}
 function trashMesh(item){return trashMeshes.get(item);}
 function setPatchView(patch,view){patchViews.set(patch,view);return patch;}
 function patchView(patch){return patchViews.get(patch);}
+function setVillainView(villain,view){villainViews.set(villain,view);return villain;}
+function villainView(villain){return villainViews.get(villain);}
 
 function spawnTrash(pos){
   if(trash.length>=45)return { spawned:false, reason:'cap' };
@@ -635,8 +638,8 @@ function spawnVillain(boss=false){
   const villainPos=new THREE.Vector3(Math.cos(a)*r,0,Math.sin(a)*r);
   m.position.copy(villainPos);
   scene.add(m);
-  const v={pos:villainPos,mesh:m,boss,hp:boss?3:1,state:'walk',t:0,
-    target:new THREE.Vector3(),drop:rand(2.5,5),hitCd:0,speed:boss?3.4:rand(1.8,2.6)};
+  const v=setVillainView({pos:villainPos,boss,hp:boss?3:1,state:'walk',t:0,
+    target:new THREE.Vector3(),drop:rand(2.5,5),hitCd:0,speed:boss?3.4:rand(1.8,2.6)},{mesh:m});
   newTarget(v);villains.push(v);
   if(boss){mtermish=v;note(line('mtermishTaunt'));Snd.laugh();}
   return v;}
@@ -665,7 +668,7 @@ function removeAttemptObject(obj){
 function cleanupLevelAttempt(){
   trash.forEach(t=>removeAttemptObject(trashMesh(t)));
   trash.length=0;
-  villains.forEach(v=>removeAttemptObject(v.mesh));
+  villains.forEach(v=>removeAttemptObject(villainView(v)?.mesh));
   villains.length=0;
   patches.forEach(p=>{
     const view=patchView(p);
@@ -900,7 +903,7 @@ function villainsUpdate(dt){
           burst(v.pos.clone().setY(1.2),v.boss?0xc084fc:0xffd166,16,4.5);
           if(v.hp<=0){
             v.state='convert';v.t=0;Snd.convert();
-            v.mesh.traverse(o=>{if(o.isMesh&&o.material===mat(0x9c6bd6))o.material=mat(0x51cf66);});
+            villainView(v)?.mesh?.traverse(o=>{if(o.isMesh&&o.material===mat(0x9c6bd6))o.material=mat(0x51cf66);});
             if(v.boss){note(line('mtermishDown'),true,3000);Game.addScore(100,v.pos.clone().setY(2.5));}
             else{note(line('minion'),true);Game.addScore(30,v.pos.clone().setY(2));}
           }else{Snd.bonk();note(line('mtermishHit'),false,2000);
@@ -913,7 +916,7 @@ function villainsUpdate(dt){
       if(v.t>.7)v.visualScale=s;
       if(v.t>1.2){
         burst(v.pos.clone().setY(1),0x51cf66,20,5);
-        scene.remove(v.mesh);villains.splice(i,1);
+        scene.remove(villainView(v)?.mesh);villains.splice(i,1);
         if(v.boss)mtermish=null;else Game.converted++;
         Game.updateMission();Game.checkWin();
       }
@@ -962,15 +965,18 @@ function syncGameplayMeshes(dt,time){
   player.mesh.position.y=Math.abs(Math.sin(player.anim*4))*.1*clamp(spd/8,0,1);
 
   for(const v of villains){
-    v.mesh.position.copy(v.pos);
+    const view=villainView(v);
+    const mesh=view?.mesh;
+    if(!mesh)continue;
+    mesh.position.copy(v.pos);
     if(v.state==='walk'){
-      if(Number.isFinite(v.yaw))v.mesh.rotation.y=v.yaw;
-      v.mesh.position.y=Math.abs(Math.sin(v.t*8))*.12;
-      v.mesh.rotation.z=Math.sin(v.t*8)*.08;
+      if(Number.isFinite(v.yaw))mesh.rotation.y=v.yaw;
+      mesh.position.y=Math.abs(Math.sin(v.t*8))*.12;
+      mesh.rotation.z=Math.sin(v.t*8)*.08;
     }else if(v.state==='convert'){
-      v.mesh.rotation.y+=dt*14;
-      v.mesh.position.y=Math.abs(Math.sin(v.t*9))*.6;
-      if(Number.isFinite(v.visualScale))v.mesh.scale.setScalar(v.visualScale);
+      mesh.rotation.y+=dt*14;
+      mesh.position.y=Math.abs(Math.sin(v.t*9))*.6;
+      if(Number.isFinite(v.visualScale))mesh.scale.setScalar(v.visualScale);
     }
   }
 

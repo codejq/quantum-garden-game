@@ -7,7 +7,7 @@ const source = readFileSync(new URL('../web/src/main.js', import.meta.url), 'utf
 test('active level start tears down previous gameplay objects', () => {
   assert.match(source, /function cleanupLevelAttempt\(\)/);
   assert.match(source, /trash\.forEach\(t=>removeAttemptObject\(trashMesh\(t\)\)\)/);
-  assert.match(source, /villains\.forEach\(v=>removeAttemptObject\(v\.mesh\)\)/);
+  assert.match(source, /villains\.forEach\(v=>removeAttemptObject\(villainView\(v\)\?\.mesh\)\)/);
   assert.match(source, /const view=patchView\(p\);\s*removeAttemptObject\(view\?\.tree\);\s*removeAttemptObject\(view\?\.mesh\);/);
   assert.match(source, /cleanupLevelAttempt\(\);\s*cleanupDecorativeWorld\(\);\s*buildDecorativeWorld\(\);\s*this\.level=n/);
 });
@@ -49,11 +49,13 @@ test('active patch gameplay reads plain position data instead of mesh-owned stat
 
 test('active villain gameplay reads plain position data instead of mesh-owned state', () => {
   assert.match(source, /const villainPos=new THREE\.Vector3\(Math\.cos\(a\)\*r,0,Math\.sin\(a\)\*r\)/);
-  assert.match(source, /const v=\{pos:villainPos,mesh:m,boss,hp:boss\?3:1,state:'walk'/);
+  assert.match(source, /const villainViews=new WeakMap\(\)/);
+  assert.match(source, /function setVillainView\(villain,view\)\{villainViews\.set\(villain,view\);return villain;\}/);
+  assert.match(source, /const v=setVillainView\(\{pos:villainPos,boss,hp:boss\?3:1,state:'walk'/);
   assert.match(source, /const toP=player\.pos\.clone\(\)\.sub\(v\.pos\)/);
   assert.match(source, /const dir=v\.target\.clone\(\)\.sub\(v\.pos\);dir\.y=0/);
   assert.match(source, /v\.pos\.addScaledVector\(dir,v\.speed\*dt\)/);
-  assert.match(source, /v\.mesh\.position\.copy\(v\.pos\)/);
+  assert.match(source, /mesh\.position\.copy\(v\.pos\)/);
   assert.match(source, /const dropResult=inD<WORLD_R\?spawnTrash\(v\.pos\)/);
   assert.match(source, /const dist=v\.pos\.distanceTo\(player\.pos\)/);
   assert.match(source, /burst\(v\.pos\.clone\(\)\.setY\(1\.2\)/);
@@ -68,7 +70,9 @@ test('active browser does not keep authoritative interaction positions only on m
   assert.doesNotMatch(source, /trash\.push\(\{[^}]*mesh/);
   assert.match(source, /patches\.push\(patch\)/);
   assert.doesNotMatch(source, /patches\.push\(\{[^}]*mesh/);
-  assert.match(source, /const v=\{pos:villainPos,mesh:m/);
+  assert.match(source, /villains\.push\(v\)/);
+  assert.doesNotMatch(source, /const v=\{[^}]*mesh/);
+  assert.doesNotMatch(source, /villains\.push\(\{[^}]*mesh/);
   assert.doesNotMatch(source, /t\.mesh\.position\.distanceTo\(player\.pos\)/);
   assert.doesNotMatch(source, /p\.mesh\.position\.distanceTo\(player\.pos\)/);
   assert.doesNotMatch(source, /v\.mesh\.position\.distanceTo\(player\.pos\)/);
@@ -85,7 +89,8 @@ test('active browser syncs mesh transforms from gameplay data in one render step
   const patchesUpdateSource = source.slice(source.indexOf('function patchesUpdate'), source.indexOf('function syncGameplayMeshes'));
 
   assert.match(syncSource, /player\.mesh\.position\.copy\(player\.pos\)/);
-  assert.match(syncSource, /v\.mesh\.position\.copy\(v\.pos\)/);
+  assert.match(syncSource, /const view=villainView\(v\)/);
+  assert.match(syncSource, /mesh\.position\.copy\(v\.pos\)/);
   assert.match(syncSource, /const mesh=trashMesh\(t\)/);
   assert.match(syncSource, /mesh\.position\.copy\(t\.pos\)/);
   assert.match(syncSource, /const view=patchView\(p\)/);
