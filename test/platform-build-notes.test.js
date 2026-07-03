@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 
 const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
 const tauriConfig = JSON.parse(readFileSync(new URL('../src-tauri/tauri.conf.json', import.meta.url), 'utf8'));
@@ -23,6 +23,22 @@ test('Android and iOS build paths are documented and configured', () => {
   assert.equal(tauriConfig.identifier, 'com.quantumgarden.clean');
   assert.match(notes, /Android build path is configured through `package\.json` Tauri Android scripts plus `src-tauri\/tauri\.conf\.json`/);
   assert.match(notes, /iOS build path is configured through `package\.json` Tauri iOS scripts plus `src-tauri\/tauri\.conf\.json`/);
+});
+
+test('Android Tauri project scaffold is generated', () => {
+  assert.equal(existsSync(new URL('../src-tauri/gen/android/settings.gradle', import.meta.url)), true);
+  assert.equal(existsSync(new URL('../src-tauri/gen/android/app/build.gradle.kts', import.meta.url)), true);
+  assert.equal(existsSync(new URL('../src-tauri/gen/android/app/src/main/AndroidManifest.xml', import.meta.url)), true);
+
+  const androidGradle = readFileSync(new URL('../src-tauri/gen/android/app/build.gradle.kts', import.meta.url), 'utf8');
+  const androidActivity = readFileSync(
+    new URL('../src-tauri/gen/android/app/src/main/java/com/quantumgarden/clean/MainActivity.kt', import.meta.url),
+    'utf8',
+  );
+
+  assert.match(androidGradle, /namespace = "com\.quantumgarden\.clean"/);
+  assert.match(androidGradle, /applicationId = "com\.quantumgarden\.clean"/);
+  assert.match(androidActivity, /package com\.quantumgarden\.clean/);
 });
 
 test('Tauri identifier defines Android package id and iOS bundle id', () => {

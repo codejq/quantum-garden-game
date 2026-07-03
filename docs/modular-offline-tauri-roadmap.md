@@ -367,7 +367,7 @@
 - [x] Add Windows build configuration.
 - [x] Add macOS build configuration.
 - [x] Add Linux build configuration if the team wants it alongside Windows/macOS.
-- [ ] Add Android Tauri setup.
+- [x] Add Android Tauri setup.
 - [ ] Add iOS Tauri setup.
 - [x] Document that iOS and macOS builds require macOS and Xcode.
 - [x] Document that iOS App Store/TestFlight distribution requires an Apple Developer account.
