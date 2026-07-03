@@ -658,6 +658,15 @@ function createVillainView(villain){
   setVillainView(villain,{mesh:m});
   return m;
 }
+function convertVillainView(villain){
+  villainView(villain)?.mesh?.traverse(o=>{if(o.isMesh&&o.material===mat(0x9c6bd6))o.material=mat(0x51cf66);});
+}
+function removeTrashView(item){
+  removeAttemptObject(trashMesh(item));
+}
+function removeVillainView(villain){
+  removeAttemptObject(villainView(villain)?.mesh);
+}
 
 const activeObjectives=[
   {
@@ -1002,7 +1011,7 @@ function villainsUpdate(dt){
           burst(plainToVector(v.pos,1.2),v.boss?0xc084fc:0xffd166,16,4.5);
           if(v.hp<=0){
             v.state='convert';v.t=0;Snd.convert();
-            villainView(v)?.mesh?.traverse(o=>{if(o.isMesh&&o.material===mat(0x9c6bd6))o.material=mat(0x51cf66);});
+            convertVillainView(v);
             if(v.boss){note(line('mtermishDown'),true,3000);Game.addScore(100,plainToVector(v.pos,2.5));}
             else{note(line('minion'),true);Game.addScore(30,plainToVector(v.pos,2));}
           }else{Snd.bonk();note(line('mtermishHit'),false,2000);
@@ -1016,7 +1025,7 @@ function villainsUpdate(dt){
       if(v.t>.7)v.visualScale=s;
       if(v.t>1.2){
         burst(plainToVector(v.pos,1),0x51cf66,20,5);
-        removeAttemptObject(villainView(v)?.mesh);Game.state.villains.splice(i,1);
+        removeVillainView(v);Game.state.villains.splice(i,1);
         if(v.boss)Game.state.mtermish=null;else Game.converted++;
         Game.updateMission();Game.checkWin();
       }
@@ -1038,7 +1047,7 @@ function trashUpdate(dt){
       Game.trashGot++;$('uiTrash').textContent=Game.trashGot;
       Game.addScore(10,plainToVector(t.pos,1.4));
       if(random()<.3)note(line('pickup'),true,1500);
-      removeAttemptObject(trashMesh(t));Game.state.trash.splice(i,1);
+      removeTrashView(t);Game.state.trash.splice(i,1);
       Game.updateMission();Game.checkWin();
     }}}
 

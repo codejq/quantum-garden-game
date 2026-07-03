@@ -55,7 +55,7 @@
 ## Architecture Decisions
 
 - [x] Make each level attempt self-contained: build from seed, play, complete or exit, tear down, dispose, and rebuild.
-- [ ] Make simulation data the source of truth.
+- [x] Make simulation data the source of truth.
 - [x] Store player, trash, patches, villains, boss, objectives, timers, score, and level seed as plain JavaScript data.
 - [x] Do not store authoritative gameplay state only on Three.js meshes.
 - [x] Make rendering read simulation state and sync mesh transforms each frame.

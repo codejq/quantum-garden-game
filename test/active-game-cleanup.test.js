@@ -13,8 +13,8 @@ test('active level start tears down previous gameplay objects', () => {
 });
 
 test('active gameplay disposes collected and converted objects when they leave play', () => {
-  assert.match(source, /removeAttemptObject\(trashMesh\(t\)\);Game.state\.trash\.splice\(i,1\)/);
-  assert.match(source, /removeAttemptObject\(villainView\(v\)\?\.mesh\);Game.state\.villains\.splice\(i,1\)/);
+  assert.match(source, /removeTrashView\(t\);Game.state\.trash\.splice\(i,1\)/);
+  assert.match(source, /removeVillainView\(v\);Game.state\.villains\.splice\(i,1\)/);
   assert.doesNotMatch(source, /scene\.remove\(trashMesh\(t\)\);Game.state\.trash\.splice\(i,1\)/);
   assert.doesNotMatch(source, /scene\.remove\(villainView\(v\)\?\.mesh\);Game.state\.villains\.splice\(i,1\)/);
 });
@@ -107,6 +107,9 @@ test('active browser creates Three.js meshes through render view helpers', () =>
   assert.match(source, /function createTrashView\(item\)\{/);
   assert.match(source, /function createPatchView\(patch\)\{/);
   assert.match(source, /function createVillainView\(villain\)\{/);
+  assert.match(source, /function removeTrashView\(item\)\{/);
+  assert.match(source, /function removeVillainView\(villain\)\{/);
+  assert.match(source, /function convertVillainView\(villain\)\{/);
   const spawnTrashSource = source.slice(source.indexOf('function spawnTrash'), source.indexOf('function spawnPatch'));
   const spawnPatchSource = source.slice(source.indexOf('function spawnPatch'), source.indexOf('function spawnVillain'));
   const spawnVillainSource = source.slice(source.indexOf('function spawnVillain'), source.indexOf('function newTarget'));
@@ -121,6 +124,24 @@ test('active browser creates Three.js meshes through render view helpers', () =>
 
   assert.doesNotMatch(spawnVillainSource, /buildMtermish|buildMinion|scene\.add/);
   assert.match(spawnVillainSource, /createVillainView\(v\)/);
+});
+
+test('active browser treats runtime state as gameplay source of truth', () => {
+  const playerUpdateSource = source.slice(source.indexOf('function playerUpdate'), source.indexOf('function villainsUpdate'));
+  const villainsUpdateSource = source.slice(source.indexOf('function villainsUpdate'), source.indexOf('function trashUpdate'));
+  const trashUpdateSource = source.slice(source.indexOf('function trashUpdate'), source.indexOf('function patchesUpdate'));
+  const patchesUpdateSource = source.slice(source.indexOf('function patchesUpdate'), source.indexOf('function syncGameplayMeshes'));
+  const missionSource = source.slice(source.indexOf('function activeMissionState'), source.indexOf('function activeObjectiveRows'));
+
+  assert.match(source, /const Game=createActiveGameRuntime\(createActiveGameplayState\(\)\)/);
+  assert.match(source, /activeMissionState\(\)\{\s*return \{\s*trash:Game.state\.trash,\s*patches:Game.state\.patches/);
+  assert.match(source, /if\(plainDistance\(t\.pos,Game.state\.player\.pos\)<1\.35\)/);
+  assert.match(source, /if\(plainDistance\(p\.pos,Game.state\.player\.pos\)<2\.2\)Game\.nearPatch=p/);
+  assert.match(source, /const dist=plainDistance\(v\.pos,Game.state\.player\.pos\)/);
+  assert.match(source, /syncGameplayMeshes\(dt,time\)/);
+  for (const section of [playerUpdateSource, villainsUpdateSource, trashUpdateSource, patchesUpdateSource, missionSource]) {
+    assert.doesNotMatch(section, /(trashMesh|patchView|villainView|scene\.|new THREE\.(Mesh|Group|Geometry|Material))/);
+  }
 });
 
 test('active browser runtime is created from an instantiable state owner', () => {
