@@ -121,7 +121,7 @@
 - [ ] Create `web/src/input/keyboard.js` for desktop movement and actions.
 - [ ] Create `web/src/input/mouse.js` for desktop mouse movement, camera control, pointer selection, and click actions.
 - [ ] Create `web/src/input/touch.js` for mobile joystick and action button.
-- [ ] Create `web/src/input/llm-agent.js` for model-controlled actions.
+- [x] Create `web/src/input/llm-agent.js` for model-controlled actions.
 - [ ] Create `web/src/camera/camera-controller.js` for follow camera, orbit camera, zoom, and perspective changes.
 - [ ] Create `web/src/ui/hud.js` for score, mission, meter, prompt, and notifications.
 - [ ] Create `web/src/ui/overlays.js` for start, level-complete, pause, mode select, language select, and exit screens.
@@ -397,22 +397,22 @@
 
 ## LLM Play Interface
 
-- [ ] Add an internal action API that accepts normalized actions: `move`, `plant`, `pause`, `resume`, `selectMode`, `selectLevel`, and `restart`.
-- [ ] Add high-level LLM actions: `moveToward(targetId)`, `collectNearest()`, `moveToNearestTrash()`, `moveToNearestPatch()`, `plantNearest()`, `chaseNearestVillain()`, and `attackBoss()`.
-- [ ] Add a game observation API that returns compact JSON state.
-- [ ] Include player position, velocity, heading, nearby trash, nearby patches, nearby villains, boss state, objectives, score, elapsed time, and level seed in observations.
-- [ ] Include stable object IDs in observations so the LLM can target specific trash, patches, villains, and boss entities.
-- [ ] Quantize positions and distances so observations are stable and token-efficient.
-- [ ] Hide rendering-only details from the LLM observation.
+- [x] Add an internal action API that accepts normalized actions: `move`, `plant`, `pause`, `resume`, `selectMode`, `selectLevel`, and `restart`.
+- [x] Add high-level LLM actions: `moveToward(targetId)`, `collectNearest()`, `moveToNearestTrash()`, `moveToNearestPatch()`, `plantNearest()`, `chaseNearestVillain()`, and `attackBoss()`.
+- [x] Add a game observation API that returns compact JSON state.
+- [x] Include player position, velocity, heading, nearby trash, nearby patches, nearby villains, boss state, objectives, score, elapsed time, and level seed in observations.
+- [x] Include stable object IDs in observations so the LLM can target specific trash, patches, villains, and boss entities.
+- [x] Quantize positions and distances so observations are stable and token-efficient.
+- [x] Hide rendering-only details from the LLM observation.
 - [ ] Add a browser debug panel or console hook named `window.QuantumGardenAgent`.
 - [ ] Implement `window.QuantumGardenAgent.observe()`.
 - [ ] Implement `window.QuantumGardenAgent.act(action)`.
 - [ ] Implement `window.QuantumGardenAgent.reset({ mode, levelId, seed })`.
 - [ ] Implement `window.QuantumGardenAgent.step(action)` for test runners.
 - [ ] Add rate limits or frame-step controls so the model cannot flood the game loop.
-- [ ] Add first-class turn-stepped headless mode for model evaluation.
+- [x] Add first-class turn-stepped headless mode for model evaluation.
 - [ ] Add real-time browser mode for demos.
-- [ ] Allow raw low-level movement actions and higher-level intent actions.
+- [x] Allow raw low-level movement actions and higher-level intent actions.
 - [ ] Add a Playwright-based agent harness that can call the browser API.
 - [ ] Add sample scripts showing how an external LLM agent can observe and act.
 - [ ] Add a safety boundary: the LLM API can control only the game, not the filesystem, OS, or Tauri commands.
@@ -431,9 +431,9 @@
 - [x] Add tests that two runs with different seeds produce different layouts.
 - [ ] Add tests for single-player win conditions.
 - [ ] Add tests for two-player race result comparison.
-- [ ] Add tests for LLM `observe()` schema.
-- [ ] Add tests for LLM raw movement and planting actions.
-- [ ] Add tests for LLM high-level actions such as `moveToward(targetId)` and `plantNearest()`.
+- [x] Add tests for LLM `observe()` schema.
+- [x] Add tests for LLM raw movement and planting actions.
+- [x] Add tests for LLM high-level actions such as `moveToward(targetId)` and `plantNearest()`.
 - [ ] Add tests for scene teardown and Three.js disposal where practical.
 - [ ] Add visual checks for desktop viewport.
 - [ ] Add visual checks for mobile portrait viewport.
