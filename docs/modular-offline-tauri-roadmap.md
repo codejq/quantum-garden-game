@@ -118,9 +118,9 @@
 - [ ] Create `web/src/entities/villain.js` for minion and boss behavior.
 - [ ] Create `web/src/entities/trash.js` for trash behavior.
 - [ ] Create `web/src/entities/patch.js` for planting patch behavior.
-- [ ] Create `web/src/input/keyboard.js` for desktop movement and actions.
-- [ ] Create `web/src/input/mouse.js` for desktop mouse movement, camera control, pointer selection, and click actions.
-- [ ] Create `web/src/input/touch.js` for mobile joystick and action button.
+- [x] Create `web/src/input/keyboard.js` for desktop movement and actions.
+- [x] Create `web/src/input/mouse.js` for desktop mouse movement, camera control, pointer selection, and click actions.
+- [x] Create `web/src/input/touch.js` for mobile joystick and action button.
 - [x] Create `web/src/input/llm-agent.js` for model-controlled actions.
 - [ ] Create `web/src/camera/camera-controller.js` for follow camera, orbit camera, zoom, and perspective changes.
 - [ ] Create `web/src/ui/hud.js` for score, mission, meter, prompt, and notifications.
@@ -299,7 +299,7 @@
 - [ ] Add pinch zoom support for mobile camera zoom if playtesting confirms it is comfortable.
 - [ ] Add responsive placement for joystick and action button in portrait and landscape.
 - [ ] Add pointer events support so one input layer works across mouse, pen, and touch where practical.
-- [ ] Add input abstraction so keyboard, mouse, touch, and LLM all emit the same actions.
+- [x] Add input abstraction so keyboard, mouse, touch, and LLM all emit the same actions.
 - [ ] Add accessibility labels for controls.
 - [ ] Test desktop Chrome or Edge.
 - [ ] Test mobile viewport in browser dev tools.
