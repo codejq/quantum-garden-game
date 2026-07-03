@@ -31,6 +31,67 @@ const cases = [
   { name: 'mobile-landscape-top', viewport: { width: 844, height: 390 }, mode: 'top', minBytes: 12000 },
 ];
 
+async function assertControlsDoNotOverlap(page, smokeName) {
+  const result = await page.evaluate(() => {
+    const ids = ['exitBtn', 'pauseBtn', 'viewBtn', 'resetViewBtn', 'missionCard', 'joy', 'actBtn'];
+    const visibleRects = ids.flatMap((id) => {
+      const element = document.getElementById(id);
+      if (!element) return [];
+      const style = getComputedStyle(element);
+      const rect = element.getBoundingClientRect();
+      if (
+        style.display === 'none' ||
+        style.visibility === 'hidden' ||
+        rect.width === 0 ||
+        rect.height === 0
+      ) {
+        return [];
+      }
+      return [{ id, left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom }];
+    });
+
+    const pairs = [
+      ['exitBtn', 'pauseBtn'],
+      ['pauseBtn', 'viewBtn'],
+      ['viewBtn', 'resetViewBtn'],
+      ['exitBtn', 'missionCard'],
+      ['pauseBtn', 'missionCard'],
+      ['viewBtn', 'missionCard'],
+      ['resetViewBtn', 'missionCard'],
+      ['exitBtn', 'joy'],
+      ['pauseBtn', 'joy'],
+      ['viewBtn', 'joy'],
+      ['resetViewBtn', 'joy'],
+      ['exitBtn', 'actBtn'],
+      ['pauseBtn', 'actBtn'],
+      ['viewBtn', 'actBtn'],
+      ['resetViewBtn', 'actBtn'],
+    ];
+
+    const byId = new Map(visibleRects.map((rect) => [rect.id, rect]));
+    const overlaps = pairs.filter(([a, b]) => {
+      const first = byId.get(a);
+      const second = byId.get(b);
+      if (!first || !second) return false;
+      return !(
+        first.right <= second.left ||
+        second.right <= first.left ||
+        first.bottom <= second.top ||
+        second.bottom <= first.top
+      );
+    });
+
+    return { ok: overlaps.length === 0, overlaps, visibleRects };
+  });
+
+  if (!result.ok) {
+    throw new Error(
+      `Camera controls overlap in ${smokeName}: ${JSON.stringify(result.overlaps)} ` +
+        `with rects ${JSON.stringify(result.visibleRects)}`,
+    );
+  }
+}
+
 const browser = await chromium.launch({ executablePath, headless: true });
 try {
   for (const smoke of cases) {
@@ -42,6 +103,7 @@ try {
       window.QuantumGardenAgent.act({ type: 'setCamera', mode });
       window.QuantumGardenAgent.step({ frames: 8 });
     }, smoke.mode);
+    await assertControlsDoNotOverlap(page, smoke.name);
     const screenshot = resolve(outDir, `${smoke.name}.png`);
     await page.screenshot({ path: screenshot });
     await page.close();

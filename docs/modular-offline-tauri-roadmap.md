@@ -11,7 +11,7 @@
 - [x] Treat the current game as the behavior baseline until tests and screenshots prove otherwise.
 - [x] Change teh name of teh game to be Clean Garden both in arabic and in eglish .
 - [x] The game should be smooth as the original one as it now not so smoth and the movement is degrdeded .
-- [ ] The button on the header of teh game are overlabed with other buttons we need to fix that
+- [x] The button on the header of teh game are overlabed with other buttons we need to fix that
 
 ## Goals
 

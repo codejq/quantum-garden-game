@@ -35,4 +35,6 @@ test('offline build verification runs camera view smoke across viewports', () =>
   assert.match(cameraScriptSource, /mobile-landscape-follow/);
   assert.match(cameraScriptSource, /mobile-landscape-top/);
   assert.match(cameraScriptSource, /QuantumGardenAgent\.act\(\{ type: 'setCamera', mode \}\)/);
+  assert.match(cameraScriptSource, /assertControlsDoNotOverlap/);
+  assert.match(cameraScriptSource, /Camera controls overlap/);
 });
