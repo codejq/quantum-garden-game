@@ -11,6 +11,7 @@
 - [x] Treat the current game as the behavior baseline until tests and screenshots prove otherwise.
 - [x] Change teh name of teh game to be Clean Garden both in arabic and in eglish .
 - [x] The game should be smooth as the original one as it now not so smoth and the movement is degrdeded .
+- [ ] The button on the header of teh game are overlabed with other buttons we need to fix that
 
 ## Goals
 
@@ -522,8 +523,8 @@
 - [x] Mouse controls work on desktop.
 - [x] Player can rotate, zoom, reset, and change camera view perspective.
 - [ ] Tauri desktop build launches.
-- [ ] Android build path is documented and configured.
-- [ ] iOS build path is documented and configured.
+- [x] Android build path is documented and configured.
+- [x] iOS build path is documented and configured.
 - [x] `window.QuantumGardenAgent.observe()` returns valid state.
 - [x] `window.QuantumGardenAgent.act()` can control the player.
 - [x] LLM can use both low-level actions and high-level target actions.

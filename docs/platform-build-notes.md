@@ -26,6 +26,7 @@ Target Tauri version: v2. The npm CLI package and Rust crates are kept on the Ta
 
 - Requires Android Studio, Android SDK, Android NDK, Java/Kotlin toolchains, and signing setup.
 - Tauri identifier `com.quantumgarden.clean` is the shared Android package id and iOS bundle id.
+- Android build path is configured through `package.json` Tauri Android scripts plus `src-tauri/tauri.conf.json`.
 - Development command: `npm run tauri:android:dev`.
 - Release command: `npm run tauri:android:build`.
 - Do not mark Android release complete until an emulator and a physical device have been tested.
@@ -36,6 +37,7 @@ Target Tauri version: v2. The npm CLI package and Rust crates are kept on the Ta
 - Distribution requires Apple Developer enrollment and signing/provisioning setup.
 - iOS Tauri commands are only available on macOS hosts.
 - Do not mark macOS or iOS release tasks complete until Mac hardware, Xcode, signing certificates, and Apple Developer access are available.
+- iOS build path is configured through `package.json` Tauri iOS scripts plus `src-tauri/tauri.conf.json`.
 - Development command: `npm run tauri:ios:dev`.
 - Release command: `npm run tauri:ios:build`.
 

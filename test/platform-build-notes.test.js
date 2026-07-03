@@ -18,6 +18,13 @@ test('platform notes document desktop and mobile build commands', () => {
   assert.match(notes, /Release command: `npm run tauri:ios:build`/);
 });
 
+test('Android and iOS build paths are documented and configured', () => {
+  assert.equal(tauriConfig.build.frontendDist, '../dist/web');
+  assert.equal(tauriConfig.identifier, 'com.quantumgarden.clean');
+  assert.match(notes, /Android build path is configured through `package\.json` Tauri Android scripts plus `src-tauri\/tauri\.conf\.json`/);
+  assert.match(notes, /iOS build path is configured through `package\.json` Tauri iOS scripts plus `src-tauri\/tauri\.conf\.json`/);
+});
+
 test('Tauri identifier defines Android package id and iOS bundle id', () => {
   assert.equal(tauriConfig.identifier, 'com.quantumgarden.clean');
   assert.match(notes, /Tauri identifier `com\.quantumgarden\.clean` is the shared Android package id and iOS bundle id/);
