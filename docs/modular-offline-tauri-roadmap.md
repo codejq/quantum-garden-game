@@ -296,8 +296,8 @@
 - [x] Add click/tap support for menu and overlay controls.
 - [x] Keep touch joystick for movement.
 - [x] Keep touch action button for planting.
-- [ ] Add touch drag support for changing camera view on mobile if it does not conflict with joystick controls.
-- [ ] Add pinch zoom support for mobile camera zoom if playtesting confirms it is comfortable.
+- [x] Add touch drag support for changing camera view on mobile if it does not conflict with joystick controls.
+- [x] Add pinch zoom support for mobile camera zoom if playtesting confirms it is comfortable.
 - [ ] Add responsive placement for joystick and action button in portrait and landscape.
 - [x] Add pointer events support so one input layer works across mouse, pen, and touch where practical.
 - [x] Add input abstraction so keyboard, mouse, touch, and LLM all emit the same actions.
@@ -332,7 +332,7 @@
 - [ ] Consider adding an optional close third-person view after the controller is stable.
 - [x] Save the selected view preset locally.
 - [x] Make camera controls work with mouse on desktop.
-- [ ] Make camera controls work with touch gestures on mobile where practical.
+- [x] Make camera controls work with touch gestures on mobile where practical.
 - [x] Make camera controls available to the LLM API through observation metadata and optional camera actions.
 - [ ] Prevent camera movement from leaving the player, objectives, or action prompts off-screen.
 - [ ] Prevent camera UI from overlapping exit, sound, joystick, action, or mission controls.

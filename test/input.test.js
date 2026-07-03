@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createKeyboardInput, isPlantKey, keyboardVector } from '../web/src/input/keyboard.js';
 import { createMouseInput } from '../web/src/input/mouse.js';
-import { createTouchInput, joystickVector } from '../web/src/input/touch.js';
+import { createTouchCameraInput, createTouchInput, joystickVector } from '../web/src/input/touch.js';
 
 function target() {
   const listeners = new Map();
@@ -22,6 +22,8 @@ function target() {
     listenerCount() {
       return listeners.size;
     },
+    setPointerCapture() {},
+    releasePointerCapture() {},
   };
 }
 
@@ -121,4 +123,28 @@ test('touch input emits joystick movement and plant actions with pointer events'
   ]);
   assert.equal(joystick.listenerCount(), 0);
   assert.equal(actionButton.listenerCount(), 0);
+});
+
+test('touch camera input emits drag rotation and pinch zoom actions', () => {
+  const surface = target();
+  const events = [];
+  const dispose = createTouchCameraInput(surface, {
+    cameraRotate: (event) => events.push(['rotate', event.dx, event.dy]),
+    cameraZoom: (event) => events.push(['zoom', event.delta]),
+  });
+
+  surface.emit('pointerdown', { pointerId: 1, clientX: 10, clientY: 10 });
+  surface.emit('pointermove', { pointerId: 1, clientX: 14, clientY: 16, preventDefault() {} });
+  surface.emit('pointerdown', { pointerId: 2, clientX: 24, clientY: 16 });
+  surface.emit('pointermove', { pointerId: 2, clientX: 34, clientY: 16, preventDefault() {} });
+  surface.emit('pointerup', { pointerId: 2 });
+  surface.emit('pointermove', { pointerId: 1, clientX: 18, clientY: 16, preventDefault() {} });
+  dispose();
+
+  assert.deepEqual(events, [
+    ['rotate', 4, 6],
+    ['zoom', -10],
+    ['rotate', 4, 0],
+  ]);
+  assert.equal(surface.listenerCount(), 0);
 });

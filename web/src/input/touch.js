@@ -63,3 +63,65 @@ export function createTouchInput({ joystick, actionButton }, actions, options = 
     actionButton.removeEventListener('pointerdown', plant);
   };
 }
+
+function distanceBetween(a, b) {
+  return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+}
+
+export function createTouchCameraInput(target, actions) {
+  const pointers = new Map();
+  let lastDrag = null;
+  let lastPinchDistance = null;
+
+  const down = (event) => {
+    pointers.set(event.pointerId, event);
+    target.setPointerCapture?.(event.pointerId);
+    if (pointers.size === 1) lastDrag = { x: event.clientX, y: event.clientY };
+    if (pointers.size === 2) {
+      const [a, b] = [...pointers.values()];
+      lastPinchDistance = distanceBetween(a, b);
+      lastDrag = null;
+    }
+  };
+
+  const move = (event) => {
+    if (!pointers.has(event.pointerId)) return;
+    pointers.set(event.pointerId, event);
+    event.preventDefault?.();
+
+    if (pointers.size === 1 && lastDrag) {
+      const dx = event.clientX - lastDrag.x;
+      const dy = event.clientY - lastDrag.y;
+      lastDrag = { x: event.clientX, y: event.clientY };
+      actions.cameraRotate?.({ dx, dy });
+      return;
+    }
+
+    if (pointers.size === 2) {
+      const [a, b] = [...pointers.values()];
+      const distance = distanceBetween(a, b);
+      if (lastPinchDistance !== null) actions.cameraZoom?.({ delta: lastPinchDistance - distance });
+      lastPinchDistance = distance;
+    }
+  };
+
+  const up = (event) => {
+    pointers.delete(event.pointerId);
+    target.releasePointerCapture?.(event.pointerId);
+    lastPinchDistance = null;
+    const remaining = [...pointers.values()][0];
+    lastDrag = remaining ? { x: remaining.clientX, y: remaining.clientY } : null;
+  };
+
+  target.addEventListener('pointerdown', down);
+  target.addEventListener('pointermove', move);
+  target.addEventListener('pointerup', up);
+  target.addEventListener('pointercancel', up);
+
+  return () => {
+    target.removeEventListener('pointerdown', down);
+    target.removeEventListener('pointermove', move);
+    target.removeEventListener('pointerup', up);
+    target.removeEventListener('pointercancel', up);
+  };
+}
