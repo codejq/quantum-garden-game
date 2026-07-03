@@ -345,8 +345,8 @@
 - [x] Bundle or vendor Three.js r128 locally for the first offline milestone.
 - [x] Do not combine the first offline milestone with a Three.js major-version upgrade.
 - [x] Bundle fonts locally.
-- [ ] Keep audio fully generated or bundle local audio assets.
-- [ ] Avoid network calls during gameplay.
+- [x] Keep audio fully generated or bundle local audio assets.
+- [x] Avoid network calls during gameplay.
 - [x] Add a test that blocks network and verifies the game loads.
 - [ ] Add a service worker only if the web build must also support installable PWA behavior.
 - [ ] For Tauri builds, load the local static bundle from the app package.
