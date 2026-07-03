@@ -225,7 +225,7 @@
 - [x] Move the current level formula into level definitions.
 - [x] Create a level registry.
 - [x] Support finite authored levels.
-- [ ] Support generated levels after authored levels are complete.
+- [x] Support generated levels after authored levels are complete.
 - [x] Add seeded random generation per level attempt.
 - [x] Store the active seed in game state.
 - [x] Show or log the seed for debugging.

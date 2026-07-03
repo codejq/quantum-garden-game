@@ -1,4 +1,5 @@
 import { level001, level002, level003 } from './level-001.js';
+import { cleanupObjectives, levelCounts } from './templates.js';
 
 const levels = new Map([
   [level001.id, level001],
@@ -13,10 +14,46 @@ export function registerLevel(level) {
 
 export function getLevel(id = level001.id) {
   const level = levels.get(id);
-  if (!level) throw new Error(`Unknown level: ${id}`);
+  if (!level) {
+    const generated = generatedLevel(id);
+    if (generated) return generated;
+    throw new Error(`Unknown level: ${id}`);
+  }
   return level;
 }
 
 export function listLevels() {
   return [...levels.values()];
+}
+
+export function generatedLevel(id) {
+  const match = /^level-(\d+)$/.exec(id);
+  if (!match) return null;
+  const difficulty = Number(match[1]);
+  if (!Number.isInteger(difficulty) || difficulty <= 3) return null;
+
+  return {
+    id,
+    nameKey: 'levels.generated.name',
+    difficulty,
+    world: {
+      radius: 42,
+    },
+    objectives: cleanupObjectives(),
+    spawnRules: levelCounts(difficulty),
+    timer: {
+      type: 'elapsed',
+    },
+    boss: {
+      enabled: true,
+      spawnDelay: 4,
+      hp: 3,
+    },
+    randomization: {
+      seeded: true,
+      randomizeGameplay: true,
+      randomizeDecor: true,
+      generated: true,
+    },
+  };
 }

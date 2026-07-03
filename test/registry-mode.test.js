@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { getLevel, listLevels, registerLevel } from '../web/src/levels/level-registry.js';
+import { generatedLevel, getLevel, listLevels, registerLevel } from '../web/src/levels/level-registry.js';
 import { getMode, listModes, registerMode } from '../web/src/modes/mode-registry.js';
 
 test('level registry exposes the first level and supports registration', () => {
@@ -15,6 +15,17 @@ test('level registry exposes the first level and supports registration', () => {
   registerLevel({ id: 'test-level', difficulty: 99 });
   assert.equal(getLevel('test-level').difficulty, 99);
   assert.ok(listLevels().some((level) => level.id === 'level-001'));
+});
+
+test('level registry generates levels after authored levels', () => {
+  const generated = getLevel('level-004');
+
+  assert.equal(generated.id, 'level-004');
+  assert.equal(generated.difficulty, 4);
+  assert.equal(generated.randomization.generated, true);
+  assert.deepEqual(generated.spawnRules, { trash: 21, patches: 6, minionQuota: 5 });
+  assert.equal(generatedLevel('level-003'), null);
+  assert.throws(() => getLevel('bonus-stage'), /Unknown level/);
 });
 
 test('mode registry exposes single-player and supports registration', () => {
