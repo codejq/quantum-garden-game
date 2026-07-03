@@ -17,6 +17,15 @@ test('active game exposes fullscreen play and exit controls', () => {
   assert.match(cssSource, /html,body\{width:100%;height:100%;overflow:hidden/);
 });
 
+test('active game can close the Tauri desktop window after confirmation', () => {
+  assert.match(mainSource, /function tauriInvoke\(\)/);
+  assert.match(mainSource, /window\.__TAURI__\?\.core\?\.invoke/);
+  assert.match(mainSource, /async function closeTauriWindowAfterConfirm\(\)/);
+  assert.match(mainSource, /window\.confirm\(`\$\{tr\('exit'\)\}\?`\)/);
+  assert.match(mainSource, /await invoke\('close_window'\)/);
+  assert.match(mainSource, /if\(await closeTauriWindowAfterConfirm\(\)\)return/);
+});
+
 test('active game preserves desktop and mobile play controls after the split', () => {
   assert.match(mainSource, /keys\[e\.code\]=true/);
   assert.match(mainSource, /KeyW|ArrowUp/);

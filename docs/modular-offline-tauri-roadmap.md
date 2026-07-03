@@ -279,7 +279,7 @@
 - [x] Add an exit button inside the HUD.
 - [x] Make the exit button available on mobile touch and desktop.
 - [x] On web, exit should pause the game and return to the menu or confirmation overlay.
-- [ ] On Tauri desktop, exit should optionally close the window after confirmation.
+- [x] On Tauri desktop, exit should optionally close the window after confirmation.
 - [ ] On mobile, exit should return to the main menu unless platform rules require different behavior.
 - [x] Add a pause/settings button if exit needs a confirmation path.
 - [ ] Make sure exit controls do not overlap the joystick, action button, or HUD.

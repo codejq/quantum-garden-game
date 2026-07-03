@@ -918,6 +918,21 @@ function requestFullscreen(){
 function exitFullscreen(){
   if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen().catch(()=>{});
 }
+function tauriInvoke(){
+  return window.__TAURI__?.core?.invoke||window.__TAURI__?.invoke||null;
+}
+async function closeTauriWindowAfterConfirm(){
+  const invoke=tauriInvoke();
+  if(!invoke)return false;
+  if(!window.confirm(`${tr('exit')}?`))return true;
+  try{
+    await invoke('close_window');
+    return true;
+  }catch(e){
+    console.warn('Tauri close_window failed',e);
+    return false;
+  }
+}
 function showMenu(){
   $('startOverlay').style.display='flex';
   $('pauseOverlay').style.display='none';
@@ -931,9 +946,10 @@ function showMenu(){
   $('actBtn').style.display='none';
   $('prompt').style.display='none';
 }
-function exitGame(){
+async function exitGame(){
   Game.running=false;
   Game.clearTimers();
+  if(await closeTauriWindowAfterConfirm())return;
   exitFullscreen();
   note(tr('exited'),true,1200);
   showMenu();
