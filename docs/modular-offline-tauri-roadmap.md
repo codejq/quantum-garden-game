@@ -214,7 +214,7 @@
 - [x] Define a `GameMode` interface with `id`, `nameKey`, `setup()`, `start()`, `update()`, `onObjectiveEvent()`, `isComplete()`, and `getResults()`.
 - [ ] Move current gameplay into `single-player` mode.
 - [x] Add a mode registry that lists available modes.
-- [ ] Add a mode select screen before starting the game.
+- [x] Add a mode select screen before starting the game.
 - [ ] Keep mode state separate from rendering state.
 - [ ] Keep scoring rules inside each mode.
 - [ ] Make the HUD read mode-provided objectives instead of hard-coded mission rows.

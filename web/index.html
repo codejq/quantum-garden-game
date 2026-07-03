@@ -46,6 +46,10 @@
         <option value="fr">Français</option>
       </select>
     </label>
+    <div class="modePick" id="modeSelect" role="radiogroup" aria-label="Game mode">
+      <button type="button" class="modeOption active" id="singleModeBtn" data-mode="single-player" aria-label="Single player mode" aria-pressed="true">Single Player</button>
+      <button type="button" class="modeOption" id="raceModeBtn" data-mode="two-player-race" aria-label="Two player race mode" aria-pressed="false" aria-disabled="true">Two Player Race</button>
+    </div>
     <div class="howto" id="howto"></div>
     <button class="bigbtn" id="startBtn" aria-label="Start adventure">🚀 Start Adventure</button>
     <div id="keysHint"></div>

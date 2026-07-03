@@ -100,6 +100,11 @@
   .langPick{display:inline-flex;align-items:center;gap:8px;background:#eef5e6;border:3px solid var(--deep);
     border-radius:14px;padding:5px 10px;margin:0 0 10px;font-weight:900}
   .langPick select{font:inherit;font-weight:800;border:0;background:transparent;color:var(--ink);outline:none}
+  .modePick{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:0 0 12px}
+  .modeOption{font:inherit;font-size:14px;font-weight:900;color:var(--ink);background:#eef5e6;border:3px solid var(--deep);
+    border-radius:14px;padding:6px 12px;cursor:pointer;box-shadow:0 3px 0 rgba(0,0,0,.22)}
+  .modeOption.active{background:#d8f5a2;color:#24551e}
+  .modeOption[aria-disabled="true"]{opacity:.55;cursor:not-allowed}
   .bigbtn{background:linear-gradient(180deg,#54c265,var(--leaf));border:4px solid var(--deep);color:#fff;
     font-family:inherit;font-size:22px;font-weight:900;border-radius:20px;padding:10px 40px;cursor:pointer;
     box-shadow:0 6px 0 var(--deep);transition:transform .1s}
