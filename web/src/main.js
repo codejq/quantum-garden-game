@@ -34,10 +34,10 @@ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const smooth=(cur,target,lag,dt)=>{const t=1-Math.exp(-dt/Math.max(lag,1e-4));return cur+(target-cur)*t;};
 
 const ACTIVE_I18N={
-  en:{dir:'ltr',language:'Language',tagline:'A 3D adventure to save the garden! 🌍',howto:'🗑️ <b>Pick up trash</b> — walk over it to clean it up!<br>🌱 <b>Plant trees</b> — stand on the glowing patch and press the button.<br>😈 <span class="bad">Stop Mtermish minions</span> — touch them to turn them into nature friends!<br>🎩 <span class="bad">Big Mtermish</span> needs <b>3 touches</b>... and runs fast!',start:'🚀 Start Adventure',keys:'💻 Arrow keys / WASD to move — Space or E to plant<br>📱 Joystick right — 🌱 button left',level:'Level',clean:'Garden cleanliness',prompt:'🌱 Press to plant a tree!',exit:'Exit',pause:'Pause',paused:'Paused',resume:'Resume',retry:'Retry',menu:'Menu',next:'Next Level',trashLeft:'Trash left',trees:'Trees',minions:'Mtermish minions',boss:'Big Mtermish',time:'Time',best:'Best',view:'View',resetView:'Reset',levelStart:n=>`Level ${n}: clean the garden and plant trees! 🌍`,levelDone:n=>`🎉 Level ${n} complete!`,exited:'Exited the game'},
-  ar:{dir:'rtl',language:'اللغة',tagline:'مغامرة ثلاثية الأبعاد لإنقاذ الحديقة! 🌍',howto:'🗑️ <b>التقط القمامة</b> — امشِ فوقها لتختفي!<br>🌱 <b>ازرع الأشجار</b> — قف على البقعة المضيئة واضغط الزر.<br>😈 <span class="bad">أوقف أتباع مترميش</span> — المسهم ليتحولوا إلى أصدقاء للطبيعة!<br>🎩 <span class="bad">مترميش الكبير</span> يحتاج <b>٣ لمسات</b>... وهو سريع الهرب!',start:'🚀 ابدأ المغامرة',keys:'💻 الأسهم / WASD للحركة — مسافة أو E للزراعة<br>📱 عصا التحكم يمين — زر 🌱 يسار',level:'مستوى',clean:'نظافة الحديقة',prompt:'🌱 اضغط لتزرع شجرة!',exit:'خروج',pause:'إيقاف',paused:'إيقاف مؤقت',resume:'متابعة',retry:'إعادة',menu:'القائمة',next:'المستوى التالي',trashLeft:'قمامة متبقية',trees:'أشجار',minions:'أتباع مترميش',boss:'مترميش الكبير',time:'الوقت',best:'الأفضل',view:'العرض',resetView:'إعادة',levelStart:n=>`المستوى ${n}: نظّف الحديقة وازرع الأشجار! 🌍`,levelDone:n=>`🎉 المستوى ${n} اكتمل!`,exited:'تم الخروج من اللعبة'},
-  es:{dir:'ltr',language:'Idioma',tagline:'Una aventura 3D para salvar el jardin. 🌍',howto:'🗑️ <b>Recoge basura</b> — pasa por encima para limpiarla.<br>🌱 <b>Planta arboles</b> — ponte en el punto brillante y pulsa el boton.<br>😈 <span class="bad">Deten a los secuaces de Mtermish</span> — tocalos para convertirlos en amigos de la naturaleza.<br>🎩 <span class="bad">Gran Mtermish</span> necesita <b>3 toques</b>... y corre rapido.',start:'🚀 Iniciar aventura',keys:'💻 Flechas / WASD para moverte — Espacio o E para plantar<br>📱 Joystick derecha — boton 🌱 izquierda',level:'Nivel',clean:'Limpieza del jardin',prompt:'🌱 Pulsa para plantar un arbol.',exit:'Salir',pause:'Pausa',paused:'Pausa',resume:'Continuar',retry:'Reintentar',menu:'Menu',next:'Siguiente nivel',trashLeft:'Basura restante',trees:'Arboles',minions:'Secuaces de Mtermish',boss:'Gran Mtermish',time:'Tiempo',best:'Mejor',view:'Vista',resetView:'Reiniciar',levelStart:n=>`Nivel ${n}: limpia el jardin y planta arboles. 🌍`,levelDone:n=>`🎉 Nivel ${n} completado.`,exited:'Saliste del juego'},
-  fr:{dir:'ltr',language:'Langue',tagline:'Une aventure 3D pour sauver le jardin. 🌍',howto:'🗑️ <b>Ramasse les dechets</b> — marche dessus pour les nettoyer.<br>🌱 <b>Plante des arbres</b> — place-toi sur la zone brillante et appuie sur le bouton.<br>😈 <span class="bad">Arrete les sbires de Mtermish</span> — touche-les pour en faire des amis de la nature.<br>🎩 <span class="bad">Grand Mtermish</span> demande <b>3 touches</b>... et court vite.',start:"🚀 Lancer l'aventure",keys:'💻 Fleches / WASD pour bouger — Espace ou E pour planter<br>📱 Joystick a droite — bouton 🌱 a gauche',level:'Niveau',clean:'Proprete du jardin',prompt:'🌱 Appuie pour planter un arbre.',exit:'Quitter',pause:'Pause',paused:'Pause',resume:'Reprendre',retry:'Rejouer',menu:'Menu',next:'Niveau suivant',trashLeft:'Dechets restants',trees:'Arbres',minions:'Sbires de Mtermish',boss:'Grand Mtermish',time:'Temps',best:'Meilleur',view:'Vue',resetView:'Recentrer',levelStart:n=>`Niveau ${n} : nettoie le jardin et plante des arbres. 🌍`,levelDone:n=>`🎉 Niveau ${n} termine.`,exited:'Partie quittee'}
+  en:{dir:'ltr',title:'Clean Garden',language:'Language',tagline:'A 3D adventure to save the garden! 🌍',howto:'🗑️ <b>Pick up trash</b> — walk over it to clean it up!<br>🌱 <b>Plant trees</b> — stand on the glowing patch and press the button.<br>😈 <span class="bad">Stop Mtermish minions</span> — touch them to turn them into nature friends!<br>🎩 <span class="bad">Big Mtermish</span> needs <b>3 touches</b>... and runs fast!',start:'🚀 Start Adventure',keys:'💻 Arrow keys / WASD to move — Space or E to plant<br>📱 Joystick right — 🌱 button left',level:'Level',clean:'Garden cleanliness',prompt:'🌱 Press to plant a tree!',exit:'Exit',pause:'Pause',paused:'Paused',resume:'Resume',retry:'Retry',menu:'Menu',next:'Next Level',trashLeft:'Trash left',trees:'Trees',minions:'Mtermish minions',boss:'Big Mtermish',time:'Time',best:'Best',view:'View',resetView:'Reset',levelStart:n=>`Level ${n}: clean the garden and plant trees! 🌍`,levelDone:n=>`🎉 Level ${n} complete!`,exited:'Exited the game',lines:{pickup:['Nice! One less piece of trash.','The garden says thank you.','Sparkly clean!','Fresh and tidy.','Keep going!'],plant:['A new tree! 🌳','The birds will love this.','Free oxygen for everyone.','That green looks good.'],minion:['Turned into a nature friend!','They said sorry.','One less Mtermish minion.'],mtermishHit:['Mtermish: Ouch! My hat!','Mtermish: You will not catch me!','Mtermish: Fine... maybe I will litter less.'],mtermishDown:['Mtermish: I promise to use the bin!','Mtermish gave up. Next level!'],mtermishTaunt:['Mtermish: More trash!','Mtermish: Clean gardens are boring!','Mtermish: Try to catch me!'],quotes:['Plant a tree, plant hope.','Clean today, protect tomorrow.','Every bin helps the planet.','Trees are homes for birds.','You are the garden hero.']}},
+  ar:{dir:'rtl',title:'الحديقة النظيفة',language:'اللغة',tagline:'مغامرة ثلاثية الأبعاد لإنقاذ الحديقة! 🌍',howto:'🗑️ <b>التقط القمامة</b> — امشِ فوقها لتختفي!<br>🌱 <b>ازرع الأشجار</b> — قف على البقعة المضيئة واضغط الزر.<br>😈 <span class="bad">أوقف أتباع مترميش</span> — المسهم ليتحولوا إلى أصدقاء للطبيعة!<br>🎩 <span class="bad">مترميش الكبير</span> يحتاج <b>٣ لمسات</b>... وهو سريع الهرب!',start:'🚀 ابدأ المغامرة',keys:'💻 الأسهم / WASD للحركة — مسافة أو E للزراعة<br>📱 عصا التحكم يمين — زر 🌱 يسار',level:'مستوى',clean:'نظافة الحديقة',prompt:'🌱 اضغط لتزرع شجرة!',exit:'خروج',pause:'إيقاف',paused:'إيقاف مؤقت',resume:'متابعة',retry:'إعادة',menu:'القائمة',next:'المستوى التالي',trashLeft:'قمامة متبقية',trees:'أشجار',minions:'أتباع مترميش',boss:'مترميش الكبير',time:'الوقت',best:'الأفضل',view:'العرض',resetView:'إعادة',levelStart:n=>`المستوى ${n}: نظّف الحديقة وازرع الأشجار! 🌍`,levelDone:n=>`🎉 المستوى ${n} اكتمل!`,exited:'تم الخروج من اللعبة',lines:{pickup:['رائع! قطعة أقل 🗑️','الحديقة تشكرك!','لمعان ✨','نظيف تمام!','هيّا نكمل!'],plant:['شجرة جديدة! 🌳','الطيور ستحب هذه!','أوكسجين مجاني للجميع 😄','يا سلام على الخضرة!'],minion:['تحوّل إلى صديق للطبيعة! 💚','قال: آسف يا نقي! 😅','واحد أقل من عصابة مترميش!'],mtermishHit:['مترميش: آي! قبعتي! 🎩','مترميش: لن تمسكني!! 😤','مترميش: حسناً حسناً... ربما أرمي أقل!'],mtermishDown:['مترميش: أعدك... سأستخدم سلة المهملات! 😭','مترميش استسلم! إلى المستوى القادم!'],mtermishTaunt:['مترميش: هاهاها! المزيد من القمامة! 😈','مترميش: النظافة مملّة! 🗑️','مترميش: حاول أن تمسكني يا نقي!'],quotes:['من زرع شجرة، زرع أملاً.','نظّفنا اليوم... ونحمي الأرض غداً.','كل قطعة قمامة في مكانها = كوكب أسعد.','الأشجار بيوت العصافير.','بطل البيئة الحقيقي هو أنت.']}},
+  es:{dir:'ltr',title:'Jardin Limpio',language:'Idioma',tagline:'Una aventura 3D para salvar el jardin. 🌍',howto:'🗑️ <b>Recoge basura</b> — pasa por encima para limpiarla.<br>🌱 <b>Planta arboles</b> — ponte en el punto brillante y pulsa el boton.<br>😈 <span class="bad">Deten a los secuaces de Mtermish</span> — tocalos para convertirlos en amigos de la naturaleza.<br>🎩 <span class="bad">Gran Mtermish</span> necesita <b>3 toques</b>... y corre rapido.',start:'🚀 Iniciar aventura',keys:'💻 Flechas / WASD para moverte — Espacio o E para plantar<br>📱 Joystick derecha — boton 🌱 izquierda',level:'Nivel',clean:'Limpieza del jardin',prompt:'🌱 Pulsa para plantar un arbol.',exit:'Salir',pause:'Pausa',paused:'Pausa',resume:'Continuar',retry:'Reintentar',menu:'Menu',next:'Siguiente nivel',trashLeft:'Basura restante',trees:'Arboles',minions:'Secuaces de Mtermish',boss:'Gran Mtermish',time:'Tiempo',best:'Mejor',view:'Vista',resetView:'Reiniciar',levelStart:n=>`Nivel ${n}: limpia el jardin y planta arboles. 🌍`,levelDone:n=>`🎉 Nivel ${n} completado.`,exited:'Saliste del juego',lines:{pickup:['Bien! Una basura menos.','El jardin te da las gracias.','Todo brilla.','Limpio y listo.','Sigamos!'],plant:['Un arbol nuevo! 🌳','A los pajaros les encantara.','Oxigeno gratis para todos.','Que verde tan bonito.'],minion:['Se convirtio en amigo de la naturaleza!','Pidio perdon.','Un secuaz menos de Mtermish.'],mtermishHit:['Mtermish: Ay! Mi sombrero!','Mtermish: No me atraparas!','Mtermish: Bueno... tirare menos basura.'],mtermishDown:['Mtermish: Prometo usar el bote!','Mtermish se rindio. Siguiente nivel!'],mtermishTaunt:['Mtermish: Mas basura!','Mtermish: La limpieza es aburrida!','Mtermish: Intenta atraparme!'],quotes:['Plantar un arbol es plantar esperanza.','Limpia hoy, protege manana.','Cada bote ayuda al planeta.','Los arboles son casas para aves.','Eres el heroe del jardin.']}},
+  fr:{dir:'ltr',title:'Jardin Propre',language:'Langue',tagline:'Une aventure 3D pour sauver le jardin. 🌍',howto:'🗑️ <b>Ramasse les dechets</b> — marche dessus pour les nettoyer.<br>🌱 <b>Plante des arbres</b> — place-toi sur la zone brillante et appuie sur le bouton.<br>😈 <span class="bad">Arrete les sbires de Mtermish</span> — touche-les pour en faire des amis de la nature.<br>🎩 <span class="bad">Grand Mtermish</span> demande <b>3 touches</b>... et court vite.',start:"🚀 Lancer l'aventure",keys:'💻 Fleches / WASD pour bouger — Espace ou E pour planter<br>📱 Joystick a droite — bouton 🌱 a gauche',level:'Niveau',clean:'Proprete du jardin',prompt:'🌱 Appuie pour planter un arbre.',exit:'Quitter',pause:'Pause',paused:'Pause',resume:'Reprendre',retry:'Rejouer',menu:'Menu',next:'Niveau suivant',trashLeft:'Dechets restants',trees:'Arbres',minions:'Sbires de Mtermish',boss:'Grand Mtermish',time:'Temps',best:'Meilleur',view:'Vue',resetView:'Recentrer',levelStart:n=>`Niveau ${n} : nettoie le jardin et plante des arbres. 🌍`,levelDone:n=>`🎉 Niveau ${n} termine.`,exited:'Partie quittee',lines:{pickup:['Super! Un dechet en moins.','Le jardin te remercie.','Ca brille.','Propre et net.','On continue!'],plant:['Un nouvel arbre! 🌳','Les oiseaux vont adorer.','De l oxygene pour tout le monde.','Cette verdure est belle.'],minion:['Transforme en ami de la nature!','Il a dit pardon.','Un sbire de Mtermish en moins.'],mtermishHit:['Mtermish: Aie! Mon chapeau!','Mtermish: Tu ne m attraperas pas!','Mtermish: Bon... je jetterai moins.'],mtermishDown:['Mtermish: Je promets d utiliser la poubelle!','Mtermish abandonne. Niveau suivant!'],mtermishTaunt:['Mtermish: Encore des dechets!','Mtermish: La proprete, quel ennui!','Mtermish: Essaie de m attraper!'],quotes:['Planter un arbre, c est planter l espoir.','Nettoyer aujourd hui, proteger demain.','Chaque poubelle aide la planete.','Les arbres sont des maisons pour les oiseaux.','Tu es le heros du jardin.']}}
 };
 let activeLocale=localStorage.getItem('cleanGarden.locale')||'en';
 function tr(k,...args){const pack=ACTIVE_I18N[activeLocale]||ACTIVE_I18N.en;const v=pack[k]??ACTIVE_I18N.en[k]??k;return typeof v==='function'?v(...args):v;}
@@ -46,7 +46,8 @@ function applyLocale(locale=activeLocale){
   localStorage.setItem('cleanGarden.locale',activeLocale);
   const pack=ACTIVE_I18N[activeLocale];
   document.documentElement.lang=activeLocale;document.documentElement.dir=pack.dir;
-  $('languageSelect').value=activeLocale;$('languageLabel').textContent=tr('language');$('tagline').textContent=tr('tagline');
+  document.title=tr('title');
+  $('languageSelect').value=activeLocale;$('gameTitle').textContent=tr('title');$('languageLabel').textContent=tr('language');$('tagline').textContent=tr('tagline');
   $('howto').innerHTML=tr('howto');$('startBtn').textContent=tr('start');$('keysHint').innerHTML=tr('keys');
   $('uiLevelLabel').textContent=tr('level');$('cleanlinessLabel').textContent=tr('clean');$('prompt').textContent=tr('prompt');
   $('exitBtn').textContent=tr('exit');$('pauseBtn').textContent=tr('pause');$('pauseTitle').textContent=tr('paused');
@@ -526,16 +527,11 @@ function updateBursts(dt){
     if(b.life>.9){scene.remove(b.m);b.m.geometry.dispose();b.m.material.dispose();bursts.splice(i,1);}}}
 
 /* ---------------- Fun copy ---------------- */
-const LINES={
-  pickup:['رائع! قطعة أقل 🗑️','الحديقة تشكرك!','لمعان ✨','نظيف تمام!','هيّا نكمل!'],
-  plant:['شجرة جديدة! 🌳','الطيور ستحب هذه!','أوكسجين مجاني للجميع 😄','يا سلام على الخضرة!'],
-  minion:['تحوّل إلى صديق للطبيعة! 💚','قال: آسف يا نقي! 😅','واحد أقل من عصابة مترميش!'],
-  mtermishHit:['مترميش: آي! قبعتي! 🎩','مترميش: لن تمسكني!! 😤','مترميش: حسناً حسناً... ربما أرمي أقل!'],
-  mtermishDown:['مترميش: أعدك... سأستخدم سلة المهملات! 😭','مترميش استسلم! (إلى المستوى القادم 😏)'],
-  mtermishTaunt:['مترميش: هاهاها! المزيد من القمامة! 😈','مترميش: النظافة مملّة! 🗑️','مترميش: حاول أن تمسكني يا نقي!'],
-  quotes:['"من زرع شجرة، زرع أملاً" 🌱','نظّفنا اليوم... ونحمي الأرض غداً 🌍','كل قطعة قمامة في مكانها = كوكب أسعد 💚',
-    'الأشجار بيوت العصافير... شكراً لبنائها! 🐦','بطل البيئة الحقيقي هو أنت! 🦸']
-};
+function line(group){
+  const pack=ACTIVE_I18N[activeLocale]||ACTIVE_I18N.en;
+  const lines=(pack.lines&&pack.lines[group])||(ACTIVE_I18N.en.lines&&ACTIVE_I18N.en.lines[group])||[group];
+  return pick(lines);
+}
 
 /* ---------------- Game entities ---------------- */
 const player={mesh:buildNaqi(),pos:new THREE.Vector3(6,0,6),vel:new THREE.Vector3(),yaw:0,anim:0};
@@ -576,7 +572,7 @@ function spawnVillain(boss=false){
   const v={mesh:m,boss,hp:boss?3:1,state:'walk',t:0,
     target:new THREE.Vector3(),drop:rand(2.5,5),hitCd:0,speed:boss?3.4:rand(1.8,2.6)};
   newTarget(v);villains.push(v);
-  if(boss){mtermish=v;note(pick(LINES.mtermishTaunt));Snd.laugh();}
+  if(boss){mtermish=v;note(line('mtermishTaunt'));Snd.laugh();}
   return v;}
 function newTarget(v){const a=random()*Math.PI*2,r=rand(5,WORLD_R-3);
   v.target.set(Math.cos(a)*r,0,Math.sin(a)*r);}
@@ -693,7 +689,7 @@ const Game={
     this.trees++;this.lifetimeTrees++;this.addScore(25,p.mesh.position.clone().add(new THREE.Vector3(0,2,0)));
     this.plantCd=.6;
     Snd.plant();burst(p.mesh.position.clone().setY(1),0x9ef01a,18,3.5);
-    note(pick(LINES.plant),true);
+    note(line('plant'),true);
     $('uiTrees').textContent=this.trees;
     this.updateMission();
   },
@@ -728,7 +724,7 @@ const Game={
       $('stTrash').textContent=this.trashGot;
       $('stTime').textContent=formatTime(this.elapsed);
       $('stBest').textContent=formatTime(result.best);
-      $('lvlQuote').textContent=pick(LINES.quotes);
+      $('lvlQuote').textContent=line('quotes');
       $('lvlTitle').textContent=tr('levelDone',this.level);
       $('lvlOverlay').style.display='flex';
     }
@@ -801,7 +797,7 @@ function villainsUpdate(dt){
       if(v.drop<=0){v.drop=v.boss?rand(2,3.5):rand(3.5,6.5);
         const inD=Math.hypot(v.mesh.position.x,v.mesh.position.z);
         const dropResult=inD<WORLD_R?spawnTrash(v.mesh.position):{ spawned:false, reason:'outside-world' };
-        if(dropResult.spawned&&random()<.25)note(pick(LINES.mtermishTaunt),false,1800);
+        if(dropResult.spawned&&random()<.25)note(line('mtermishTaunt'),false,1800);
         if(dropResult.spawned)Game.updateMission();}
       if(v.hitCd<=0){
         const dist=v.mesh.position.distanceTo(player.pos);
@@ -811,9 +807,9 @@ function villainsUpdate(dt){
           if(v.hp<=0){
             v.state='convert';v.t=0;Snd.convert();
             v.mesh.traverse(o=>{if(o.isMesh&&o.material===mat(0x9c6bd6))o.material=mat(0x51cf66);});
-            if(v.boss){note(pick(LINES.mtermishDown),true,3000);Game.addScore(100,v.mesh.position.clone().setY(2.5));}
-            else{note(pick(LINES.minion),true);Game.addScore(30,v.mesh.position.clone().setY(2));}
-          }else{Snd.bonk();note(pick(LINES.mtermishHit),false,2000);
+            if(v.boss){note(line('mtermishDown'),true,3000);Game.addScore(100,v.mesh.position.clone().setY(2.5));}
+            else{note(line('minion'),true);Game.addScore(30,v.mesh.position.clone().setY(2));}
+          }else{Snd.bonk();note(line('mtermishHit'),false,2000);
             Game.addScore(15,v.mesh.position.clone().setY(2.5));
             const away=v.mesh.position.clone().sub(player.pos).setY(0).normalize().multiplyScalar(9);
             v.target.copy(v.mesh.position).add(away);}
@@ -846,7 +842,7 @@ function trashUpdate(dt){
       Snd.pickup();
       Game.trashGot++;$('uiTrash').textContent=Game.trashGot;
       Game.addScore(10,t.mesh.position.clone().setY(1.4));
-      if(random()<.3)note(pick(LINES.pickup),true,1500);
+      if(random()<.3)note(line('pickup'),true,1500);
       scene.remove(t.mesh);trash.splice(i,1);
       Game.updateMission();Game.checkWin();
     }}}

@@ -162,7 +162,7 @@
 - [x] Move all `<style>` content from `web/index.html` into `web/styles/main.css`.
 - [x] Move all inline `<script>` game logic into JavaScript modules under `web/src/`.
 - [x] Keep `web/index.html` focused on root containers, metadata, and script/style references.
-- [ ] Replace hard-coded Arabic text in HTML with UI rendering from the i18n system.
+- [x] Replace hard-coded Arabic text in HTML with UI rendering from the i18n system.
 - [x] Ensure `document.documentElement.lang` updates when the selected locale changes.
 - [x] Ensure `document.documentElement.dir` is `rtl` for Arabic and `ltr` for English, Spanish, and French.
 - [ ] Replace direction-specific CSS such as `text-align:right`, `left`, `right`, and directional margins with logical CSS such as `text-align:start`, `inset-inline`, `margin-inline`, and `padding-inline`.
@@ -198,8 +198,8 @@
 - [x] Add localized mission text.
 - [x] Add localized tutorial text.
 - [x] Add localized buttons.
-- [ ] Add localized level-complete messages.
-- [ ] Add localized gameplay notification lines.
+- [x] Add localized level-complete messages.
+- [x] Add localized gameplay notification lines.
 - [x] Add localized accessibility labels.
 - [x] Add a language selector on the start/pause/settings screen.
 - [x] Save the selected language locally for offline reuse.
