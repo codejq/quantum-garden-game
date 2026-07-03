@@ -17,9 +17,9 @@
 - [x] Split the single HTML file into standard HTML, CSS, and JavaScript modules.
 - [ ] Separate simulation from rendering so gameplay state is plain data and Three.js only visualizes that state.
 - [ ] Add a fixed-timestep simulation loop so tests, replay, two-player race, and LLM play are deterministic.
-- [ ] Support `en`, `ar`, `es`, and `fr`.
-- [ ] Make English the default language.
-- [ ] Preserve Arabic RTL support.
+- [x] Support `en`, `ar`, `es`, and `fr`.
+- [x] Make English the default language.
+- [x] Preserve Arabic RTL support.
 - [ ] Make game modes and levels modular so more modes and levels can be added without editing the core loop.
 - [ ] Add a Tauri project so the game can be packaged for Windows, macOS, Linux, Android, and iOS.
 - [ ] Make the game work fully offline.
@@ -163,8 +163,8 @@
 - [x] Move all inline `<script>` game logic into JavaScript modules under `web/src/`.
 - [x] Keep `web/index.html` focused on root containers, metadata, and script/style references.
 - [ ] Replace hard-coded Arabic text in HTML with UI rendering from the i18n system.
-- [ ] Ensure `document.documentElement.lang` updates when the selected locale changes.
-- [ ] Ensure `document.documentElement.dir` is `rtl` for Arabic and `ltr` for English, Spanish, and French.
+- [x] Ensure `document.documentElement.lang` updates when the selected locale changes.
+- [x] Ensure `document.documentElement.dir` is `rtl` for Arabic and `ltr` for English, Spanish, and French.
 - [ ] Replace direction-specific CSS such as `text-align:right`, `left`, `right`, and directional margins with logical CSS such as `text-align:start`, `inset-inline`, `margin-inline`, and `padding-inline`.
 - [ ] Preserve the current touch controls and keyboard controls after the split.
 - [ ] Preserve the current visual behavior after the split.
@@ -196,13 +196,13 @@
 - [x] Add Spanish translations.
 - [x] Add French translations.
 - [x] Add localized mission text.
-- [ ] Add localized tutorial text.
+- [x] Add localized tutorial text.
 - [x] Add localized buttons.
 - [ ] Add localized level-complete messages.
 - [ ] Add localized gameplay notification lines.
 - [ ] Add localized accessibility labels.
-- [ ] Add a language selector on the start/pause/settings screen.
-- [ ] Save the selected language locally for offline reuse.
+- [x] Add a language selector on the start/pause/settings screen.
+- [x] Save the selected language locally for offline reuse.
 - [x] Fall back to English for missing keys.
 - [ ] Verify Arabic layout does not overlap in RTL.
 - [ ] Verify English, Spanish, and French text fits in buttons, HUD chips, and overlays.

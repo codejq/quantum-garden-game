@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,16 +15,16 @@
     <div class="chip">⭐ <span class="n" id="uiScore">0</span></div>
     <div class="chip">🌳 <span class="n" id="uiTrees">0</span></div>
     <div class="chip">🗑️ <span class="n" id="uiTrash">0</span></div>
-    <div class="chip">🎯 مستوى <span class="n" id="uiLevel">1</span></div>
+    <div class="chip">🎯 <span id="uiLevelLabel">Level</span> <span class="n" id="uiLevel">1</span></div>
     <div id="meterWrap">
-      <div class="lbl"><span>نظافة الحديقة</span><span id="meterPct">0%</span></div>
+      <div class="lbl"><span id="cleanlinessLabel">Garden cleanliness</span><span id="meterPct">0%</span></div>
       <div id="meterBar"><div id="meterFill"></div></div>
     </div>
   </div>
   <div id="missionCard"></div>
   <div id="notes"></div>
-  <div id="prompt">🌱 اضغط لتزرع شجرة!</div>
-  <button id="exitBtn" aria-label="Exit game">خروج</button>
+  <div id="prompt">🌱 Press to plant a tree!</div>
+  <button id="exitBtn" aria-label="Exit game">Exit</button>
 </div>
 
 <div id="joy"><div id="joyKnob"></div></div>
@@ -34,28 +34,31 @@
 <div class="overlay" id="startOverlay">
   <div class="card">
     <h1>الحديقة النظيفة <span class="vs">|</span> Clean Garden</h1>
-    <div class="tag">مغامرة ثلاثية الأبعاد لإنقاذ الحديقة! 🌍</div>
-    <div class="howto">
-      🗑️ <b>التقط القمامة</b> — امشِ فوقها لتختفي!<br>
-      🌱 <b>ازرع الأشجار</b> — قف على البقعة المضيئة واضغط الزر.<br>
-      😈 <span class="bad">أوقف أتباع مترميش</span> — المسهم ليتحولوا إلى أصدقاء للطبيعة!<br>
-      🎩 <span class="bad">مترميش الكبير</span> يحتاج <b>٣ لمسات</b>... وهو سريع الهرب!
-    </div>
-    <button class="bigbtn" id="startBtn">🚀 ابدأ المغامرة</button>
-    <div id="keysHint">💻 الأسهم / WASD للحركة — مسافة أو E للزراعة<br>📱 عصا التحكم يمين — زر 🌱 يسار</div>
+    <div class="tag" id="tagline">A 3D adventure to save the garden! 🌍</div>
+    <label class="langPick" for="languageSelect"><span id="languageLabel">Language</span>
+      <select id="languageSelect" aria-label="Language">
+        <option value="en" selected>English</option>
+        <option value="ar">العربية</option>
+        <option value="es">Español</option>
+        <option value="fr">Français</option>
+      </select>
+    </label>
+    <div class="howto" id="howto"></div>
+    <button class="bigbtn" id="startBtn">🚀 Start Adventure</button>
+    <div id="keysHint"></div>
   </div>
 </div>
 
 <div class="overlay" id="lvlOverlay">
   <div class="card">
-    <h1 id="lvlTitle">🎉 أحسنت يا نقي!</h1>
+    <h1 id="lvlTitle">🎉 Level complete!</h1>
     <div class="quote" id="lvlQuote"></div>
     <div class="stats">
       <div class="stat">⭐<div class="b" id="stScore">0</div></div>
       <div class="stat">🌳<div class="b" id="stTrees">0</div></div>
       <div class="stat">🗑️<div class="b" id="stTrash">0</div></div>
     </div>
-    <button class="bigbtn" id="nextBtn">المستوى التالي ⬅</button>
+    <button class="bigbtn" id="nextBtn">Next Level</button>
   </div>
 </div>
 
