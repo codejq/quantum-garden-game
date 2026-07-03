@@ -604,6 +604,13 @@ function setPatchView(patch,view){patchViews.set(patch,view);return patch;}
 function patchView(patch){return patchViews.get(patch);}
 function setVillainView(villain,view){villainViews.set(villain,view);return villain;}
 function villainView(villain){return villainViews.get(villain);}
+function plantPatchView(patch){
+  const view=patchView(patch);
+  if(!view)return;
+  view.tree=makeTree();view.tree.scale.setScalar(.01);
+  view.tree.position.copy(patch.pos);scene.add(view.tree);
+  view.ring.visible=false;
+}
 
 function spawnTrash(pos){
   if(trash.length>=45)return { spawned:false, reason:'cap' };
@@ -781,10 +788,7 @@ const Game={
   tryPlant(){
     if(!this.running||!this.nearPatch||this.plantCd>0)return;
     const p=this.nearPatch;p.planted=true;p.grow=0;
-    const view=patchView(p);
-    view.tree=makeTree();view.tree.scale.setScalar(.01);
-    view.tree.position.copy(p.pos);scene.add(view.tree);
-    view.ring.visible=false;
+    plantPatchView(p);
     this.trees++;this.lifetimeTrees++;this.addScore(25,p.pos.clone().add(new THREE.Vector3(0,2,0)));
     this.plantCd=.6;
     Snd.plant();burst(p.pos.clone().setY(1),0x9ef01a,18,3.5);

@@ -39,6 +39,8 @@ test('active patch gameplay reads plain position data instead of mesh-owned stat
   assert.match(source, /const patchPos=new THREE\.Vector3\(Math\.cos\(a\)\*r,0,Math\.sin\(a\)\*r\)/);
   assert.match(source, /const patch=setPatchView\(\{pos:patchPos,planted:false,grow:0\},\{mesh:g,ring,tree:null\}\)/);
   assert.match(source, /scene\.add\(g\);patches\.push\(patch\)/);
+  assert.match(source, /function plantPatchView\(patch\)\{/);
+  assert.match(source, /plantPatchView\(p\)/);
   assert.match(source, /view\.tree\.position\.copy\(p\.pos\)/);
   assert.match(source, /this\.addScore\(25,p\.pos\.clone\(\)\.add\(new THREE\.Vector3\(0,2,0\)\)\)/);
   assert.match(source, /burst\(p\.pos\.clone\(\)\.setY\(1\),0x9ef01a/);
@@ -86,6 +88,7 @@ test('active browser does not keep authoritative interaction positions only on m
 test('active browser syncs mesh transforms from gameplay data in one render step', () => {
   const syncSource = source.slice(source.indexOf('function syncGameplayMeshes'));
   const playerUpdateSource = source.slice(source.indexOf('function playerUpdate'), source.indexOf('function villainsUpdate'));
+  const tryPlantSource = source.slice(source.indexOf('  tryPlant(){'), source.indexOf('  addScore(v,pos)'));
   const villainsUpdateSource = source.slice(source.indexOf('function villainsUpdate'), source.indexOf('function trashUpdate'));
   const trashUpdateSource = source.slice(source.indexOf('function trashUpdate'), source.indexOf('function patchesUpdate'));
   const patchesUpdateSource = source.slice(source.indexOf('function patchesUpdate'), source.indexOf('function syncGameplayMeshes'));
@@ -100,6 +103,8 @@ test('active browser syncs mesh transforms from gameplay data in one render step
   assert.match(source, /tickGameplay\(dt,time\);\s*syncGameplayMeshes\(dt,time\);/);
 
   assert.doesNotMatch(playerUpdateSource, /player\.mesh\.position\.copy/);
+  assert.doesNotMatch(tryPlantSource, /makeTree\(\)/);
+  assert.doesNotMatch(tryPlantSource, /scene\.add/);
   assert.doesNotMatch(villainsUpdateSource, /v\.mesh\.position\.copy/);
   assert.doesNotMatch(trashUpdateSource, /t\.mesh\.position\.copy/);
   assert.doesNotMatch(patchesUpdateSource, /p\.mesh\.position\.copy/);
