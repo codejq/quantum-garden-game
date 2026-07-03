@@ -26,6 +26,21 @@ test('active game can close the Tauri desktop window after confirmation', () => 
   assert.match(mainSource, /if\(await closeTauriWindowAfterConfirm\(\)\)return/);
 });
 
+test('active web and mobile exit returns to the main menu fallback', () => {
+  assert.match(mainSource, /function showMenu\(\)/);
+  assert.match(mainSource, /\$\('startOverlay'\)\.style\.display='flex'/);
+  assert.match(mainSource, /\$\('joy'\)\.style\.display='none'/);
+  assert.match(mainSource, /\$\('actBtn'\)\.style\.display='none'/);
+  assert.match(mainSource, /showMenu\(\)/);
+});
+
+test('exit and pause controls are positioned away from bottom touch controls', () => {
+  assert.match(cssSource, /#pauseBtn,#exitBtn,#viewBtn,#resetViewBtn\{position:absolute;top:10px/);
+  assert.match(cssSource, /#exitBtn\{inset-inline-start:10px\}/);
+  assert.match(cssSource, /#joy\{position:fixed;bottom:max/);
+  assert.match(cssSource, /#actBtn\{position:fixed;bottom:max/);
+});
+
 test('active game preserves desktop and mobile play controls after the split', () => {
   assert.match(mainSource, /keys\[e\.code\]=true/);
   assert.match(mainSource, /KeyW|ArrowUp/);
