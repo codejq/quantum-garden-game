@@ -72,3 +72,22 @@ test('active browser does not keep authoritative interaction positions only on m
   assert.doesNotMatch(source, /nearestList\(patches,'patch',p=>p\.mesh\.position/);
   assert.doesNotMatch(source, /nearestList\(villains,'villain',v=>v\.mesh\.position/);
 });
+
+test('active browser syncs mesh transforms from gameplay data in one render step', () => {
+  const syncSource = source.slice(source.indexOf('function syncGameplayMeshes'));
+  const playerUpdateSource = source.slice(source.indexOf('function playerUpdate'), source.indexOf('function villainsUpdate'));
+  const villainsUpdateSource = source.slice(source.indexOf('function villainsUpdate'), source.indexOf('function trashUpdate'));
+  const trashUpdateSource = source.slice(source.indexOf('function trashUpdate'), source.indexOf('function patchesUpdate'));
+  const patchesUpdateSource = source.slice(source.indexOf('function patchesUpdate'), source.indexOf('function syncGameplayMeshes'));
+
+  assert.match(syncSource, /player\.mesh\.position\.copy\(player\.pos\)/);
+  assert.match(syncSource, /v\.mesh\.position\.copy\(v\.pos\)/);
+  assert.match(syncSource, /t\.mesh\.position\.copy\(t\.pos\)/);
+  assert.match(syncSource, /p\.mesh\.position\.copy\(p\.pos\)/);
+  assert.match(source, /tickGameplay\(dt,time\);\s*syncGameplayMeshes\(dt,time\);/);
+
+  assert.doesNotMatch(playerUpdateSource, /player\.mesh\.position\.copy/);
+  assert.doesNotMatch(villainsUpdateSource, /v\.mesh\.position\.copy/);
+  assert.doesNotMatch(trashUpdateSource, /t\.mesh\.position\.copy/);
+  assert.doesNotMatch(patchesUpdateSource, /p\.mesh\.position\.copy/);
+});

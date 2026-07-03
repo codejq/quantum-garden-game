@@ -861,14 +861,7 @@ function playerUpdate(dt){
     let dy=targetYaw-player.yaw;
     while(dy>Math.PI)dy-=Math.PI*2;while(dy<-Math.PI)dy+=Math.PI*2;
     player.yaw+=dy*Math.min(1,dt*12);}
-  player.mesh.position.copy(player.pos);
-  player.mesh.rotation.y=player.yaw;
   player.anim+=dt*(3+spd*1.4);
-  const sw=Math.sin(player.anim*4)* clamp(spd/8,0,1);
-  const {arms,legs}=player.mesh.userData;
-  arms[0].rotation.x=sw*.9;arms[1].rotation.x=-sw*.9;
-  legs[0].rotation.x=-sw*.8;legs[1].rotation.x=sw*.8;
-  player.mesh.position.y=Math.abs(Math.sin(player.anim*4))*.1*clamp(spd/8,0,1);
 }
 
 function villainsUpdate(dt){
@@ -883,10 +876,7 @@ function villainsUpdate(dt){
       if(dir.length()<1){newTarget(v);}
       else{dir.normalize();
         v.pos.addScaledVector(dir,v.speed*dt);
-        v.mesh.rotation.y=Math.atan2(dir.x,dir.z);}
-      v.mesh.position.copy(v.pos);
-      v.mesh.position.y=Math.abs(Math.sin(v.t*8))*.12;
-      v.mesh.rotation.z=Math.sin(v.t*8)*.08;
+        v.yaw=Math.atan2(dir.x,dir.z);}
       v.drop-=dt;
       if(v.drop<=0){v.drop=v.boss?rand(2,3.5):rand(3.5,6.5);
         const inD=Math.hypot(v.pos.x,v.pos.z);
@@ -909,11 +899,8 @@ function villainsUpdate(dt){
             v.target.copy(v.pos).add(away);}
         }}
     }else if(v.state==='convert'){
-      v.mesh.rotation.y+=dt*14;
-      v.mesh.position.copy(v.pos);
-      v.mesh.position.y=Math.abs(Math.sin(v.t*9))*.6;
       const s=Math.max(.01,1-(v.t-.7)*2)* (v.boss?1.7:1);
-      if(v.t>.7)v.mesh.scale.setScalar(s);
+      if(v.t>.7)v.visualScale=s;
       if(v.t>1.2){
         burst(v.pos.clone().setY(1),0x51cf66,20,5);
         scene.remove(v.mesh);villains.splice(i,1);
@@ -931,8 +918,7 @@ function villainsUpdate(dt){
 function trashUpdate(dt){
   for(let i=trash.length-1;i>=0;i--){
     const t=trash[i];
-    t.mesh.rotation.y+=dt*.8;
-    t.mesh.position.copy(t.pos);
+    t.spin=(t.spin||0)+dt*.8;
     if(t.pos.distanceTo(player.pos)<1.35){
       burst(t.pos.clone().setY(.6),0xffd166,10,3);
       Snd.pickup();
@@ -947,18 +933,54 @@ function patchesUpdate(dt,time){
   Game.plantCd-=dt;
   Game.nearPatch=null;
   for(const p of patches){
-    p.mesh.position.copy(p.pos);
     if(p.planted){
-      if(p.grow<1){p.grow=Math.min(1,p.grow+dt*.9);
-        const e=1-Math.pow(1-p.grow,3);
-        p.tree.scale.setScalar(.01+e*(0.85+Math.sin(p.grow*Math.PI)*.25));
-        if(p.grow>=1)p.tree.scale.setScalar(1);}
+      if(p.grow<1)p.grow=Math.min(1,p.grow+dt*.9);
       continue;}
-    p.ring.material.opacity=.55+Math.sin(time*4)*.3;
-    p.ring.scale.setScalar(1+Math.sin(time*4)*.06);
     if(p.pos.distanceTo(player.pos)<2.2)Game.nearPatch=p;
   }
   $('prompt').style.display=(Game.nearPatch&&Game.running)?'block':'none';
+}
+
+function syncGameplayMeshes(dt,time){
+  player.mesh.position.copy(player.pos);
+  player.mesh.rotation.y=player.yaw;
+  const spd=Math.hypot(player.vel.x,player.vel.z);
+  const sw=Math.sin(player.anim*4)*clamp(spd/8,0,1);
+  const {arms,legs}=player.mesh.userData;
+  arms[0].rotation.x=sw*.9;arms[1].rotation.x=-sw*.9;
+  legs[0].rotation.x=-sw*.8;legs[1].rotation.x=sw*.8;
+  player.mesh.position.y=Math.abs(Math.sin(player.anim*4))*.1*clamp(spd/8,0,1);
+
+  for(const v of villains){
+    v.mesh.position.copy(v.pos);
+    if(v.state==='walk'){
+      if(Number.isFinite(v.yaw))v.mesh.rotation.y=v.yaw;
+      v.mesh.position.y=Math.abs(Math.sin(v.t*8))*.12;
+      v.mesh.rotation.z=Math.sin(v.t*8)*.08;
+    }else if(v.state==='convert'){
+      v.mesh.rotation.y+=dt*14;
+      v.mesh.position.y=Math.abs(Math.sin(v.t*9))*.6;
+      if(Number.isFinite(v.visualScale))v.mesh.scale.setScalar(v.visualScale);
+    }
+  }
+
+  for(const t of trash){
+    t.mesh.position.copy(t.pos);
+    t.mesh.rotation.y=t.spin||0;
+  }
+
+  for(const p of patches){
+    p.mesh.position.copy(p.pos);
+    if(p.planted&&p.tree){
+      const e=1-Math.pow(1-p.grow,3);
+      p.tree.position.copy(p.pos);
+      p.tree.scale.setScalar(p.grow>=1?1:.01+e*(0.85+Math.sin(p.grow*Math.PI)*.25));
+    }
+    if(!p.planted){
+      p.ring.material.opacity=.55+Math.sin(time*4)*.3;
+      p.ring.scale.setScalar(1+Math.sin(time*4)*.06);
+    }
+  }
 }
 
 function envUpdate(dt,time){
@@ -992,6 +1014,7 @@ function loop(){
   const dt=Math.min(clock.getDelta(),.05);
   const time=clock.elapsedTime;
   tickGameplay(dt,time);
+  syncGameplayMeshes(dt,time);
   if(Game.running||ALLOW_PAUSED_VISUAL_ANIMATION)envUpdate(dt,time);
   updateBursts(dt);
   camTarget.copy(player.pos).add(currentCameraOffset());

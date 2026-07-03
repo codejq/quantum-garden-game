@@ -58,7 +58,7 @@
 - [ ] Make simulation data the source of truth.
 - [ ] Store player, trash, patches, villains, boss, objectives, timers, score, and level seed as plain JavaScript data.
 - [x] Do not store authoritative gameplay state only on Three.js meshes.
-- [ ] Make rendering read simulation state and sync mesh transforms each frame.
+- [x] Make rendering read simulation state and sync mesh transforms each frame.
 - [x] Add a fixed simulation tick such as `1/60` or `1/30` seconds.
 - [x] Use an accumulator in the visual loop so rendering can run at any frame rate while simulation advances deterministically.
 - [x] Allow tests and LLM agents to call `step()` without creating a WebGL renderer.
@@ -499,7 +499,7 @@
 - [x] `web/index.html` has no inline game logic.
 - [x] `web/index.html` has no inline CSS.
 - [x] Gameplay simulation can run headlessly without WebGL.
-- [ ] Rendering syncs to simulation state instead of owning authoritative gameplay state.
+- [x] Rendering syncs to simulation state instead of owning authoritative gameplay state.
 - [x] Simulation uses a fixed timestep.
 - [x] A level attempt can be built, played, torn down, disposed, and rebuilt from a seed.
 - [x] Starting a new level does not keep stale patches, planted trees, villains, trash, or decorative objects unless explicitly designed.
