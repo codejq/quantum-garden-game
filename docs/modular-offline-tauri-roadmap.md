@@ -147,7 +147,7 @@
 - [x] Add Vite or an equivalent lightweight bundler.
 - [x] Vendor the current Three.js r128 build locally first instead of loading it from a CDN.
 - [x] Keep the visual baseline stable while removing CDN dependencies.
-- [ ] Add a separate later task to migrate from Three.js r128 to a modern npm Three.js release.
+- [x] Add a separate later task to migrate from Three.js r128 to a modern npm Three.js release.
 - [x] Remove the Google Fonts network dependency.
 - [x] Self-host the current `Baloo Bhaijaan 2` font because it supports Arabic and Latin text for the required locales.
 - [x] Add local font files under `web/assets/fonts/`.
@@ -348,7 +348,7 @@
 - [x] Keep audio fully generated or bundle local audio assets.
 - [x] Avoid network calls during gameplay.
 - [x] Add a test that blocks network and verifies the game loads.
-- [ ] Add a service worker only if the web build must also support installable PWA behavior.
+- [x] Add a service worker only if the web build must also support installable PWA behavior.
 - [x] For Tauri builds, load the local static bundle from the app package.
 - [x] Confirm no runtime dependency on Google Fonts, CDNJS, or external APIs.
 
@@ -530,10 +530,10 @@
 
 ## Risks And Decisions
 
-- [ ] Decide whether to use Vite or keep a no-bundler ES module setup.
-- [ ] Decide whether to add a service worker for the web version or rely only on Tauri packaging for offline distribution.
-- [ ] Decide whether LLM play should be turn-stepped for evaluation, real-time for demos, or support both.
+- [x] Decide whether to use Vite or keep a no-bundler ES module setup.
+- [x] Decide whether to add a service worker for the web version or rely only on Tauri packaging for offline distribution.
+- [x] Decide whether LLM play should be turn-stepped for evaluation, real-time for demos, or support both.
 - [ ] Confirm target Tauri version before mobile setup because mobile support requirements can change.
 - [ ] Treat deterministic simulation as the highest-risk part of the refactor because the current code mixes random generation, gameplay state, and rendering.
-- [ ] Treat modern Three.js upgrade as out of scope for the first offline milestone unless a blocker requires it.
+- [x] Treat modern Three.js upgrade as out of scope for the first offline milestone unless a blocker requires it.
 - [ ] Track Apple platform work as blocked until required hardware and account access are confirmed.
