@@ -89,8 +89,8 @@
 - [ ] Ensure pause freezes gameplay timers, boss spawn timing, villain drops, elapsed time, and input effects.
 - [ ] Ensure visual-only animations can continue during pause only if intentionally allowed.
 - [ ] Recalculate or redesign pollution denominator so spawned trash during a level does not make the meter misleading.
-- [ ] Remove `maximum-scale=1.0` and `user-scalable=no` unless a platform-specific reason requires them.
-- [ ] Add accessible labels for emoji-only buttons.
+- [x] Remove `maximum-scale=1.0` and `user-scalable=no` unless a platform-specific reason requires them.
+- [x] Add accessible labels for emoji-only buttons.
 - [ ] Replace global singleton assumptions with instantiable game/session objects.
 - [x] Support creating a fresh `GameSession({ mode, levelId, seed })` for tests, LLM evaluation, retries, and races.
 
@@ -273,11 +273,11 @@
 
 ## Full Screen And Exit
 
-- [ ] Add a full-screen request when gameplay starts on supported browsers.
-- [ ] Add fallback CSS that always fills the viewport when full-screen permission is denied.
-- [ ] Add an exit button inside the HUD.
-- [ ] Make the exit button available on mobile touch and desktop.
-- [ ] On web, exit should pause the game and return to the menu or confirmation overlay.
+- [x] Add a full-screen request when gameplay starts on supported browsers.
+- [x] Add fallback CSS that always fills the viewport when full-screen permission is denied.
+- [x] Add an exit button inside the HUD.
+- [x] Make the exit button available on mobile touch and desktop.
+- [x] On web, exit should pause the game and return to the menu or confirmation overlay.
 - [ ] On Tauri desktop, exit should optionally close the window after confirmation.
 - [ ] On mobile, exit should return to the main menu unless platform rules require different behavior.
 - [ ] Add a pause/settings button if exit needs a confirmation path.

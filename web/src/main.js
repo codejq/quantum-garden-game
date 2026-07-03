@@ -385,6 +385,7 @@ $('actBtn').addEventListener('touchstart',e=>{e.preventDefault();Game.tryPlant()
 $('actBtn').addEventListener('click',()=>Game.tryPlant());
 const isTouch='ontouchstart' in window||navigator.maxTouchPoints>0;
 $('sndBtn').onclick=()=>{Snd.on=!Snd.on;$('sndBtn').textContent=Snd.on?'🔊':'🔇';};
+$('exitBtn').onclick=()=>exitGame();
 
 /* ---------------- UI helpers ---------------- */
 const notesEl=$('notes');
@@ -717,17 +718,43 @@ function loop(){
 loop();
 
 /* ---------------- Flow ---------------- */
+function requestFullscreen(){
+  const el=document.documentElement;
+  if(document.fullscreenElement||!el.requestFullscreen)return;
+  el.requestFullscreen().catch(()=>{});
+}
+function exitFullscreen(){
+  if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen().catch(()=>{});
+}
+function showMenu(){
+  $('startOverlay').style.display='flex';
+  $('hud').style.display='none';
+  $('sndBtn').style.display='none';
+  $('exitBtn').style.display='none';
+  $('joy').style.display='none';
+  $('actBtn').style.display='none';
+  $('prompt').style.display='none';
+}
+function exitGame(){
+  Game.running=false;
+  exitFullscreen();
+  note('تم الخروج من اللعبة',true,1200);
+  showMenu();
+}
 $('startBtn').onclick=()=>{
   Snd.init();
+  requestFullscreen();
   $('startOverlay').style.display='none';
   $('hud').style.display='block';
   $('sndBtn').style.display='block';
+  $('exitBtn').style.display='block';
   if(isTouch){$('joy').style.display='block';$('actBtn').style.display='flex';}
   Game.running=true;
   Game.startLevel(1);
 };
 $('nextBtn').onclick=()=>{
   $('lvlOverlay').style.display='none';
+  $('exitBtn').style.display='block';
   Game.running=true;
   Game.startLevel(Game.level+1);
 };
