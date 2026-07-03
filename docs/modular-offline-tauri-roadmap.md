@@ -308,13 +308,13 @@
 
 ## Performance And Quality Tiers
 
-- [ ] Add a quality setting with at least `low` and `high` presets.
-- [ ] Default mobile devices to a conservative quality preset when needed.
+- [x] Add a quality setting with at least `low` and `high` presets.
+- [x] Default mobile devices to a conservative quality preset when needed.
 - [ ] Allow users to change quality from settings.
-- [ ] Reduce or disable expensive shadows on low quality.
-- [ ] Reduce decorative flower, particle, cloud, and object counts on low quality.
-- [ ] Lower pixel ratio on low quality if needed.
-- [ ] Add `prefers-reduced-motion` handling for UI animations and nonessential visual motion.
+- [x] Reduce or disable expensive shadows on low quality.
+- [x] Reduce decorative flower, particle, cloud, and object counts on low quality.
+- [x] Lower pixel ratio on low quality if needed.
+- [x] Add `prefers-reduced-motion` handling for UI animations and nonessential visual motion.
 - [ ] Keep gameplay readable on low quality.
 - [ ] Test low quality on mobile portrait and mobile landscape.
 - [ ] Test high quality on desktop.
