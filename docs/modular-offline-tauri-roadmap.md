@@ -123,8 +123,8 @@
 - [x] Create `web/src/input/touch.js` for mobile joystick and action button.
 - [x] Create `web/src/input/llm-agent.js` for model-controlled actions.
 - [x] Create `web/src/camera/camera-controller.js` for follow camera, orbit camera, zoom, and perspective changes.
-- [ ] Create `web/src/ui/hud.js` for score, mission, meter, prompt, and notifications.
-- [ ] Create `web/src/ui/overlays.js` for start, level-complete, pause, mode select, language select, and exit screens.
+- [x] Create `web/src/ui/hud.js` for score, mission, meter, prompt, and notifications.
+- [x] Create `web/src/ui/overlays.js` for start, level-complete, pause, mode select, language select, and exit screens.
 - [x] Create `web/src/i18n/index.js` for translation loading, locale selection, interpolation, and document direction.
 - [x] Create `web/src/i18n/locales/en.json`.
 - [x] Create `web/src/i18n/locales/ar.json`.
@@ -255,7 +255,7 @@
 - [x] Add pause/resume.
 - [x] Add retry level.
 - [x] Add return-to-menu.
-- [ ] Add level-complete summary with score, trees, trash, time, and best time.
+- [x] Add level-complete summary with score, trees, trash, time, and best time.
 
 ## Two Player Race Mode
 
