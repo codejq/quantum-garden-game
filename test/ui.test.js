@@ -2,6 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { cleanlinessPercent, meterGradient, missionRows, objectiveRows, renderMissionHtml } from '../web/src/ui/hud.js';
 import { bindQualitySelect, hide, levelSummary, setText, show } from '../web/src/ui/overlays.js';
+import { readFileSync } from 'node:fs';
+
+const mainSource = readFileSync(new URL('../web/src/main.js', import.meta.url), 'utf8');
 
 test('missionRows and renderMissionHtml create localized mission output', () => {
   const rows = missionRows(
@@ -31,6 +34,14 @@ test('objectiveRows renders mode-provided objective definitions', () => {
   );
 
   assert.deepEqual(rows, [{ id: 'trash', done: true, icon: '✅', label: 'Trash left', value: '0' }]);
+});
+
+test('active HUD mission card renders objective-provided rows', () => {
+  assert.match(mainSource, /const activeObjectives=\[/);
+  assert.match(mainSource, /function activeObjectiveRows\(objectives,state\)/);
+  assert.match(mainSource, /function renderActiveMissionHtml\(rows\)/);
+  assert.match(mainSource, /\$\('missionCard'\)\.innerHTML=renderActiveMissionHtml\(activeObjectiveRows\(activeObjectives,activeMissionState\(\)\)\)/);
+  assert.doesNotMatch(mainSource, /tr\('trashLeft'\): <b>/);
 });
 
 test('cleanliness meter helpers clamp and colorize values', () => {

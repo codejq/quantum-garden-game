@@ -612,6 +612,55 @@ function plantPatchView(patch){
   view.ring.visible=false;
 }
 
+const activeObjectives=[
+  {
+    id:'trash',
+    labelKey:'trashLeft',
+    icon:'🗑️',
+    completeIcon:'✅',
+    value:state=>String(state.trash.length),
+    done:state=>state.trash.length===0,
+  },
+  {
+    id:'trees',
+    labelKey:'trees',
+    icon:'🌱',
+    completeIcon:'✅',
+    value:state=>`${state.patches.filter(p=>p.planted).length}/${state.patches.length}`,
+    done:state=>state.patches.every(p=>p.planted),
+  },
+  {
+    id:'minions',
+    labelKey:'minions',
+    icon:'😈',
+    completeIcon:'✅',
+    value:state=>`${state.converted}/${state.quota}`,
+    done:state=>state.converted>=state.quota,
+  },
+  {
+    id:'boss',
+    labelKey:'boss',
+    icon:'🎩',
+    completeIcon:'✅',
+    value:()=> '',
+    done:state=>state.spawnedBoss&&!state.boss,
+  },
+];
+
+function activeMissionState(){
+  return {trash,patches,converted:Game.converted,quota:Game.quota,spawnedBoss:Game.spawnedBoss,boss:mtermish};
+}
+function activeObjectiveRows(objectives,state){
+  return objectives.map(objective=>{
+    const done=Boolean(objective.done(state));
+    const value=objective.value?objective.value(state):'';
+    return {done,icon:done?(objective.completeIcon||'✅'):objective.icon,label:tr(objective.labelKey),value};
+  });
+}
+function renderActiveMissionHtml(rows){
+  return rows.map(row=>`<div class="${row.done?'done':''}">${row.icon} ${row.label}${row.value?`: <b>${row.value}</b>`:''}</div>`).join('');
+}
+
 function spawnTrash(pos){
   if(trash.length>=45)return { spawned:false, reason:'cap' };
   const m=trashBuilders[randi(0,trashBuilders.length-1)]();
@@ -805,13 +854,7 @@ const Game={
     return clamp(total/(this.polMax||60)*100,0,100);},
 
   updateMission(){
-    const left=trash.length, pl=patches.filter(p=>p.planted).length;
-    const bossDone=this.bossDefeated();
-    $('missionCard').innerHTML=
-      `<div class="${left===0?'done':''}">${left===0?'✅':'🗑️'} ${tr('trashLeft')}: <b>${left}</b></div>`+
-      `<div class="${pl===patches.length?'done':''}">${pl===patches.length?'✅':'🌱'} ${tr('trees')}: <b>${pl}/${patches.length}</b></div>`+
-      `<div class="${this.converted>=this.quota?'done':''}">${this.converted>=this.quota?'✅':'😈'} ${tr('minions')}: <b>${this.converted}/${this.quota}</b></div>`+
-      `<div class="${bossDone?'done':''}">${bossDone?'✅':'🎩'} ${tr('boss')}</div>`;
+    $('missionCard').innerHTML=renderActiveMissionHtml(activeObjectiveRows(activeObjectives,activeMissionState()));
   },
   bossDefeated(){return this.spawnedBoss&&(!mtermish);},
 
