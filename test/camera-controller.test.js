@@ -2,10 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { CameraController, cameraPresets } from '../web/src/camera/camera-controller.js';
 
-test('CameraController exposes follow and top-down presets', () => {
-  assert.deepEqual(cameraPresets(), ['follow', 'topDown']);
+test('CameraController exposes follow, close, and top-down presets', () => {
+  assert.deepEqual(cameraPresets(), ['follow', 'close', 'topDown']);
   const camera = new CameraController();
   assert.equal(camera.preset, 'follow');
+  camera.setPreset('close');
+  assert.equal(camera.preset, 'close');
   camera.setPreset('topDown');
   assert.equal(camera.preset, 'topDown');
 });
@@ -36,4 +38,3 @@ test('CameraController applies position and lookAt to camera-like objects', () =
   assert.equal(calls[0][0], 'set');
   assert.deepEqual(calls[1], ['lookAt', 1, 1.2, 2]);
 });
-

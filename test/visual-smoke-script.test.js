@@ -29,10 +29,13 @@ test('visual viewport smoke covers quality tiers', () => {
 test('offline build verification runs camera view smoke across viewports', () => {
   assert.match(packageJson.scripts['test:offline-build'], /camera-view-smoke\.mjs/);
   assert.match(cameraScriptSource, /desktop-follow/);
+  assert.match(cameraScriptSource, /desktop-close/);
   assert.match(cameraScriptSource, /desktop-top/);
   assert.match(cameraScriptSource, /mobile-portrait-follow/);
+  assert.match(cameraScriptSource, /mobile-portrait-close/);
   assert.match(cameraScriptSource, /mobile-portrait-top/);
   assert.match(cameraScriptSource, /mobile-landscape-follow/);
+  assert.match(cameraScriptSource, /mobile-landscape-close/);
   assert.match(cameraScriptSource, /mobile-landscape-top/);
   assert.match(cameraScriptSource, /QuantumGardenAgent\.act\(\{ type: 'setCamera', mode \}\)/);
   assert.match(cameraScriptSource, /assertControlsDoNotOverlap/);

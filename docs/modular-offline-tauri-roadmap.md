@@ -330,7 +330,7 @@
 - [x] Add a reset-view button that returns to the default follow camera.
 - [x] Add a view toggle button in the HUD or pause/settings screen.
 - [x] Support at least two view presets: angled follow view and top-down view.
-- [ ] Consider adding an optional close third-person view after the controller is stable.
+- [x] Consider adding an optional close third-person view after the controller is stable.
 - [x] Save the selected view preset locally.
 - [x] Make camera controls work with mouse on desktop.
 - [x] Make camera controls work with touch gestures on mobile where practical.

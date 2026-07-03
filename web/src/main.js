@@ -459,6 +459,7 @@ addEventListener('touchend',e=>{for(const t of e.changedTouches)if(t.identifier=
 $('actBtn').addEventListener('touchstart',e=>{e.preventDefault();Game.tryPlant();},{passive:false});
 $('actBtn').addEventListener('click',()=>Game.tryPlant());
 const CAMERA_DEFAULT={mode:'follow',yaw:0,zoom:1};
+const CAMERA_MODES=['follow','close','top'];
 const cameraState={
   mode:localStorage.getItem('cleanGarden.cameraMode')||CAMERA_DEFAULT.mode,
   yaw:Number(localStorage.getItem('cleanGarden.cameraYaw')||CAMERA_DEFAULT.yaw),
@@ -475,7 +476,8 @@ function resetCameraView(){
   saveCamera();
 }
 function toggleCameraView(){
-  cameraState.mode=cameraState.mode==='follow'?'top':'follow';
+  const index=CAMERA_MODES.indexOf(cameraState.mode);
+  cameraState.mode=CAMERA_MODES[(index+1)%CAMERA_MODES.length]||CAMERA_DEFAULT.mode;
   saveCamera();
 }
 const pointerNdc=new THREE.Vector2();
@@ -776,7 +778,8 @@ const camTarget=new THREE.Vector3();
 const cameraOffset=new THREE.Vector3();
 function currentCameraOffset(){
   if(cameraState.mode==='top')return cameraOffset.set(0,34*cameraState.zoom,.01);
-  const dist=15*cameraState.zoom,height=13*cameraState.zoom;
+  const close=cameraState.mode==='close';
+  const dist=(close?8:15)*cameraState.zoom,height=(close?6:13)*cameraState.zoom;
   return cameraOffset.set(Math.sin(cameraState.yaw)*dist,height,Math.cos(cameraState.yaw)*dist);
 }
 camera.position.copy(currentCameraOffset());
@@ -1141,7 +1144,7 @@ function actAgent(action={}){
   else if(type==='toggleCamera')toggleCameraView();
   else if(type==='resetCamera')resetCameraView();
   else if(type==='setCamera'){
-    if(action.mode==='follow'||action.mode==='top')cameraState.mode=action.mode;
+    if(CAMERA_MODES.includes(action.mode))cameraState.mode=action.mode;
     if(Number.isFinite(Number(action.yaw)))cameraState.yaw=Number(action.yaw);
     if(Number.isFinite(Number(action.zoom)))cameraState.zoom=clamp(Number(action.zoom),.65,1.7);
     saveCamera();

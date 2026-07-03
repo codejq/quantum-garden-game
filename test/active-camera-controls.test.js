@@ -40,10 +40,12 @@ test('active game supports optional mouse click-to-move controls', () => {
   assert.match(mainSource, /if\(ix\|\|iz\)mouseMoveTarget\.active=false/);
 });
 
-test('active camera supports persisted follow and top-down views', () => {
+test('active camera supports persisted follow, close, and top-down views', () => {
   assert.match(mainSource, /localStorage\.getItem\('cleanGarden\.cameraMode'\)/);
-  assert.match(mainSource, /cameraState\.mode=cameraState\.mode==='follow'\?'top':'follow'/);
+  assert.match(mainSource, /const CAMERA_MODES=\['follow','close','top'\]/);
+  assert.match(mainSource, /CAMERA_MODES\[\(index\+1\)%CAMERA_MODES\.length\]/);
   assert.match(mainSource, /if\(cameraState\.mode==='top'\)return cameraOffset\.set\(0,34\*cameraState\.zoom,\.01\)/);
+  assert.match(mainSource, /const close=cameraState\.mode==='close'/);
   assert.match(mainSource, /Math\.sin\(cameraState\.yaw\)\*dist/);
 });
 
@@ -53,4 +55,5 @@ test('browser agent observation exposes camera metadata and actions', () => {
   assert.match(mainSource, /else if\(type==='toggleCamera'\)toggleCameraView\(\)/);
   assert.match(mainSource, /else if\(type==='resetCamera'\)resetCameraView\(\)/);
   assert.match(mainSource, /else if\(type==='setCamera'\)/);
+  assert.match(mainSource, /if\(CAMERA_MODES\.includes\(action\.mode\)\)cameraState\.mode=action\.mode/);
 });

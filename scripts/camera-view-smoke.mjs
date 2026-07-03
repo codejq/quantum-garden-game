@@ -24,10 +24,13 @@ mkdirSync(outDir, { recursive: true });
 const pageUrl = 'file:///' + resolve(root, 'dist/web/index.html').replaceAll('\\', '/');
 const cases = [
   { name: 'desktop-follow', viewport: { width: 1365, height: 768 }, mode: 'follow', minBytes: 20000 },
+  { name: 'desktop-close', viewport: { width: 1365, height: 768 }, mode: 'close', minBytes: 20000 },
   { name: 'desktop-top', viewport: { width: 1365, height: 768 }, mode: 'top', minBytes: 20000 },
   { name: 'mobile-portrait-follow', viewport: { width: 390, height: 844 }, mode: 'follow', minBytes: 12000 },
+  { name: 'mobile-portrait-close', viewport: { width: 390, height: 844 }, mode: 'close', minBytes: 12000 },
   { name: 'mobile-portrait-top', viewport: { width: 390, height: 844 }, mode: 'top', minBytes: 12000 },
   { name: 'mobile-landscape-follow', viewport: { width: 844, height: 390 }, mode: 'follow', minBytes: 12000 },
+  { name: 'mobile-landscape-close', viewport: { width: 844, height: 390 }, mode: 'close', minBytes: 12000 },
   { name: 'mobile-landscape-top', viewport: { width: 844, height: 390 }, mode: 'top', minBytes: 12000 },
 ];
 

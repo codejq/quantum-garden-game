@@ -1,5 +1,6 @@
 const PRESETS = {
   follow: { yaw: 0, pitch: 0.72, distance: 20, height: 3 },
+  close: { yaw: 0, pitch: 0.48, distance: 11, height: 2.2 },
   topDown: { yaw: 0, pitch: 1.45, distance: 30, height: 0 },
 };
 
@@ -51,4 +52,3 @@ export class CameraController {
 export function cameraPresets() {
   return Object.keys(PRESETS);
 }
-
