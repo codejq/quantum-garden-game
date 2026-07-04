@@ -42,6 +42,26 @@ test('Android Tauri project scaffold is generated', () => {
   assert.match(androidActivity, /package com\.quantumgarden\.clean/);
 });
 
+test('Android app icons, splash, and release signing are configured', () => {
+  const androidGradle = readFileSync(new URL('../src-tauri/gen/android/app/build.gradle.kts', import.meta.url), 'utf8');
+  const androidManifest = readFileSync(new URL('../src-tauri/gen/android/app/src/main/AndroidManifest.xml', import.meta.url), 'utf8');
+  const androidTheme = readFileSync(new URL('../src-tauri/gen/android/app/src/main/res/values/themes.xml', import.meta.url), 'utf8');
+  const androidV31Theme = readFileSync(new URL('../src-tauri/gen/android/app/src/main/res/values-v31/themes.xml', import.meta.url), 'utf8');
+  const launchScreen = readFileSync(new URL('../src-tauri/gen/android/app/src/main/res/drawable/launch_screen.xml', import.meta.url), 'utf8');
+  const releaseChecklist = readFileSync(new URL('../docs/release-checklist.md', import.meta.url), 'utf8');
+
+  assert.match(androidManifest, /android:icon="@mipmap\/ic_launcher"/);
+  assert.match(androidManifest, /android:roundIcon="@mipmap\/ic_launcher_round"/);
+  assert.match(androidTheme, /android:windowBackground">@drawable\/launch_screen/);
+  assert.match(androidV31Theme, /android:windowSplashScreenAnimatedIcon">@drawable\/clean_garden_splash_icon/);
+  assert.match(launchScreen, /@color\/splash_background/);
+  assert.match(launchScreen, /@drawable\/clean_garden_splash_icon/);
+  assert.match(androidGradle, /ANDROID_KEYSTORE_PATH/);
+  assert.match(androidGradle, /create\("releaseEnv"\)/);
+  assert.match(androidGradle, /signingConfig = signingConfigs\.getByName\("releaseEnv"\)/);
+  assert.match(releaseChecklist, /ANDROID_KEYSTORE_PATH/);
+});
+
 test('Tauri identifier defines Android package id and iOS bundle id', () => {
   assert.equal(tauriConfig.identifier, 'com.quantumgarden.clean');
   assert.match(notes, /Tauri identifier `com\.quantumgarden\.clean` is the shared Android package id and iOS bundle id/);

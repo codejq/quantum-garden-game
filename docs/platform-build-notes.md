@@ -29,6 +29,8 @@ Target Tauri version: v2. The npm CLI package and Rust crates are kept on the Ta
 - Android build path is configured through `package.json` Tauri Android scripts plus `src-tauri/tauri.conf.json`.
 - Development command: `npm run tauri:android:dev`.
 - Release command: `npm run tauri:android:build`.
+- App icon and splash resources live in `src-tauri/gen/android/app/src/main/res`.
+- Release signing uses `ANDROID_KEYSTORE_PATH`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, and `ANDROID_KEY_PASSWORD`.
 - Do not mark Android release complete until an emulator and a physical device have been tested.
 
 ## macOS And iOS

@@ -39,7 +39,8 @@ Use this checklist for each release candidate. The current verified release targ
 - Latest build attempt: `npm run tauri:android:build` on 2026-07-04 compiled the Android Rust library, then failed when Tauri tried to symlink `libclean_garden_lib.so` into `src-tauri/gen/android/app/src/main/jniLibs/arm64-v8a`.
 - Release remains blocked until Windows Developer Mode, `SeCreateSymbolicLinkPrivilege`, or a compatible build host allows Android native library linking.
 - Do not release until emulator and physical-device smoke tests pass.
-- Do not release until app icons, splash assets, and release signing are configured.
+- App icon and splash resources are configured in `src-tauri/gen/android/app/src/main/res`.
+- Release signing is configured through `ANDROID_KEYSTORE_PATH`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, and `ANDROID_KEY_PASSWORD`; do not store keystores or passwords in the repo.
 
 ## macOS Gate
 

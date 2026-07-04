@@ -387,10 +387,10 @@
 - [ ] macOS: test offline launch after install.
 - [ ] macOS: complete signing and notarization for distribution.
 - [x] Android: configure package id.
-- [ ] Android: configure app icons and splash assets.
+- [x] Android: configure app icons and splash assets.
 - [ ] Android: test on emulator.
 - [ ] Android: test on a physical device.
-- [ ] Android: configure release signing.
+- [x] Android: configure release signing.
 - [x] iOS: configure bundle id.
 - [ ] iOS: configure app icons and launch assets.
 - [ ] iOS: test on simulator.
