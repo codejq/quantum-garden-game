@@ -75,6 +75,8 @@ Android signing:
 - `ANDROID_KEY_ALIAS`: Android key alias.
 - `ANDROID_KEY_PASSWORD`: Android key password.
 
+The Android release workflow also accepts the legacy names from the copied workflow: `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, and `KEY_PASSWORD`.
+
 Google Play publishing:
 
 - `GOOGLE_PLAY_JSON_KEY`: Google Play service account JSON.

@@ -50,9 +50,13 @@ jobs:
 
       - name: Decode Android release keystore
         env:
-          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 || secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD || secrets.KEYSTORE_PASSWORD }}
         run: |
+          if [ -z "$KEYSTORE_BASE64" ] || [ -z "$KEYSTORE_PASSWORD" ]; then
+            echo "Android signing secrets are missing. Configure ANDROID_KEYSTORE_BASE64/ANDROID_KEYSTORE_PASSWORD or KEYSTORE_BASE64/KEYSTORE_PASSWORD."
+            exit 1
+          fi
           printf '%s' "$KEYSTORE_BASE64" | tr -d ' \r\n' | base64 --decode > /tmp/clean-garden-orig.keystore
           keytool -importkeystore \
             -srckeystore /tmp/clean-garden-orig.keystore \
@@ -66,9 +70,9 @@ jobs:
         run: npm run tauri:android:build
         env:
           ANDROID_KEYSTORE_PATH: ${{ github.workspace }}/clean-garden-release.jks
-          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD || secrets.KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS || secrets.KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD || secrets.KEY_PASSWORD }}
 
       - name: Collect release artifacts
         run: |
