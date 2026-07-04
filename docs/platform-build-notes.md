@@ -32,7 +32,8 @@ Target Tauri version: v2. The npm CLI package and Rust crates are kept on the Ta
 - App icon and splash resources live in `src-tauri/gen/android/app/src/main/res`.
 - Release signing uses `ANDROID_KEYSTORE_PATH`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, and `ANDROID_KEY_PASSWORD`.
 - Current Windows host can create symbolic links, and `npm run tauri:android:build` produced an unsigned APK plus an AAB on 2026-07-04.
-- `emulator -list-avds` currently returns no configured AVD, and no Android device is connected through `adb`.
+- A `quantum_garden_api35` AVD exists, but this Windows host reports no emulator acceleration support, so the AVD cannot boot here.
+- No Android device is currently connected through `adb`.
 - Do not mark Android release complete until an emulator and a physical device have been tested.
 
 ## macOS And iOS

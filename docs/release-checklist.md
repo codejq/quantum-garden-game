@@ -40,7 +40,8 @@ Use this checklist for each release candidate. The current verified release targ
 - Latest build attempt: `npm run tauri:android:build` on 2026-07-04 completed and produced `src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk` and `src-tauri/gen/android/app/build/outputs/bundle/universalRelease/app-universal-release.aab`.
 - Release remains blocked until a WebView smoke run is verified on an emulator or device.
 - Do not release until emulator and physical-device smoke tests pass.
-- No Android device is connected and `emulator -list-avds` currently returns no configured AVD.
+- A `quantum_garden_api35` AVD exists, but this Windows host reports no emulator acceleration support, so the AVD cannot boot here.
+- No Android device is currently connected through `adb`.
 - App icon and splash resources are configured in `src-tauri/gen/android/app/src/main/res`.
 - Release signing is configured through `ANDROID_KEYSTORE_PATH`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, and `ANDROID_KEY_PASSWORD`; do not store keystores or passwords in the repo.
 
