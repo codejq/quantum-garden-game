@@ -151,6 +151,8 @@ jobs:
           fi
 
       - name: Build iOS app
+        id: ios_build
+        continue-on-error: true
         run: npm run tauri:ios:build
 
       - name: Collect iOS release assets
@@ -161,8 +163,17 @@ jobs:
             name="$(basename "$app" .app)"
             ditto -c -k --keepParent "$app" "release/ios/${name}-${{ github.ref_name }}.app.zip"
           done
+          if [ "$(find release/ios -type f | wc -l)" -eq 0 ] && [ -d src-tauri/gen/apple ]; then
+            echo "No signed iOS binary was produced. Packaging generated iOS project instead."
+            ditto -c -k --keepParent src-tauri/gen/apple "release/ios/Clean-Garden-${{ github.ref_name }}-ios-project.zip"
+          fi
           ls -la release/ios
           test "$(find release/ios -type f | wc -l)" -gt 0
+
+      - name: Warn when iOS binary build is unavailable
+        if: steps.ios_build.outcome == 'failure'
+        run: |
+          echo "::warning::Tauri iOS binary build failed, likely because Apple signing/provisioning is not configured. Uploaded the generated iOS project archive instead."
 
       - name: Upload iOS artifacts
         uses: actions/upload-artifact@v4

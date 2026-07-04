@@ -62,7 +62,7 @@ npm run tauri:ios:build
 ## GitHub Workflows
 
 - `CI`: runs tests and offline build checks.
-- `Build Platforms`: builds web, Windows, Linux, macOS, iOS, and Android artifacts on release tags, attaches web/desktop/iOS assets to the GitHub Release, and can also run manually.
+- `Build Platforms`: builds web, Windows, Linux, macOS, iOS, and Android artifacts on release tags, attaches web/desktop/iOS assets to the GitHub Release, and can also run manually. If Apple signing is unavailable, the iOS job uploads the generated iOS project archive instead of a signed binary.
 - `Android Market Release`: builds signed Android artifacts, creates a GitHub Release, and can publish the AAB to Google Play if the Play secret is configured.
 - `F-Droid Repository`: publishes the signed release APK into `docs/fdroid/` for GitHub Pages hosting after the Android release workflow succeeds.
 
@@ -89,6 +89,8 @@ F-Droid repository signing:
 - `FDROID_KEYSTORE_PASS`: F-Droid repo keystore password.
 
 If F-Droid repo signing secrets are absent, CI generates a temporary repo key for the current publication. Configure the real F-Droid repo key before giving the repo URL to users.
+
+iOS binary distribution requires Apple signing and provisioning on the macOS runner. Without that setup, the release includes `Clean-Garden-<tag>-ios-project.zip` so the generated Xcode/Tauri iOS project can still be downloaded.
 
 The Android package id and iOS bundle id are `com.quantumbilling.cleangarding`.
 
