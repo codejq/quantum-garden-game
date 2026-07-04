@@ -36,7 +36,8 @@ Use this checklist for each release candidate. The current verified release targ
 - Setup status: Tauri Android project scaffold exists under `src-tauri/gen/android`.
 - Build command: `npm run tauri:android:build`.
 - Dev command: `npm run tauri:android:dev`.
-- Release remains blocked until Windows symlink permissions or a compatible build host allow Android native library linking.
+- Latest build attempt: `npm run tauri:android:build` on 2026-07-04 compiled the Android Rust library, then failed when Tauri tried to symlink `libclean_garden_lib.so` into `src-tauri/gen/android/app/src/main/jniLibs/arm64-v8a`.
+- Release remains blocked until Windows Developer Mode, `SeCreateSymbolicLinkPrivilege`, or a compatible build host allows Android native library linking.
 - Do not release until emulator and physical-device smoke tests pass.
 - Do not release until app icons, splash assets, and release signing are configured.
 
@@ -50,7 +51,7 @@ Use this checklist for each release candidate. The current verified release targ
 
 - Dev command on macOS: `npm run tauri:ios:dev`.
 - Build command on macOS: `npm run tauri:ios:build`.
+- Latest Windows host check: `npm exec -- tauri ios --help` on 2026-07-04 failed with `unrecognized subcommand 'ios'`, confirming iOS work must move to macOS/Xcode.
 - Release remains blocked until macOS, Xcode, provisioning profiles, and Apple Developer access are available.
 - Do not release until simulator and physical-device smoke tests pass.
 - Do not release until launch assets, signing, and provisioning are configured.
-
