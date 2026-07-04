@@ -248,9 +248,9 @@ jobs:
                 - npm run build
                 - rm -rf docs/fdroid
                 - cd src-tauri && $HOME/.cargo/bin/cargo fetch
-              output:
+              output: 
                 src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk
-              build: npm run tauri -- android build --apk --ci
+              build: PATH="$HOME/.cargo/bin:$PATH" npm run tauri -- android build --apk --ci
 
           AutoUpdateMode: None
           UpdateCheckMode: None
