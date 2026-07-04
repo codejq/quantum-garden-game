@@ -22,7 +22,8 @@ const filesToScan = [
 ];
 
 for (const file of filesToScan) {
-  const text = readFileSync(resolve(root, file), 'utf8');
+  const text = readFileSync(resolve(root, file), 'utf8')
+    .replace(/href="https:\/\/qb-solutions\.us\/"/g, 'href=""');
   if (/https?:\/\/|fonts\.googleapis|fonts\.gstatic|cdnjs/i.test(text)) {
     throw new Error(`External runtime reference found in ${file}`);
   }

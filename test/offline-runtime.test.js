@@ -30,6 +30,12 @@ test('active runtime source does not introduce gameplay network calls', () => {
   }
 });
 
+test('offline build verifier allows only the approved credit link', () => {
+  const verifierSource = readFileSync(new URL('../scripts/verify-offline-build.mjs', import.meta.url), 'utf8');
+  assert.match(verifierSource, /href="https:\\\/\\\/qb-solutions\\.us\\\/"/);
+  assert.match(verifierSource, /External runtime reference found/);
+});
+
 test('active audio remains generated with WebAudio instead of bundled media files', () => {
   const mainSource = readFileSync(new URL('../web/src/main.js', import.meta.url), 'utf8');
   assert.match(mainSource, /AudioContext/);
