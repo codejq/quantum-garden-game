@@ -1,16 +1,25 @@
-name: F-Droid Repository
+name: F-Droid Publish
 
 # Runs after Android Market Release succeeds or manually from the Actions tab.
 #
-# GitHub Pages setup:
+# Self-hosted F-Droid repo setup:
 #   Settings -> Pages -> Source: Deploy from branch -> Branch: main -> Folder: /docs
 #
 # Users add this repo URL to F-Droid:
 #   https://<owner>.github.io/<repo>/fdroid/repo
 #
+# Official F-Droid publishing:
+#   F-Droid does not accept uploaded APKs directly. Official publication is
+#   done by opening a merge request against https://gitlab.com/fdroid/fdroiddata
+#   so F-Droid can build the APK from source.
+#
 # Required GitHub Secrets:
 #   FDROID_KEYSTORE_BASE64  - Base64-encoded JKS keystore used to sign the repo index.
 #   FDROID_KEYSTORE_PASS    - Password for the keystore and the "fdroid" key alias.
+#
+# Optional official F-Droid GitLab secrets:
+#   FDROID_GITLAB_TOKEN     - GitLab token with api + write_repository access to a fdroiddata fork.
+#   FDROID_GITLAB_FORK      - Fork path, for example "your-gitlab-user/fdroiddata".
 
 on:
   workflow_run:
@@ -19,8 +28,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  update-fdroid-repo:
-    name: Update F-Droid Repo
+  update-self-hosted-fdroid-repo:
+    name: Update Self-Hosted F-Droid Repo
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     permissions:
@@ -111,9 +120,10 @@ jobs:
           cat > fdroid-work/metadata/com.quantumbilling.cleangarding.yml << 'EOF'
           Categories:
             - Games
-          License: Proprietary
+          License: MIT
           WebSite: https://qb-solutions.us/
           SourceCode: https://github.com/${{ github.repository }}
+          IssueTracker: https://github.com/${{ github.repository }}/issues
           Name: Clean Garden
           Summary: Offline 3D garden cleanup game
           Description: |-
@@ -159,3 +169,127 @@ jobs:
             git pull --rebase origin "${{ github.event.repository.default_branch }}"
             git push origin HEAD:"${{ github.event.repository.default_branch }}"
           fi
+
+  submit-official-fdroid:
+    name: Submit To Official F-Droid
+    runs-on: ubuntu-latest
+    needs: update-self-hosted-fdroid-repo
+    permissions:
+      contents: read
+
+    steps:
+      - name: Check official F-Droid submission secrets
+        id: fdroid_secrets
+        env:
+          FDROID_GITLAB_TOKEN: ${{ secrets.FDROID_GITLAB_TOKEN }}
+          FDROID_GITLAB_FORK: ${{ secrets.FDROID_GITLAB_FORK }}
+        run: |
+          if [ -n "$FDROID_GITLAB_TOKEN" ] && [ -n "$FDROID_GITLAB_FORK" ]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Skipping official F-Droid submission. Configure FDROID_GITLAB_TOKEN and FDROID_GITLAB_FORK to open/update a fdroiddata merge request."
+          fi
+
+      - name: Checkout source
+        if: steps.fdroid_secrets.outputs.configured == 'true'
+        uses: actions/checkout@v4
+
+      - name: Prepare official fdroiddata metadata
+        if: steps.fdroid_secrets.outputs.configured == 'true'
+        run: |
+          mkdir -p fdroiddata-submission/metadata
+          cat > fdroiddata-submission/metadata/com.quantumbilling.cleangarding.yml << 'EOF'
+          Categories:
+            - Games
+          License: MIT
+          AuthorName: Quantum Billing LLC
+          WebSite: https://qb-solutions.us/
+          SourceCode: https://github.com/${{ github.repository }}
+          IssueTracker: https://github.com/${{ github.repository }}/issues
+          Changelog: https://github.com/${{ github.repository }}/releases
+          AutoName: Clean Garden
+          Summary: Offline 3D garden cleanup game
+          Description: |-
+            Clean Garden is an offline 3D garden cleanup and tree planting game
+            by Quantum Billing LLC. It supports single-player and simultaneous
+            two-player play, touch, mouse, keyboard, localized UI, score memory,
+            avatar customization, replay-friendly seeded levels, and an LLM
+            agent play interface.
+
+          RepoType: git
+          Repo: https://github.com/${{ github.repository }}.git
+
+          Builds:
+            - versionName: 0.1.0
+              versionCode: 1000
+              commit: v0.1.0
+              subdir: src-tauri/gen/android
+              sudo:
+                - apt-get update
+                - apt-get install -y build-essential curl npm pkg-config libssl-dev
+              init:
+                - curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal
+                - $HOME/.cargo/bin/rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android
+                - npm ci
+                - npm run build
+              gradle:
+                - yes
+
+          AutoUpdateMode: Version
+          UpdateCheckMode: Tags
+          CurrentVersion: 0.1.0
+          CurrentVersionCode: 1000
+          EOF
+
+      - name: Push metadata branch and open merge request
+        if: steps.fdroid_secrets.outputs.configured == 'true'
+        env:
+          FDROID_GITLAB_TOKEN: ${{ secrets.FDROID_GITLAB_TOKEN }}
+          FDROID_GITLAB_FORK: ${{ secrets.FDROID_GITLAB_FORK }}
+        run: |
+          set -euo pipefail
+          BRANCH="add-clean-garden-com-quantumbilling-cleangarding"
+          ENCODED_FORK=$(python3 - << 'PY'
+          import os, urllib.parse
+          print(urllib.parse.quote(os.environ["FDROID_GITLAB_FORK"], safe=""))
+          PY
+          )
+
+          git clone "https://oauth2:${FDROID_GITLAB_TOKEN}@gitlab.com/${FDROID_GITLAB_FORK}.git" fdroiddata
+          cd fdroiddata
+          git remote add upstream https://gitlab.com/fdroid/fdroiddata.git
+          git fetch upstream master
+          git checkout -B "$BRANCH" upstream/master
+          cp ../fdroiddata-submission/metadata/com.quantumbilling.cleangarding.yml metadata/com.quantumbilling.cleangarding.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add metadata/com.quantumbilling.cleangarding.yml
+
+          if git diff --staged --quiet; then
+            echo "Official F-Droid metadata branch is already up-to-date."
+          else
+            git commit -m "Add Clean Garden"
+          fi
+
+          git push -f origin "$BRANCH"
+
+          TARGET_ID=$(curl --silent --header "PRIVATE-TOKEN: ${FDROID_GITLAB_TOKEN}" \
+            "https://gitlab.com/api/v4/projects/fdroid%2Ffdroiddata" | jq -r '.id')
+
+          EXISTING_IID=$(curl --silent --header "PRIVATE-TOKEN: ${FDROID_GITLAB_TOKEN}" \
+            "https://gitlab.com/api/v4/projects/${ENCODED_FORK}/merge_requests?state=opened&source_branch=${BRANCH}" | jq -r '.[0].iid // empty')
+
+          if [ -n "$EXISTING_IID" ]; then
+            echo "Official F-Droid merge request already exists: ${EXISTING_IID}"
+            exit 0
+          fi
+
+          curl --fail --request POST \
+            --header "PRIVATE-TOKEN: ${FDROID_GITLAB_TOKEN}" \
+            --data-urlencode "source_branch=${BRANCH}" \
+            --data-urlencode "target_branch=master" \
+            --data-urlencode "target_project_id=${TARGET_ID}" \
+            --data-urlencode "title=Add Clean Garden" \
+            --data-urlencode "description=Adds Clean Garden, an offline 3D garden cleanup and tree planting game by Quantum Billing LLC." \
+            "https://gitlab.com/api/v4/projects/${ENCODED_FORK}/merge_requests"
