@@ -257,6 +257,7 @@ jobs:
                   {\n  implementation(\"androidx.lifecycle:lifecycle-process:2.10.0\")\n implementation(project(\":tauri-android\"))\n}\n"
                   | tee app/tauri.build.gradle.kts src-tauri/gen/android/app/tauri.build.gradle.kts
                   >/dev/null
+                - printf "http://127.0.0.1:1420\n" > /tmp/com.quantumbilling.cleangarding-server-addr
               gradle:
                 - yes
 
