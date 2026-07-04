@@ -1,4 +1,4 @@
-package com.quantumgarden.clean
+package com.quantumbilling.cleangarding
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge

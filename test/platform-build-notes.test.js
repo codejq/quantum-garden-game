@@ -21,7 +21,7 @@ test('platform notes document desktop and mobile build commands', () => {
 
 test('Android and iOS build paths are documented and configured', () => {
   assert.equal(tauriConfig.build.frontendDist, '../dist/web');
-  assert.equal(tauriConfig.identifier, 'com.quantumgarden.clean');
+  assert.equal(tauriConfig.identifier, 'com.quantumbilling.cleangarding');
   assert.match(notes, /Android build path is configured through `package\.json` Tauri Android scripts plus `src-tauri\/tauri\.conf\.json`/);
   assert.match(notes, /iOS build path is configured through `package\.json` Tauri iOS scripts plus `src-tauri\/tauri\.conf\.json`/);
 });
@@ -33,13 +33,13 @@ test('Android Tauri project scaffold is generated', () => {
 
   const androidGradle = readFileSync(new URL('../src-tauri/gen/android/app/build.gradle.kts', import.meta.url), 'utf8');
   const androidActivity = readFileSync(
-    new URL('../src-tauri/gen/android/app/src/main/java/com/quantumgarden/clean/MainActivity.kt', import.meta.url),
+    new URL('../src-tauri/gen/android/app/src/main/java/com/quantumbilling/cleangarding/MainActivity.kt', import.meta.url),
     'utf8',
   );
 
-  assert.match(androidGradle, /namespace = "com\.quantumgarden\.clean"/);
-  assert.match(androidGradle, /applicationId = "com\.quantumgarden\.clean"/);
-  assert.match(androidActivity, /package com\.quantumgarden\.clean/);
+  assert.match(androidGradle, /namespace = "com\.quantumbilling\.cleangarding"/);
+  assert.match(androidGradle, /applicationId = "com\.quantumbilling\.cleangarding"/);
+  assert.match(androidActivity, /package com\.quantumbilling\.cleangarding/);
 });
 
 test('Android app icons, splash, and release signing are configured', () => {
@@ -63,8 +63,8 @@ test('Android app icons, splash, and release signing are configured', () => {
 });
 
 test('Tauri identifier defines Android package id and iOS bundle id', () => {
-  assert.equal(tauriConfig.identifier, 'com.quantumgarden.clean');
-  assert.match(notes, /Tauri identifier `com\.quantumgarden\.clean` is the shared Android package id and iOS bundle id/);
+  assert.equal(tauriConfig.identifier, 'com.quantumbilling.cleangarding');
+  assert.match(notes, /Tauri identifier `com\.quantumbilling\.cleangarding` is the shared Android package id and iOS bundle id/);
 });
 
 test('Apple platform work remains gated until hardware and account access exist', () => {

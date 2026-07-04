@@ -26,10 +26,10 @@ val hasAndroidReleaseSigning = listOf(
 
 android {
     compileSdk = 36
-    namespace = "com.quantumgarden.clean"
+    namespace = "com.quantumbilling.cleangarding"
     defaultConfig {
         manifestPlaceholders["usesCleartextTraffic"] = "false"
-        applicationId = "com.quantumgarden.clean"
+        applicationId = "com.quantumbilling.cleangarding"
         minSdk = 24
         targetSdk = 36
         versionCode = tauriProperties.getProperty("tauri.android.versionCode", "1").toInt()
