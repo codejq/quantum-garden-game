@@ -4,6 +4,10 @@ Clean Garden is an offline 3D garden cleanup and tree planting game credited to 
 
 The game is built with plain browser JavaScript, local Three.js r128 assets, Vite, and Tauri v2. It supports desktop, mobile touch, keyboard, mouse, single-player, simultaneous two-player play, localized UI, seeded level attempts, score memory, avatar customization, and an LLM-friendly browser control hook.
 
+Live web build: [https://codejq.github.io/quantum-garden-game/](https://codejq.github.io/quantum-garden-game/)
+
+![Clean Garden gameplay screenshot](docs/images/clean-garden-gameplay.png)
+
 ## Features
 
 - Offline-first browser and Tauri builds.
@@ -62,6 +66,7 @@ npm run tauri:ios:build
 ## GitHub Workflows
 
 - `CI`: runs tests and offline build checks.
+- `GitHub Pages`: builds the offline web game and deploys `dist/web` to GitHub Pages.
 - `Build Platforms`: builds web, Windows, Linux, macOS, iOS, and Android artifacts on release tags, attaches web/desktop/iOS assets to the GitHub Release, and can also run manually. If Apple signing is unavailable, the iOS job uploads the generated iOS project archive instead of a signed binary.
 - `Android Market Release`: builds signed Android artifacts, creates a GitHub Release, and can publish the AAB to Google Play if the Play secret is configured.
 - `F-Droid Repository`: publishes the signed release APK into `docs/fdroid/` for GitHub Pages hosting after the Android release workflow succeeds.

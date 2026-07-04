@@ -1,5 +1,18 @@
 import { GameSession } from '../core/session.js';
+import { SeededRandom } from '../core/random.js';
 import { nearestReachableTarget } from '../levels/solvability.js';
+
+const HUMAN_DEFAULTS = {
+  minThinkMs: 450,
+  maxThinkMs: 1600,
+  maxStepMs: 900,
+  actionMs: 280,
+  stopDistance: 1.15,
+  patchDistance: 2.05,
+  wanderChance: 0.08,
+  pauseChance: 0.035,
+  hesitationChance: 0.06,
+};
 
 function compactEntity(entity) {
   return {
@@ -7,6 +20,10 @@ function compactEntity(entity) {
     x: Number(entity.pos.x.toFixed(2)),
     z: Number(entity.pos.z.toFixed(2)),
   };
+}
+
+function distance(a, b) {
+  return Math.hypot(a.pos.x - b.pos.x, a.pos.z - b.pos.z);
 }
 
 function directionTo(player, target) {
@@ -23,10 +40,38 @@ function findTarget(attempt, targetId) {
   return [...attempt.trash, ...attempt.patches, ...attempt.villains, attempt.boss].filter(Boolean).find((item) => item.id === targetId);
 }
 
+function nearestEntity(attempt, type) {
+  const target = nearestReachableTarget(attempt, type);
+  return target ? findTarget(attempt, target.id) : null;
+}
+
+function unfinishedPatch(attempt) {
+  return nearestEntity(attempt, 'patch');
+}
+
+function moveVectorTo(player, target, jitter = { x: 0, z: 0 }, speed = 1) {
+  const dx = target.pos.x + jitter.x - player.pos.x;
+  const dz = target.pos.z + jitter.z - player.pos.z;
+  const magnitude = Math.hypot(dx, dz) || 1;
+  return {
+    x: (dx / magnitude) * speed,
+    z: (dz / magnitude) * speed,
+  };
+}
+
 export class QuantumGardenAgent {
   constructor({ session = new GameSession(), tick = 1 / 30 } = {}) {
     this.session = session;
     this.tick = tick;
+    this.human = {
+      enabled: false,
+      rng: new SeededRandom('quantum-garden-human-agent'),
+      opts: { ...HUMAN_DEFAULTS },
+      plan: null,
+      nextDecisionAt: 0,
+      nowMs: 0,
+      lastAction: null,
+    };
   }
 
   reset({ mode = 'single-player', levelId = 1, seed = `level-${levelId}`, spawnRules = null } = {}) {
@@ -35,6 +80,10 @@ export class QuantumGardenAgent {
       : null;
     this.session = new GameSession({ mode, levelId, seed, levelDefinition });
     this.session.start();
+    this.human.plan = null;
+    this.human.nextDecisionAt = 0;
+    this.human.nowMs = 0;
+    this.human.lastAction = null;
     return this.observe();
   }
 
@@ -89,6 +138,7 @@ export class QuantumGardenAgent {
 
   act(action = {}) {
     const attempt = this.session.attempt;
+    this.human.lastAction = action;
     switch (action.type) {
       case 'move':
         this.session.setMove(action.x ?? 0, action.z ?? 0);
@@ -146,6 +196,13 @@ export class QuantumGardenAgent {
           spawnRules: action.spawnRules ?? null,
         });
         break;
+      case 'nextLevel':
+        this.nextLevel({
+          levelId: action.levelId,
+          seed: action.seed,
+          spawnRules: action.spawnRules ?? null,
+        });
+        break;
       default:
         break;
     }
@@ -155,6 +212,132 @@ export class QuantumGardenAgent {
   step(action) {
     if (action) this.act(action);
     this.session.step(this.tick);
+    this.human.nowMs += this.tick * 1000;
     return this.observe();
+  }
+
+  setHumanMode(options = {}) {
+    this.human.enabled = options.enabled ?? true;
+    this.human.opts = { ...this.human.opts, ...options };
+    if (options.seed) this.human.rng = new SeededRandom(options.seed);
+    this.human.plan = null;
+    this.human.nextDecisionAt = this.human.nowMs;
+    return this.humanStatus();
+  }
+
+  humanStatus() {
+    return {
+      enabled: this.human.enabled,
+      plan: this.human.plan ? { ...this.human.plan } : null,
+      nextDecisionInMs: Math.max(0, Math.round(this.human.nextDecisionAt - this.human.nowMs)),
+      lastAction: this.human.lastAction,
+    };
+  }
+
+  thinkDelay() {
+    return this.human.rng.float(this.human.opts.minThinkMs, this.human.opts.maxThinkMs);
+  }
+
+  chooseHumanPlan() {
+    const { rng, opts } = this.human;
+    const attempt = this.session.attempt;
+
+    if (attempt.status !== 'running') return { type: 'wait', ms: opts.actionMs };
+    if (rng.next() < opts.pauseChance) return { type: 'wait', ms: this.thinkDelay() };
+    if (rng.next() < opts.hesitationChance) return { type: 'move', x: 0, z: 0, ms: opts.actionMs };
+    if (rng.next() < opts.wanderChance) {
+      const angle = rng.float(0, Math.PI * 2);
+      return {
+        type: 'move',
+        x: Math.cos(angle),
+        z: Math.sin(angle),
+        ms: rng.float(opts.actionMs, opts.actionMs * 2.5),
+      };
+    }
+
+    const trash = nearestEntity(attempt, 'trash');
+    if (trash) {
+      return {
+        type: 'target',
+        targetId: trash.id,
+        ms: opts.actionMs,
+        jitter: { x: rng.float(-0.35, 0.35), z: rng.float(-0.35, 0.35) },
+      };
+    }
+
+    const patch = unfinishedPatch(attempt);
+    if (patch) {
+      const nearPatch = distance(attempt.player, patch) <= opts.patchDistance;
+      if (nearPatch) return { type: 'plant', ms: opts.actionMs };
+      return {
+        type: 'target',
+        targetId: patch.id,
+        ms: opts.actionMs,
+        jitter: { x: rng.float(-0.25, 0.25), z: rng.float(-0.25, 0.25) },
+      };
+    }
+
+    const villain = nearestEntity(attempt, 'villain') ?? attempt.boss;
+    if (villain) {
+      return {
+        type: 'target',
+        targetId: villain.id,
+        ms: opts.actionMs,
+        jitter: { x: rng.float(-0.4, 0.4), z: rng.float(-0.4, 0.4) },
+      };
+    }
+
+    return { type: 'move', x: 0, z: 0, ms: opts.actionMs };
+  }
+
+  applyHumanPlan(plan) {
+    const attempt = this.session.attempt;
+    if (plan.type === 'target') {
+      const target = findTarget(attempt, plan.targetId);
+      if (!target) return this.act({ type: 'move', x: 0, z: 0 });
+      const vector = moveVectorTo(attempt.player, target, plan.jitter);
+      return this.act({ type: 'move', x: vector.x, z: vector.z });
+    }
+    if (plan.type === 'plant') return this.act({ type: 'plantNearest' });
+    if (plan.type === 'move') return this.act({ type: 'move', x: plan.x, z: plan.z });
+    return this.act({ type: 'move', x: 0, z: 0 });
+  }
+
+  humanStep({ maxMs = this.human.opts.maxStepMs } = {}) {
+    if (!this.human.enabled) this.setHumanMode({ enabled: true });
+    const endAt = this.human.nowMs + maxMs;
+    let observation = this.observe();
+    while (this.human.nowMs < endAt && observation.status === 'running') {
+      if (!this.human.plan || this.human.nowMs >= this.human.nextDecisionAt) {
+        this.human.plan = this.chooseHumanPlan();
+        this.human.nextDecisionAt = this.human.nowMs + (this.human.plan.ms ?? this.thinkDelay());
+      }
+      this.applyHumanPlan(this.human.plan);
+      observation = this.step();
+      if (this.human.nowMs >= this.human.nextDecisionAt) this.human.plan = null;
+    }
+    return {
+      observation,
+      human: this.humanStatus(),
+    };
+  }
+
+  playLikeHuman({ maxMs = 1000, untilComplete = false, maxTotalMs = 30000 } = {}) {
+    if (!this.human.enabled) this.setHumanMode({ enabled: true });
+    const startMs = this.human.nowMs;
+    let result = this.humanStep({ maxMs });
+    while (untilComplete && result.observation.status === 'running' && this.human.nowMs - startMs < maxTotalMs) {
+      result = this.humanStep({ maxMs });
+    }
+    return result;
+  }
+
+  nextLevel({ levelId = Number(this.session.levelId || this.session.level || 1) + 1, seed = `level-${levelId}`, spawnRules = null } = {}) {
+    return this.reset({
+      mode: this.session.mode,
+      levelId,
+      seed,
+      spawnRules,
+    });
   }
 }

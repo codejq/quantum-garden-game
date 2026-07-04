@@ -67,3 +67,28 @@ test('LLM agent can complete basic objectives without DOM or WebGL control', () 
   assert.equal(observation.objectives.trees.done, observation.objectives.trees.total);
   assert.equal(observation.status, 'complete');
 });
+
+test('LLM agent supports human-like seeded play steps', () => {
+  const agent = new QuantumGardenAgent({ tick: 1 / 30 });
+  agent.reset({
+    levelId: 1,
+    seed: 'human-agent',
+    spawnRules: { trash: 1, patches: 1, minionQuota: 0, bossRequired: false },
+  });
+
+  const status = agent.setHumanMode({ seed: 'human-agent', minThinkMs: 40, maxThinkMs: 80, actionMs: 60 });
+  assert.equal(status.enabled, true);
+
+  const result = agent.humanStep({ maxMs: 300 });
+  assert.equal(result.human.enabled, true);
+  assert.equal(typeof result.observation.player.x, 'number');
+  assert.ok(result.human.plan === null || typeof result.human.plan.type === 'string');
+});
+
+test('LLM agent can advance to the next level through the agent API', () => {
+  const agent = new QuantumGardenAgent();
+  agent.reset({ levelId: 1, seed: 'level-one' });
+  const observation = agent.act({ type: 'nextLevel', levelId: 2, seed: 'level-two' });
+  assert.equal(observation.level, 2);
+  assert.equal(observation.seed, 'level-two');
+});

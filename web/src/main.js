@@ -1481,7 +1481,15 @@ updateSavedScoreUi();
 
 /* ---------------- Browser LLM/agent hook ---------------- */
 const agentIds=new WeakMap();
-const agentState={lastActAt:0,minActMs:16,maxStepFrames:30};
+const agentState={
+  lastActAt:0,minActMs:16,maxStepFrames:30,
+  human:{
+    enabled:false,timer:0,nextTimer:0,rng:random,
+    minThinkMs:450,maxThinkMs:1600,actionMs:360,
+    wanderChance:.08,pauseChance:.035,hesitationChance:.06,
+    autoAdvance:true,nextLevelMinMs:1800,nextLevelMaxMs:3600,lastAutoAdvancedLevel:0
+  }
+};
 function agentId(prefix,obj,index){
   if(!obj)return null;
   if(!agentIds.has(obj))agentIds.set(obj,`${prefix}-${String(index+1).padStart(3,'0')}`);
@@ -1508,6 +1516,7 @@ function observeAgent(){
     note:'Browser demo hook controls the live prototype. Use web/src/input/llm-agent.js for deterministic headless evaluation.',
     mode:activeMode,
     running:Game.running,
+    status:Game.status,
     locale:activeLocale,
     levelId:String(Game.level),
     seed:Game.seed,
@@ -1577,6 +1586,7 @@ function actAgent(action={},options={}){
     const villainsObs=observeAgent().nearest.villains;
     moveTowardAgent(type==='attackBoss'?villainsObs.find(v=>v.boss):villainsObs[0],action.durationMs);
   }else if(type==='plant'||type==='plantNearest')Game.tryPlant();
+  else if(type==='nextLevel')$('nextBtn').onclick();
   else if(type==='toggleCamera')toggleCameraView();
   else if(type==='resetCamera')resetCameraView();
   else if(type==='setCamera'){
@@ -1592,6 +1602,7 @@ function actAgent(action={},options={}){
   return { ok:true, observation:observeAgent() };
 }
 function resetAgent(options={}){
+  stopHumanTimers();
   $('startOverlay').style.display='none';
   $('lvlOverlay').style.display='none';
   $('pauseOverlay').style.display='none';
@@ -1610,11 +1621,92 @@ function stepAgent(action){
   envUpdate(1/60,clock.elapsedTime);
   return { ...result, observation:observeAgent() };
 }
+function stopHumanTimers(){
+  clearTimeout(agentState.human.timer);
+  clearTimeout(agentState.human.nextTimer);
+  agentState.human.timer=0;
+  agentState.human.nextTimer=0;
+}
+function humanRand(min=0,max=1){
+  return min+agentState.human.rng()*(max-min);
+}
+function humanDelay(min=agentState.human.minThinkMs,max=agentState.human.maxThinkMs){
+  return humanRand(min,max);
+}
+function scheduleHumanNextLevel(){
+  if(!agentState.human.enabled||!agentState.human.autoAdvance||Game.status!=='complete')return;
+  if(agentState.human.lastAutoAdvancedLevel===Game.level)return;
+  agentState.human.lastAutoAdvancedLevel=Game.level;
+  clearTimeout(agentState.human.nextTimer);
+  agentState.human.nextTimer=setTimeout(()=>{
+    if(agentState.human.enabled&&Game.status==='complete')actAgent({ type:'nextLevel' },{ skipRateLimit:true });
+  },humanDelay(agentState.human.nextLevelMinMs,agentState.human.nextLevelMaxMs));
+}
+function chooseHumanAction(obs){
+  const human=agentState.human;
+  if(obs.status==='complete'){
+    scheduleHumanNextLevel();
+    return { type:'move',x:0,z:0,durationMs:human.actionMs };
+  }
+  if(!obs.running)return { type:'move',x:0,z:0,durationMs:human.actionMs };
+  if(human.rng()<human.pauseChance)return { type:'move',x:0,z:0,durationMs:humanDelay(240,900) };
+  if(human.rng()<human.hesitationChance)return { type:'move',x:0,z:0,durationMs:human.actionMs };
+  if(human.rng()<human.wanderChance){
+    const angle=humanRand(0,Math.PI*2);
+    return { type:'move',x:Math.cos(angle),z:Math.sin(angle),durationMs:humanDelay(human.actionMs,human.actionMs*2.5) };
+  }
+  if(obs.objective.trashLeft>0&&obs.nearest.trash[0]){
+    const target=obs.nearest.trash[0];
+    return { type:'moveToward',targetId:target.id,durationMs:human.actionMs };
+  }
+  const patch=obs.nearest.patches.find(p=>!p.planted);
+  if(patch){
+    if(obs.canPlant&&patch.distance<2.4)return { type:'plantNearest',durationMs:human.actionMs };
+    return { type:'moveToward',targetId:patch.id,durationMs:human.actionMs };
+  }
+  const villain=obs.nearest.villains[0];
+  if(villain)return { type:villain.boss?'attackBoss':'chaseNearestVillain',durationMs:human.actionMs };
+  return { type:'move',x:0,z:0,durationMs:human.actionMs };
+}
+function humanPlayerLoop(){
+  if(!agentState.human.enabled)return;
+  const obs=observeAgent();
+  const action=chooseHumanAction(obs);
+  actAgent(action,{ skipRateLimit:true });
+  clearTimeout(agentState.human.timer);
+  agentState.human.timer=setTimeout(humanPlayerLoop,humanDelay());
+}
+function startHumanPlayer(options={}){
+  agentState.human={ ...agentState.human,...options,enabled:true };
+  if(typeof options.rng==='function')agentState.human.rng=options.rng;
+  agentState.human.lastAutoAdvancedLevel=0;
+  clearTimeout(agentState.human.timer);
+  agentState.human.timer=setTimeout(humanPlayerLoop,0);
+  return { ok:true, human:humanStatus(), observation:observeAgent() };
+}
+function stopHumanPlayer(){
+  agentState.human.enabled=false;
+  stopHumanTimers();
+  moveAgent(0,0,16);
+  return { ok:true, human:humanStatus(), observation:observeAgent() };
+}
+function humanStatus(){
+  return {
+    enabled:agentState.human.enabled,
+    autoAdvance:agentState.human.autoAdvance,
+    pending:!!agentState.human.timer,
+    nextLevelPending:!!agentState.human.nextTimer
+  };
+}
 window.QuantumGardenAgent=Object.freeze({
   observe:observeAgent,
   act:actAgent,
   reset:resetAgent,
-  step:stepAgent
+  step:stepAgent,
+  nextLevel:()=>actAgent({ type:'nextLevel' },{ skipRateLimit:true }),
+  startHumanPlayer:startHumanPlayer,
+  stopHumanPlayer:stopHumanPlayer,
+  humanStatus:humanStatus
 });
 
 
