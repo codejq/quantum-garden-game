@@ -260,13 +260,30 @@ jobs:
         run: |
           set -euo pipefail
           BRANCH="add-clean-garden-com-quantumbilling-cleangarding"
-          ENCODED_FORK=$(python3 - << 'PY'
+          FORK_PATH=$(python3 - << 'PY'
+          import os, re
+          value = os.environ["FDROID_GITLAB_FORK"].strip()
+          value = re.sub(r"^https://gitlab\.com/", "", value)
+          value = re.sub(r"^git@gitlab\.com:", "", value)
+          value = re.sub(r"\.git$", "", value)
+          value = value.strip("/")
+          if not value or "/" not in value:
+              raise SystemExit("FDROID_GITLAB_FORK must look like 'user/fdroiddata' or a GitLab fork URL")
+          print(value)
+          PY
+          )
+          ENCODED_FORK=$(FORK_PATH="$FORK_PATH" python3 - << 'PY'
           import os, urllib.parse
-          print(urllib.parse.quote(os.environ["FDROID_GITLAB_FORK"], safe=""))
+          print(urllib.parse.quote(os.environ["FORK_PATH"], safe=""))
           PY
           )
 
-          git clone "https://oauth2:${FDROID_GITLAB_TOKEN}@gitlab.com/${FDROID_GITLAB_FORK}.git" fdroiddata
+          echo "Checking GitLab access to ${FORK_PATH}"
+          curl --fail --silent --show-error \
+            --header "PRIVATE-TOKEN: ${FDROID_GITLAB_TOKEN}" \
+            "https://gitlab.com/api/v4/projects/${ENCODED_FORK}" >/dev/null
+
+          git clone "https://oauth2:${FDROID_GITLAB_TOKEN}@gitlab.com/${FORK_PATH}.git" fdroiddata
           cd fdroiddata
           git remote add upstream https://gitlab.com/fdroid/fdroiddata.git
           git fetch upstream master
