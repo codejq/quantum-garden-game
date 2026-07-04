@@ -1,0 +1,143 @@
+name: F-Droid Repository
+
+# Runs after Android Market Release succeeds or manually from the Actions tab.
+#
+# GitHub Pages setup:
+#   Settings -> Pages -> Source: Deploy from branch -> Branch: main -> Folder: /docs
+#
+# Users add this repo URL to F-Droid:
+#   https://<owner>.github.io/<repo>/fdroid/repo
+#
+# Required GitHub Secrets:
+#   FDROID_KEYSTORE_BASE64  - Base64-encoded JKS keystore used to sign the repo index.
+#   FDROID_KEYSTORE_PASS    - Password for the keystore and the "fdroid" key alias.
+
+on:
+  workflow_run:
+    workflows: ["Android Market Release"]
+    types: [completed]
+  workflow_dispatch:
+
+jobs:
+  update-fdroid-repo:
+    name: Update F-Droid Repo
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: temurin
+
+      - name: Install fdroidserver
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y libmagic1 aapt
+          pip install fdroidserver
+
+      - name: Prepare directories
+        run: mkdir -p fdroid-work/repo fdroid-work/metadata
+
+      - name: Restore F-Droid keystore
+        env:
+          FDROID_B64: ${{ secrets.FDROID_KEYSTORE_BASE64 }}
+          FDROID_PASS_RAW: ${{ secrets.FDROID_KEYSTORE_PASS }}
+        run: |
+          FDROID_PASS=$(printf '%s' "$FDROID_PASS_RAW" | tr -d '\r\n')
+          printf '%s' "$FDROID_B64" | tr -d ' \r\n' | base64 --decode > /tmp/fdroid-orig.jks
+
+          keytool -importkeystore \
+            -srckeystore /tmp/fdroid-orig.jks \
+            -srcstoretype PKCS12 \
+            -srcstorepass "$FDROID_PASS" \
+            -destkeystore "$GITHUB_WORKSPACE/fdroid-work/keystore.jks" \
+            -deststoretype JKS \
+            -deststorepass "$FDROID_PASS" \
+            -noprompt
+          rm -f /tmp/fdroid-orig.jks
+
+          keytool -list \
+            -keystore "$GITHUB_WORKSPACE/fdroid-work/keystore.jks" \
+            -storepass "$FDROID_PASS" 2>&1 | grep -E "Keystore type|Your keystore contains|Alias"
+
+      - name: Write fdroid config
+        env:
+          PASS: ${{ secrets.FDROID_KEYSTORE_PASS }}
+        run: |
+          REPO_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/fdroid/repo"
+          KS_PATH="$GITHUB_WORKSPACE/fdroid-work/keystore.jks"
+          cat > fdroid-work/config.yml << EOF
+          repo_url: "${REPO_URL}"
+          repo_name: "Clean Garden"
+          repo_description: "Clean Garden - offline 3D garden cleanup game"
+          archive_older: 5
+          keystore: "${KS_PATH}"
+          keystorepass: "${PASS}"
+          keypass: "${PASS}"
+          repo_keyalias: fdroid
+          keydname: "CN=Clean Garden F-Droid Repo"
+          EOF
+          chmod 600 fdroid-work/config.yml
+
+      - name: Write app metadata
+        run: |
+          cat > fdroid-work/metadata/com.quantumbilling.cleangarding.yml << 'EOF'
+          Categories:
+            - Games
+          License: Proprietary
+          WebSite: https://qb-solutions.us/
+          SourceCode: https://github.com/${{ github.repository }}
+          Name: Clean Garden
+          Summary: Offline 3D garden cleanup game
+          Description: |-
+            Clean Garden is an offline 3D garden cleanup and tree planting game
+            by Quantum Billing LLC. It supports single-player and simultaneous
+            two-player play, touch, mouse, keyboard, localized UI, score memory,
+            avatar customization, and replay-friendly seeded levels.
+          EOF
+
+      - name: Download APK from release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG=$(gh release view --json tagName -q .tagName)
+          gh release download "$TAG" \
+            --pattern "Clean-Garden-*.apk" \
+            --dir fdroid-work/repo
+
+      - name: Build F-Droid repo index
+        run: |
+          cd fdroid-work
+          fdroid update -c
+
+      - name: Remove keystore
+        if: always()
+        run: rm -f fdroid-work/keystore.jks
+
+      - name: Publish to docs/fdroid
+        run: |
+          mkdir -p docs/fdroid/repo docs/fdroid/metadata
+          cp -r fdroid-work/repo/. docs/fdroid/repo/
+          cp -r fdroid-work/metadata/. docs/fdroid/metadata/
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add docs/fdroid/
+
+          if git diff --staged --quiet; then
+            echo "F-Droid repo is already up-to-date."
+          else
+            git commit -m "chore: update F-Droid repo [skip ci]"
+            git pull --rebase origin "${{ github.event.repository.default_branch }}"
+            git push origin HEAD:"${{ github.event.repository.default_branch }}"
+          fi
