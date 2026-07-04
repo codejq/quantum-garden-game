@@ -36,8 +36,8 @@ test('active browser defines translation keys for visible UI strings', () => {
   assert.match(mainSource, /const ACTIVE_I18N_KEYS=\[/);
   assert.match(mainSource, /const ACTIVE_I18N_LINE_KEYS=\[/);
   assert.match(mainSource, /prompt:'🌱 Press E to plant a tree!'/);
-  assert.match(mainSource, /keysRace:'💻 P1: WASD \+ Space<br>💻 P2: Arrow keys \+ Enter'/);
-  assert.match(mainSource, /promptRace:'🌱 P1 Space \| P2 Enter to plant trees!'/);
+  assert.match(mainSource, /keysRace:'💻 P1: WASD \+ F<br>💻 P2: Arrow keys \+ L'/);
+  assert.match(mainSource, /promptRace:'🌱 P1 F \| P2 L to plant trees!'/);
   assert.match(mainSource, /promptTouch:'🌱 Tap the plant button to plant a tree!'/);
   assert.match(mainSource, /function controlsHelpText\(\)\{return tr\(raceModeActive\(\)\?'keysRace':'keys'\);\}/);
   assert.match(mainSource, /function plantPromptText\(\)\{return tr\(hasTouchInput\(\)\?'promptTouch':\(raceModeActive\(\)\?'promptRace':'prompt'\)\);\}/);

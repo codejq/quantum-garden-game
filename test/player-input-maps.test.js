@@ -4,9 +4,9 @@ import { inputMapFor, inputVector, isPlantInput, PLAYER_INPUT_MAPS } from '../we
 
 test('future real-time race defines separate input maps for two players', () => {
   assert.deepEqual(PLAYER_INPUT_MAPS.player1.moveUp, ['KeyW']);
-  assert.deepEqual(PLAYER_INPUT_MAPS.player1.plant, ['Space']);
+  assert.deepEqual(PLAYER_INPUT_MAPS.player1.plant, ['KeyF']);
   assert.deepEqual(PLAYER_INPUT_MAPS.player2.moveUp, ['ArrowUp']);
-  assert.deepEqual(PLAYER_INPUT_MAPS.player2.plant, ['Enter', 'NumpadEnter']);
+  assert.deepEqual(PLAYER_INPUT_MAPS.player2.plant, ['KeyL']);
 });
 
 test('player input maps produce independent movement vectors', () => {
@@ -17,9 +17,9 @@ test('player input maps produce independent movement vectors', () => {
 });
 
 test('player input maps keep planting actions separate', () => {
-  assert.equal(isPlantInput('Space', inputMapFor('player1')), true);
+  assert.equal(isPlantInput('KeyF', inputMapFor('player1')), true);
   assert.equal(isPlantInput('KeyE', inputMapFor('player1')), false);
-  assert.equal(isPlantInput('Enter', inputMapFor('player1')), false);
-  assert.equal(isPlantInput('Enter', inputMapFor('player2')), true);
-  assert.equal(isPlantInput('Space', inputMapFor('player2')), false);
+  assert.equal(isPlantInput('KeyL', inputMapFor('player1')), false);
+  assert.equal(isPlantInput('KeyL', inputMapFor('player2')), true);
+  assert.equal(isPlantInput('KeyF', inputMapFor('player2')), false);
 });

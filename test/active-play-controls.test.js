@@ -46,8 +46,9 @@ test('exit and pause controls live in the top HUD away from bottom touch control
 test('active game preserves desktop and mobile play controls after the split', () => {
   assert.match(mainSource, /keys\[e\.code\]=true/);
   assert.match(mainSource, /KeyW|ArrowUp/);
-  assert.match(mainSource, /e\.code==='Space'\|\|\(!Game\.isRace\(\)&&e\.code==='KeyE'\)/);
-  assert.match(mainSource, /\['Enter','NumpadEnter'\]\.includes\(e\.code\)/);
+  assert.match(mainSource, /Game\.isRace\(\)&&e\.code==='KeyF'/);
+  assert.match(mainSource, /Game\.isRace\(\)&&e\.code==='KeyL'/);
+  assert.match(mainSource, /!Game\.isRace\(\)&&\(e\.code==='Space'\|\|e\.code==='KeyE'\)/);
   assert.match(htmlSource, /id="joy"/);
   assert.match(htmlSource, /id="actBtn"/);
   assert.match(mainSource, /joyEl\.addEventListener\('touchstart'/);

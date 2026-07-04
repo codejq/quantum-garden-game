@@ -4,14 +4,14 @@ export const PLAYER_INPUT_MAPS = {
     moveDown: ['KeyS'],
     moveLeft: ['KeyA'],
     moveRight: ['KeyD'],
-    plant: ['Space'],
+    plant: ['KeyF'],
   },
   player2: {
     moveUp: ['ArrowUp'],
     moveDown: ['ArrowDown'],
     moveLeft: ['ArrowLeft'],
     moveRight: ['ArrowRight'],
-    plant: ['Enter', 'NumpadEnter'],
+    plant: ['KeyL'],
   },
 };
 
