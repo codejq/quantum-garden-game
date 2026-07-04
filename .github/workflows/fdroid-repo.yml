@@ -20,6 +20,7 @@ name: F-Droid Publish
 # Optional official F-Droid GitLab secrets:
 #   FDROID_GITLAB_TOKEN     - GitLab token with api + write_repository access to a fdroiddata fork.
 #   FDROID_GITLAB_FORK      - Fork path, for example "your-gitlab-user/fdroiddata".
+# Re-run this workflow after adding or rotating those GitLab secrets.
 
 on:
   push:
