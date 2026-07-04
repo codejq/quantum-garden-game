@@ -4,13 +4,16 @@ import { test } from 'node:test';
 
 const mainSource = readFileSync(new URL('../web/src/main.js', import.meta.url), 'utf8');
 const htmlSource = readFileSync(new URL('../web/index.html', import.meta.url), 'utf8');
+const cargoSource = readFileSync(new URL('../src-tauri/Cargo.toml', import.meta.url), 'utf8');
 
 test('active start title is rendered through i18n instead of hard-coded HTML', () => {
   assert.match(htmlSource, /<title>Clean Garden<\/title>/);
   assert.match(htmlSource, /id="gameTitle">Clean Garden<\/h1>/);
+  assert.match(htmlSource, /id="credit">By Quantum Billing LLC<\/div>/);
   assert.doesNotMatch(htmlSource, /الحديقة النظيفة/);
   assert.match(mainSource, /document\.title=tr\('title'\)/);
   assert.match(mainSource, /\$\('gameTitle'\)\.textContent=tr\('title'\)/);
+  assert.match(mainSource, /\$\('credit'\)\.textContent=tr\('credit'\)/);
 });
 
 test('active gameplay notification lines are locale-aware', () => {
@@ -35,6 +38,8 @@ test('active gameplay notification lines are locale-aware', () => {
 test('active browser defines translation keys for visible UI strings', () => {
   assert.match(mainSource, /const ACTIVE_I18N_KEYS=\[/);
   assert.match(mainSource, /const ACTIVE_I18N_LINE_KEYS=\[/);
+  assert.match(mainSource, /credit:'By Quantum Billing LLC'/);
+  assert.match(mainSource, /credit:'من Quantum Billing LLC'/);
   assert.match(mainSource, /prompt:'🌱 Press E to plant a tree!'/);
   assert.match(mainSource, /keysRace:'💻 P1: WASD \+ F<br>💻 P2: Arrow keys \+ L'/);
   assert.match(mainSource, /promptRace:'🌱 P1 F \| P2 L to plant trees!'/);
@@ -48,4 +53,5 @@ test('active browser defines translation keys for visible UI strings', () => {
   assert.match(mainSource, /sound:'Sonido'/);
   assert.match(mainSource, /sound:'Son'/);
   assert.match(mainSource, /\$\('sndBtn'\)\.setAttribute\('aria-label',tr\('sound'\)\)/);
+  assert.match(cargoSource, /authors = \["Quantum Billing LLC"\]/);
 });

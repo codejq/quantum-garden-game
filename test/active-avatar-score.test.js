@@ -29,6 +29,7 @@ test('active runtime persists score memory and avatar settings', () => {
 
 test('project context documents the current handoff surface', () => {
   assert.match(contextSource, /Clean Garden Project Context/);
+  assert.match(contextSource, /Quantum Billing LLC/);
   assert.match(contextSource, /com\.quantumbilling\.cleangarding/);
   assert.match(contextSource, /Score memory/);
   assert.match(contextSource, /Avatar customization/);
