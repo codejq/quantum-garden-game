@@ -90,6 +90,6 @@ test('release checklist documents selected targets and gated platforms', () => {
   assert.match(releaseChecklist, /Launch the packaged app with the network disabled and complete one single-player level/);
   assert.match(releaseChecklist, /Change language, quality, and view preset, then relaunch/);
   assert.match(releaseChecklist, /Run the LLM harness smoke path/);
-  assert.match(releaseChecklist, /Android is scaffolded but not release-ready/);
+  assert.match(releaseChecklist, /Android is scaffolded and its build path is proven/);
   assert.match(releaseChecklist, /macOS and iOS remain gated/);
 });

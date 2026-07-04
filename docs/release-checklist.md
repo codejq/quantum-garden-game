@@ -1,6 +1,6 @@
 # Release Checklist
 
-Use this checklist for each release candidate. The current verified release targets are offline web and Windows desktop. Android is scaffolded but not release-ready until the Android build, emulator, and physical-device checks pass. macOS and iOS remain gated until macOS, Xcode, signing certificates, provisioning profiles, and Apple Developer access are available.
+Use this checklist for each release candidate. The current verified release targets are offline web and Windows desktop. Android is scaffolded and its build path is proven, but it is not release-ready until emulator and physical-device checks pass. macOS and iOS remain gated until macOS, Xcode, signing certificates, provisioning profiles, and Apple Developer access are available.
 
 ## Required Verification
 
