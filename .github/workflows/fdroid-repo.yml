@@ -246,7 +246,7 @@ jobs:
                 - $HOME/.cargo/bin/rustup target add aarch64-linux-android armv7-linux-androideabi
                   i686-linux-android x86_64-linux-android
                 - cd ../../.. && npm ci && npm run build && rm -rf docs/fdroid && cd src-tauri
-                  && $HOME/.cargo/bin/cargo fetch
+                  && $HOME/.cargo/bin/cargo fetch && cd gen/android
                 - mkdir -p src-tauri/gen/android; TAURI_ANDROID_DIR=$(find "$HOME/.cargo/registry/src"
                   -path "*/tauri-*/mobile/android" -type d | sort -V | tail -n 1); test -n "$TAURI_ANDROID_DIR";
                   printf "include ':tauri-android'\nproject(':tauri-android').projectDir = new
