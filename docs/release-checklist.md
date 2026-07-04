@@ -36,9 +36,11 @@ Use this checklist for each release candidate. The current verified release targ
 - Setup status: Tauri Android project scaffold exists under `src-tauri/gen/android`.
 - Build command: `npm run tauri:android:build`.
 - Dev command: `npm run tauri:android:dev`.
-- Latest build attempt: `npm run tauri:android:build` on 2026-07-04 compiled the Android Rust library, then failed when Tauri tried to symlink `libclean_garden_lib.so` into `src-tauri/gen/android/app/src/main/jniLibs/arm64-v8a`.
-- Release remains blocked until Windows Developer Mode, `SeCreateSymbolicLinkPrivilege`, or a compatible build host allows Android native library linking.
+- Latest host check: symbolic links can now be created on this Windows host.
+- Latest build attempts: `npm run tauri:android:build` and `src-tauri/gen/android/gradlew.bat :app:assembleUniversalDebug` on 2026-07-04 advanced into Android packaging intermediates but timed out before producing an APK or AAB.
+- Release remains blocked until the Android Gradle package build completes and a WebView smoke run is verified on an emulator or device.
 - Do not release until emulator and physical-device smoke tests pass.
+- No Android device is connected and `emulator -list-avds` currently returns no configured AVD.
 - App icon and splash resources are configured in `src-tauri/gen/android/app/src/main/res`.
 - Release signing is configured through `ANDROID_KEYSTORE_PATH`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, and `ANDROID_KEY_PASSWORD`; do not store keystores or passwords in the repo.
 
