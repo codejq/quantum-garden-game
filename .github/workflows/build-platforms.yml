@@ -7,7 +7,7 @@ on:
       - 'v*.*.*'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   web:
@@ -37,6 +37,19 @@ jobs:
         with:
           name: clean-garden-web
           path: dist/web
+
+      - name: Package web release asset
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          cd dist
+          zip -r "Clean-Garden-${{ github.ref_name }}-web.zip" web
+
+      - name: Attach web build to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: dist/Clean-Garden-${{ github.ref_name }}-web.zip
 
   desktop:
     name: Desktop ${{ matrix.platform }}
@@ -77,6 +90,24 @@ jobs:
       - name: Build desktop app
         run: npm run tauri:build
 
+      - name: Collect desktop release assets
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        run: |
+          mkdir -p "release/${{ matrix.platform }}"
+          if [ -d src-tauri/target/release/bundle ]; then
+            find src-tauri/target/release/bundle -type f \
+              \( -name "*.msi" -o -name "*.exe" -o -name "*.dmg" -o -name "*.app.tar.gz" -o -name "*.AppImage" -o -name "*.deb" -o -name "*.rpm" \) \
+              -exec cp {} "release/${{ matrix.platform }}/" \;
+          fi
+          if [ "${{ matrix.platform }}" = "windows" ] && [ -f src-tauri/target/release/clean-garden.exe ]; then
+            cp src-tauri/target/release/clean-garden.exe "release/${{ matrix.platform }}/Clean-Garden-${{ github.ref_name }}-windows.exe"
+          fi
+          if [ "${{ matrix.platform }}" != "windows" ] && [ -f src-tauri/target/release/clean-garden ]; then
+            cp src-tauri/target/release/clean-garden "release/${{ matrix.platform }}/Clean-Garden-${{ github.ref_name }}-${{ matrix.platform }}"
+          fi
+          ls -la "release/${{ matrix.platform }}"
+
       - name: Upload desktop artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -84,6 +115,67 @@ jobs:
           path: |
             src-tauri/target/release/bundle/**
             src-tauri/target/release/clean-garden*
+
+      - name: Attach desktop build to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: release/${{ matrix.platform }}/*
+
+  ios:
+    name: iOS
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-ios,aarch64-apple-ios-sim,x86_64-apple-ios
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Initialize iOS project if needed
+        run: |
+          if [ ! -d src-tauri/gen/apple ]; then
+            npm exec -- tauri ios init
+          fi
+
+      - name: Build iOS app
+        run: npm run tauri:ios:build
+
+      - name: Collect iOS release assets
+        run: |
+          mkdir -p release/ios
+          find src-tauri/gen -type f \( -name "*.ipa" -o -name "*.xcarchive" \) -exec cp {} release/ios/ \; || true
+          find src-tauri/gen -maxdepth 8 -type d -name "*.app" -print0 | while IFS= read -r -d '' app; do
+            name="$(basename "$app" .app)"
+            ditto -c -k --keepParent "$app" "release/ios/${name}-${{ github.ref_name }}.app.zip"
+          done
+          ls -la release/ios
+          test "$(find release/ios -type f | wc -l)" -gt 0
+
+      - name: Upload iOS artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: clean-garden-ios
+          path: release/ios/**
+
+      - name: Attach iOS build to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: release/ios/*
 
   android:
     name: Android

@@ -62,7 +62,7 @@ npm run tauri:ios:build
 ## GitHub Workflows
 
 - `CI`: runs tests and offline build checks.
-- `Build Platforms`: builds web, Windows, Linux, macOS, and Android artifacts on release tags, and can also run manually.
+- `Build Platforms`: builds web, Windows, Linux, macOS, iOS, and Android artifacts on release tags, attaches web/desktop/iOS assets to the GitHub Release, and can also run manually.
 - `Android Market Release`: builds signed Android artifacts, creates a GitHub Release, and can publish the AAB to Google Play if the Play secret is configured.
 - `F-Droid Repository`: publishes the signed release APK into `docs/fdroid/` for GitHub Pages hosting after the Android release workflow succeeds.
 
