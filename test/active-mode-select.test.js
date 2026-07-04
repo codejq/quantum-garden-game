@@ -12,6 +12,7 @@ test('active start overlay exposes a mode selector before starting the game', ()
   assert.match(htmlSource, /id="modeSelect" role="radiogroup"/);
   assert.match(htmlSource, /id="singleModeBtn" data-mode="single-player"/);
   assert.match(htmlSource, /id="raceModeBtn" data-mode="two-player-race"/);
+  assert.doesNotMatch(htmlSource, /id="raceModeBtn"[^>]*aria-disabled="true"/);
   assert.ok(htmlSource.indexOf('id="modeSelect"') < htmlSource.indexOf('id="startBtn"'));
 });
 
@@ -42,12 +43,16 @@ test('mode selector has compact button styling and the roadmap task is marked co
 test('active browser gameplay reads objectives and scores from the selected mode', () => {
   assert.match(browserModeRegistrySource, /objectives:\[/);
   assert.match(browserModeRegistrySource, /scoring:\{/);
+  assert.match(browserModeRegistrySource, /id:'two-player-race'/);
+  assert.match(browserModeRegistrySource, /enabled:true/);
+  assert.match(browserModeRegistrySource, /simultaneous:true/);
   assert.match(browserModeRegistrySource, /levelComplete:attempt=>50\+attempt\.level\*10/);
   assert.match(mainSource, /function currentActiveModeDefinition\(\)/);
   assert.match(mainSource, /function activeModeObjectives\(\)/);
   assert.match(mainSource, /function activeModeScore\(rule\)/);
   assert.match(mainSource, /activeObjectiveRows\(activeModeObjectives\(\),activeMissionState\(\)\)/);
-  assert.match(mainSource, /this\.addScore\(activeModeScore\('levelComplete'\)\)/);
+  assert.match(mainSource, /const completionBonus=activeModeScore\('levelComplete'\)/);
+  assert.match(mainSource, /this\.addScore\(completionBonus,undefined,1\)/);
   assert.doesNotMatch(mainSource, /const activeObjectives=\[/);
   assert.doesNotMatch(mainSource, /this\.addScore\(25,plainToVector\(p\.pos,2\)\)/);
   assert.doesNotMatch(mainSource, /Game\.addScore\(10,plainToVector\(t\.pos,1\.4\)\)/);

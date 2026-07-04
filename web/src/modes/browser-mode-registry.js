@@ -47,9 +47,17 @@
     ],
   };
 
+  const realTimeRaceMode={
+    ...singlePlayerMode,
+    id:'two-player-race',
+    labelKey:'twoPlayerRace',
+    enabled:true,
+    simultaneous:true,
+  };
+
   const modes=[
     singlePlayerMode,
-    { id:'two-player-race', labelKey:'twoPlayerRace', enabled:false, scoring:{}, objectives:[] }
+    realTimeRaceMode
   ];
 
   window.CleanGardenModes={

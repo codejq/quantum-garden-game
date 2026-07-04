@@ -28,6 +28,7 @@
     border-radius:16px;padding:8px 12px;color:var(--ink);font-size:13px;font-weight:700;box-shadow:0 3px 0 rgba(0,0,0,.25);max-width:210px}
   #missionCard div{display:flex;gap:6px;align-items:center;margin:2px 0}
   #missionCard .done{color:var(--deep)}
+  .raceScores{border-top:2px solid rgba(29,107,51,.25);margin-top:6px;padding-top:6px}
   #notes{position:absolute;top:12px;inset-inline-start:50%;transform:translateX(-50%);display:flex;flex-direction:column;
     gap:6px;align-items:center;width:min(92vw,460px)}
   .note{background:var(--paper);border:3px solid var(--grape);color:#3b2358;border-radius:18px;padding:6px 16px;

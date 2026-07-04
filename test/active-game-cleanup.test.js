@@ -37,9 +37,10 @@ test('active trash gameplay reads plain position data instead of mesh-owned stat
   assert.match(source, /function setTrashMesh\(item,mesh\)\{trashMeshes\.set\(item,mesh\);return item;\}/);
   assert.match(source, /const item=\{pos:trashPos,spin:random\(\)\*Math\.PI\*2\}/);
   assert.match(source, /createTrashView\(item\)/);
-  assert.match(source, /if\(plainDistance\(t\.pos,Game.state\.player\.pos\)<1\.35\)/);
+  assert.match(source, /const nearest=nearestActivePlayer\(t\.pos\)/);
+  assert.match(source, /if\(nearest\.distance<1\.35\)/);
   assert.match(source, /burst\(plainToVector\(t\.pos,\s*\.6\)/);
-  assert.match(source, /Game\.addScore\(activeModeScore\('trash'\),plainToVector\(t\.pos,1\.4\)\)/);
+  assert.match(source, /Game\.addScore\(activeModeScore\('trash'\),plainToVector\(t\.pos,1\.4\),nearest\.index\)/);
   assert.match(source, /trash:nearestList\(Game.state\.trash,'trash',t=>t\.pos/);
 });
 
@@ -51,10 +52,11 @@ test('active patch gameplay reads plain position data instead of mesh-owned stat
   assert.match(source, /function plantPatchView\(patch\)\{/);
   assert.match(source, /plantPatchView\(p\)/);
   assert.match(source, /setObjectPosition\(view\.tree,p\.pos\)/);
-  assert.match(source, /this\.addScore\(activeModeScore\('plant'\),plainToVector\(p\.pos,2\)\)/);
+  assert.match(source, /this\.addScore\(activeModeScore\('plant'\),plainToVector\(p\.pos,2\),playerIndex\)/);
   assert.match(source, /burst\(plainToVector\(p\.pos,1\),0x9ef01a/);
   assert.match(source, /setObjectPosition\(view\.mesh,p\.pos\)/);
   assert.match(source, /if\(plainDistance\(p\.pos,Game.state\.player\.pos\)<2\.2\)Game\.nearPatch=p/);
+  assert.match(source, /if\(Game\.isRace\(\)&&plainDistance\(p\.pos,Game.state\.player2\.pos\)<2\.2\)Game\.nearPatch2=p/);
   assert.match(source, /patches:nearestList\(Game.state\.patches,'patch',p=>p\.pos/);
 });
 
@@ -64,14 +66,15 @@ test('active villain gameplay reads plain position data instead of mesh-owned st
   assert.match(source, /function setVillainView\(villain,view\)\{villainViews\.set\(villain,view\);return villain;\}/);
   assert.match(source, /const v=\{pos:villainPos,boss,hp:boss\?3:1,state:'walk'/);
   assert.match(source, /createVillainView\(v\)/);
-  assert.match(source, /const toPlayerX=Game.state\.player\.pos\.x-v\.pos\.x,toPlayerZ=Game.state\.player\.pos\.z-v\.pos\.z/);
+  assert.match(source, /const nearest=nearestActivePlayer\(v\.pos\)/);
+  assert.match(source, /const toPlayerX=nearest\.player\.pos\.x-v\.pos\.x,toPlayerZ=nearest\.player\.pos\.z-v\.pos\.z/);
   assert.match(source, /const dirX=v\.target\.x-v\.pos\.x,dirZ=v\.target\.z-v\.pos\.z/);
   assert.match(source, /v\.pos\.x\+=nx\*v\.speed\*dt;v\.pos\.z\+=nz\*v\.speed\*dt/);
   assert.match(source, /setObjectPosition\(mesh,v\.pos\)/);
   assert.match(source, /const dropResult=inD<WORLD_R\?spawnTrash\(v\.pos\)/);
-  assert.match(source, /const dist=plainDistance\(v\.pos,Game.state\.player\.pos\)/);
+  assert.match(source, /if\(nearest\.distance<\(v\.boss\?2\.2:1\.5\)\)/);
   assert.match(source, /burst\(plainToVector\(v\.pos,1\.2\)/);
-  assert.match(source, /Game\.addScore\(activeModeScore\('bossDefeat'\),plainToVector\(v\.pos,2\.5\)\)/);
+  assert.match(source, /Game\.addScore\(activeModeScore\('bossDefeat'\),plainToVector\(v\.pos,2\.5\),nearest\.index\)/);
   assert.match(source, /v\.target\.x=v\.pos\.x\+\(awayX\/awayLen\)\*9/);
   assert.match(source, /villains:nearestList\(Game.state\.villains,'villain',v=>v\.pos/);
 });
@@ -135,9 +138,10 @@ test('active browser treats runtime state as gameplay source of truth', () => {
 
   assert.match(source, /const Game=createActiveGameRuntime\(createActiveGameplayState\(\)\)/);
   assert.match(source, /activeMissionState\(\)\{\s*return \{\s*trash:Game.state\.trash,\s*patches:Game.state\.patches/);
-  assert.match(source, /if\(plainDistance\(t\.pos,Game.state\.player\.pos\)<1\.35\)/);
+  assert.match(source, /function nearestActivePlayer\(pos\)\{/);
+  assert.match(source, /if\(nearest\.distance<1\.35\)/);
   assert.match(source, /if\(plainDistance\(p\.pos,Game.state\.player\.pos\)<2\.2\)Game\.nearPatch=p/);
-  assert.match(source, /const dist=plainDistance\(v\.pos,Game.state\.player\.pos\)/);
+  assert.match(source, /if\(nearest\.distance<\(v\.boss\?2\.2:1\.5\)\)/);
   assert.match(source, /syncGameplayMeshes\(dt,time\)/);
   for (const section of [playerUpdateSource, villainsUpdateSource, trashUpdateSource, patchesUpdateSource, missionSource]) {
     assert.doesNotMatch(section, /(trashMesh|patchView|villainView|scene\.|new THREE\.(Mesh|Group|Geometry|Material))/);

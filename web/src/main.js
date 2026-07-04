@@ -472,7 +472,8 @@ const trashBuilders=[
 /* ---------------- Input ---------------- */
 const keys={};
 addEventListener('keydown',e=>{keys[e.code]=true;
-  if(['Space','KeyE'].includes(e.code)){e.preventDefault();Game.tryPlant();}});
+  if(['Space','KeyE'].includes(e.code)){e.preventDefault();Game.tryPlant(0);}
+  if(['Enter','NumpadEnter'].includes(e.code)){e.preventDefault();Game.tryPlant(Game.isRace()?1:0);}});
 addEventListener('keyup',e=>keys[e.code]=false);
 const joy={active:false,x:0,y:0,id:null};
 const agentInput={x:0,z:0,until:0};
@@ -611,6 +612,7 @@ function line(group){
 function createActiveGameplayState(){
   return {
     player:{pos:plainPos(6,0,6),vel:plainPos(0,0,0),yaw:0,anim:0},
+    player2:{pos:plainPos(-6,0,6),vel:plainPos(0,0,0),yaw:0,anim:0},
     trash:[],
     patches:[],
     villains:[],
@@ -619,6 +621,12 @@ function createActiveGameplayState(){
 }
 const playerMesh=buildNaqi();
 scene.add(playerMesh);
+const player2Mesh=buildNaqi();
+player2Mesh.visible=false;
+player2Mesh.scale.setScalar(.92);
+const player2Marker=new THREE.Mesh(new THREE.TorusGeometry(.72,.06,12,36),mat(0x4dabf7));
+player2Marker.rotation.x=Math.PI/2;player2Marker.position.y=.08;player2Mesh.add(player2Marker);
+scene.add(player2Mesh);
 const trashMeshes=new WeakMap();
 const patchViews=new WeakMap();
 const villainViews=new WeakMap();
@@ -797,7 +805,19 @@ buildDecorativeWorld();
 function createActiveGameRuntime(state){
 return {
   state,status:'menu',running:false,level:1,score:0,trees:0,lifetimeTrees:0,trashGot:0,
-  quota:0,spawned:0,converted:0,spawnTimer:0,nearPatch:null,plantCd:0,bossDelay:0,elapsed:0,seed:activeSeed,
+  playerScores:[0,0],quota:0,spawned:0,converted:0,spawnTimer:0,nearPatch:null,nearPatch2:null,plantCd:0,plantCd2:0,bossDelay:0,elapsed:0,seed:activeSeed,
+
+  isRace(){
+    return currentActiveModeDefinition().simultaneous===true;
+  },
+
+  activePlayers(){
+    return this.isRace()?[this.state.player,this.state.player2]:[this.state.player];
+  },
+
+  playerScoreLabel(){
+    return this.isRace()?`P1 ${this.playerScores[0]} | P2 ${this.playerScores[1]}`:String(this.score);
+  },
 
   setStatus(status){
     this.status=status;
@@ -838,7 +858,8 @@ return {
     cleanupLevelAttempt();
     cleanupDecorativeWorld();
     buildDecorativeWorld();
-    this.level=n;this.converted=0;this.spawned=0;this.spawnTimer=2;this.trees=0;this.nearPatch=null;this.plantCd=0;this.elapsed=0;
+    this.level=n;this.converted=0;this.spawned=0;this.spawnTimer=2;this.trees=0;this.nearPatch=null;this.nearPatch2=null;this.plantCd=0;this.plantCd2=0;this.elapsed=0;
+    this.score=0;this.playerScores=[0,0];$('uiScore').textContent=this.playerScoreLabel();
     const nTrash=9+n*3, nPatch=2+Math.min(n,5);
     for(let i=0;i<nTrash;i++)spawnTrash();
     for(let i=0;i<nPatch;i++)spawnPatch();
@@ -847,6 +868,8 @@ return {
     this.bossDelay=4;
     this.polMax=nTrash*3+nPatch*6+18;
     setPlainPos(this.state.player.pos,6,0,6);setPlainPos(this.state.player.vel,0,0,0);
+    setPlainPos(this.state.player2.pos,-6,0,6);setPlainPos(this.state.player2.vel,0,0,0);
+    player2Mesh.visible=this.isRace();
     $('uiLevel').textContent=n;$('uiTrees').textContent=this.trees;
     note(tr('levelStart',n),true,3200);
     this.updateMission();
@@ -864,19 +887,26 @@ return {
     }
   },
 
-  tryPlant(){
-    if(!this.running||!this.nearPatch||this.plantCd>0)return;
-    const p=this.nearPatch;p.planted=true;p.grow=0;
+  tryPlant(playerIndex=0){
+    const near=playerIndex===1?this.nearPatch2:this.nearPatch;
+    const cd=playerIndex===1?this.plantCd2:this.plantCd;
+    if(!this.running||!near||cd>0)return;
+    const p=near;p.planted=true;p.grow=0;
     plantPatchView(p);
-    this.trees++;this.lifetimeTrees++;this.addScore(activeModeScore('plant'),plainToVector(p.pos,2));
-    this.plantCd=.6;
+    this.trees++;this.lifetimeTrees++;this.addScore(activeModeScore('plant'),plainToVector(p.pos,2),playerIndex);
+    if(playerIndex===1)this.plantCd2=.6;else this.plantCd=.6;
     Snd.plant();burst(plainToVector(p.pos,1),0x9ef01a,18,3.5);
     note(line('plant'),true);
     $('uiTrees').textContent=this.trees;
     this.updateMission();
   },
 
-  addScore(v,pos){this.score+=v;$('uiScore').textContent=this.score;if(pos)popText(pos,'+'+v);},
+  addScore(v,pos,playerIndex=0){
+    this.score+=v;
+    if(this.isRace())this.playerScores[playerIndex]+=v;
+    $('uiScore').textContent=this.playerScoreLabel();
+    if(pos)popText(pos,this.isRace()?`P${playerIndex+1} +${v}`:'+'+v);
+  },
 
   pollution(){
     const total=this.state.trash.length*3+this.state.villains.length*9+this.state.patches.filter(p=>!p.planted).length*6;
@@ -884,7 +914,8 @@ return {
     return clamp(total/(this.polMax||60)*100,0,100);},
 
   updateMission(){
-    $('missionCard').innerHTML=renderActiveMissionHtml(activeObjectiveRows(activeModeObjectives(),activeMissionState()));
+    const raceScores=this.isRace()?`<div class="raceScores">🏁 P1: <b>${this.playerScores[0]}</b> &nbsp; P2: <b>${this.playerScores[1]}</b></div>`:'';
+    $('missionCard').innerHTML=renderActiveMissionHtml(activeObjectiveRows(activeModeObjectives(),activeMissionState()))+raceScores;
   },
   bossDefeated(){return this.spawnedBoss&&(!this.state.mtermish);},
 
@@ -893,7 +924,12 @@ return {
        this.converted>=this.quota&&this.spawned>=this.quota&&this.bossDefeated()){
       this.complete();
       Snd.fanfare();confetti();
-      this.addScore(activeModeScore('levelComplete'));
+      const completionBonus=activeModeScore('levelComplete');
+      if(this.isRace()){
+        this.addScore(completionBonus,undefined,0);
+        this.addScore(completionBonus,undefined,1);
+      }else this.addScore(completionBonus);
+      const raceWinner=this.isRace()?(this.playerScores[0]===this.playerScores[1]?'Tie':(this.playerScores[0]>this.playerScores[1]?'P1 wins':'P2 wins')):null;
       const result=recordBestTime(this.level,this.elapsed);
       $('stScore').textContent=this.score;
       $('stTrees').textContent=this.trees;
@@ -901,7 +937,7 @@ return {
       $('stTime').textContent=formatTime(this.elapsed);
       $('stBest').textContent=formatTime(result.best);
       $('lvlQuote').textContent=line('quotes');
-      $('lvlTitle').textContent=tr('levelDone',this.level);
+      $('lvlTitle').textContent=raceWinner?`${tr('levelDone',this.level)} ${raceWinner}`:tr('levelDone',this.level);
       $('lvlOverlay').style.display='flex';
     }
   }
@@ -920,40 +956,63 @@ function currentCameraOffset(){
 }
 camera.position.copy(currentCameraOffset());
 
-function playerUpdate(dt){
+function playerInputVector(playerIndex){
   let ix=0,iz=0;
-  if(keys.KeyW||keys.ArrowUp)iz-=1;
-  if(keys.KeyS||keys.ArrowDown)iz+=1;
-  if(keys.KeyA||keys.ArrowLeft)ix-=1;
-  if(keys.KeyD||keys.ArrowRight)ix+=1;
-  ix+=joy.x;iz+=joy.y;
-  if(performance.now()<agentInput.until){ix+=agentInput.x;iz+=agentInput.z;}
-  else{agentInput.x=0;agentInput.z=0;}
-  if(ix||iz)mouseMoveTarget.active=false;
-  if(mouseMoveTarget.active){
-    const dx=mouseMoveTarget.pos.x-Game.state.player.pos.x,dz=mouseMoveTarget.pos.z-Game.state.player.pos.z;
-    const dist=Math.hypot(dx,dz);
-    if(dist<.45)mouseMoveTarget.active=false;
-    else{ix+=dx/dist;iz+=dz/dist;}
+  if(playerIndex===1){
+    if(keys.ArrowUp)iz-=1;
+    if(keys.ArrowDown)iz+=1;
+    if(keys.ArrowLeft)ix-=1;
+    if(keys.ArrowRight)ix+=1;
+  }else{
+    if(keys.KeyW||(!Game.isRace()&&keys.ArrowUp))iz-=1;
+    if(keys.KeyS||(!Game.isRace()&&keys.ArrowDown))iz+=1;
+    if(keys.KeyA||(!Game.isRace()&&keys.ArrowLeft))ix-=1;
+    if(keys.KeyD||(!Game.isRace()&&keys.ArrowRight))ix+=1;
+    ix+=joy.x;iz+=joy.y;
+    if(performance.now()<agentInput.until){ix+=agentInput.x;iz+=agentInput.z;}
+    else{agentInput.x=0;agentInput.z=0;}
+    if(ix||iz)mouseMoveTarget.active=false;
+    if(mouseMoveTarget.active){
+      const dx=mouseMoveTarget.pos.x-Game.state.player.pos.x,dz=mouseMoveTarget.pos.z-Game.state.player.pos.z;
+      const dist=Math.hypot(dx,dz);
+      if(dist<.45)mouseMoveTarget.active=false;
+      else{ix+=dx/dist;iz+=dz/dist;}
+    }
   }
   const L=Math.hypot(ix,iz);
   if(L>1){ix/=L;iz/=L;}
+  return {ix,iz};
+}
+function updatePlayerState(player,dt,playerIndex=0){
+  const {ix,iz}=playerInputVector(playerIndex);
   const SPEED=8;
   const lag=(ix||iz)?.06:.09;
-  Game.state.player.vel.x=smooth(Game.state.player.vel.x,ix*SPEED,lag,dt);
-  Game.state.player.vel.z=smooth(Game.state.player.vel.z,iz*SPEED,lag,dt);
-  Game.state.player.pos.x+=Game.state.player.vel.x*dt;
-  Game.state.player.pos.z+=Game.state.player.vel.z*dt;
-  const d=Math.hypot(Game.state.player.pos.x,Game.state.player.pos.z);
-  if(d>WORLD_R+6){const s=(WORLD_R+6)/d;Game.state.player.pos.x*=s;Game.state.player.pos.z*=s;}
-  const dc=Math.hypot(Game.state.player.pos.x,Game.state.player.pos.z);
-  if(dc<2.6){const s=2.6/Math.max(dc,.001);Game.state.player.pos.x*=s;Game.state.player.pos.z*=s;}
-  const spd=Math.hypot(Game.state.player.vel.x,Game.state.player.vel.z);
-  if(spd>.4){const targetYaw=Math.atan2(Game.state.player.vel.x,Game.state.player.vel.z);
-    let dy=targetYaw-Game.state.player.yaw;
+  player.vel.x=smooth(player.vel.x,ix*SPEED,lag,dt);
+  player.vel.z=smooth(player.vel.z,iz*SPEED,lag,dt);
+  player.pos.x+=player.vel.x*dt;
+  player.pos.z+=player.vel.z*dt;
+  const d=Math.hypot(player.pos.x,player.pos.z);
+  if(d>WORLD_R+6){const s=(WORLD_R+6)/d;player.pos.x*=s;player.pos.z*=s;}
+  const dc=Math.hypot(player.pos.x,player.pos.z);
+  if(dc<2.6){const s=2.6/Math.max(dc,.001);player.pos.x*=s;player.pos.z*=s;}
+  const spd=Math.hypot(player.vel.x,player.vel.z);
+  if(spd>.4){const targetYaw=Math.atan2(player.vel.x,player.vel.z);
+    let dy=targetYaw-player.yaw;
     while(dy>Math.PI)dy-=Math.PI*2;while(dy<-Math.PI)dy+=Math.PI*2;
-    Game.state.player.yaw+=dy*Math.min(1,dt*12);}
-  Game.state.player.anim+=dt*(3+spd*1.4);
+    player.yaw+=dy*Math.min(1,dt*12);}
+  player.anim+=dt*(3+spd*1.4);
+}
+function playerUpdate(dt){
+  updatePlayerState(Game.state.player,dt,0);
+  if(Game.isRace())updatePlayerState(Game.state.player2,dt,1);
+}
+function nearestActivePlayer(pos){
+  let best={player:Game.state.player,index:0,distance:plainDistance(pos,Game.state.player.pos)};
+  if(Game.isRace()){
+    const d2=plainDistance(pos,Game.state.player2.pos);
+    if(d2<best.distance)best={player:Game.state.player2,index:1,distance:d2};
+  }
+  return best;
 }
 
 function villainsUpdate(dt){
@@ -961,7 +1020,8 @@ function villainsUpdate(dt){
     const v=Game.state.villains[i];v.t+=dt;v.hitCd-=dt;
     if(v.state==='walk'){
       if(v.boss){
-        const toPlayerX=Game.state.player.pos.x-v.pos.x,toPlayerZ=Game.state.player.pos.z-v.pos.z;
+        const nearest=nearestActivePlayer(v.pos);
+        const toPlayerX=nearest.player.pos.x-v.pos.x,toPlayerZ=nearest.player.pos.z-v.pos.z;
         const toPlayerDist=Math.hypot(toPlayerX,toPlayerZ);
         if(toPlayerDist<8){
           const scale=12/Math.max(toPlayerDist,.001);
@@ -982,18 +1042,18 @@ function villainsUpdate(dt){
         if(dropResult.spawned&&random()<.25)note(line('mtermishTaunt'),false,1800);
         if(dropResult.spawned)Game.updateMission();}
       if(v.hitCd<=0){
-        const dist=plainDistance(v.pos,Game.state.player.pos);
-        if(dist<(v.boss?2.2:1.5)){
+        const nearest=nearestActivePlayer(v.pos);
+        if(nearest.distance<(v.boss?2.2:1.5)){
           v.hitCd=.9;v.hp--;
           burst(plainToVector(v.pos,1.2),v.boss?0xc084fc:0xffd166,16,4.5);
           if(v.hp<=0){
             v.state='convert';v.t=0;Snd.convert();
             convertVillainView(v);
-            if(v.boss){note(line('mtermishDown'),true,3000);Game.addScore(activeModeScore('bossDefeat'),plainToVector(v.pos,2.5));}
-            else{note(line('minion'),true);Game.addScore(activeModeScore('minionConvert'),plainToVector(v.pos,2));}
+            if(v.boss){note(line('mtermishDown'),true,3000);Game.addScore(activeModeScore('bossDefeat'),plainToVector(v.pos,2.5),nearest.index);}
+            else{note(line('minion'),true);Game.addScore(activeModeScore('minionConvert'),plainToVector(v.pos,2),nearest.index);}
           }else{Snd.bonk();note(line('mtermishHit'),false,2000);
-            Game.addScore(activeModeScore('villainHit'),plainToVector(v.pos,2.5));
-            const awayX=v.pos.x-Game.state.player.pos.x,awayZ=v.pos.z-Game.state.player.pos.z;
+            Game.addScore(activeModeScore('villainHit'),plainToVector(v.pos,2.5),nearest.index);
+            const awayX=v.pos.x-nearest.player.pos.x,awayZ=v.pos.z-nearest.player.pos.z;
             const awayLen=Math.max(Math.hypot(awayX,awayZ),.001);
             v.target.x=v.pos.x+(awayX/awayLen)*9;v.target.y=0;v.target.z=v.pos.z+(awayZ/awayLen)*9;}
         }}
@@ -1018,11 +1078,12 @@ function trashUpdate(dt){
   for(let i=Game.state.trash.length-1;i>=0;i--){
     const t=Game.state.trash[i];
     t.spin=(t.spin||0)+dt*.8;
-    if(plainDistance(t.pos,Game.state.player.pos)<1.35){
+    const nearest=nearestActivePlayer(t.pos);
+    if(nearest.distance<1.35){
       burst(plainToVector(t.pos,.6),0xffd166,10,3);
       Snd.pickup();
       Game.trashGot++;$('uiTrash').textContent=Game.trashGot;
-      Game.addScore(activeModeScore('trash'),plainToVector(t.pos,1.4));
+      Game.addScore(activeModeScore('trash'),plainToVector(t.pos,1.4),nearest.index);
       if(random()<.3)note(line('pickup'),true,1500);
       removeTrashView(t);Game.state.trash.splice(i,1);
       Game.updateMission();Game.checkWin();
@@ -1030,14 +1091,16 @@ function trashUpdate(dt){
 
 function patchesUpdate(dt,time){
   Game.plantCd-=dt;
-  Game.nearPatch=null;
+  Game.plantCd2-=dt;
+  Game.nearPatch=null;Game.nearPatch2=null;
   for(const p of Game.state.patches){
     if(p.planted){
       if(p.grow<1)p.grow=Math.min(1,p.grow+dt*.9);
       continue;}
     if(plainDistance(p.pos,Game.state.player.pos)<2.2)Game.nearPatch=p;
+    if(Game.isRace()&&plainDistance(p.pos,Game.state.player2.pos)<2.2)Game.nearPatch2=p;
   }
-  $('prompt').style.display=(Game.nearPatch&&Game.running)?'block':'none';
+  $('prompt').style.display=((Game.nearPatch||Game.nearPatch2)&&Game.running)?'block':'none';
 }
 
 function syncGameplayMeshes(dt,time){
@@ -1049,6 +1112,17 @@ function syncGameplayMeshes(dt,time){
   arms[0].rotation.x=sw*.9;arms[1].rotation.x=-sw*.9;
   legs[0].rotation.x=-sw*.8;legs[1].rotation.x=sw*.8;
   playerMesh.position.y=Math.abs(Math.sin(Game.state.player.anim*4))*.1*clamp(spd/8,0,1);
+  player2Mesh.visible=Game.isRace()&&Game.status!=='menu'&&Game.status!=='exited';
+  if(player2Mesh.visible){
+    setObjectPosition(player2Mesh,Game.state.player2.pos);
+    player2Mesh.rotation.y=Game.state.player2.yaw;
+    const spd2=Math.hypot(Game.state.player2.vel.x,Game.state.player2.vel.z);
+    const sw2=Math.sin(Game.state.player2.anim*4)*clamp(spd2/8,0,1);
+    const parts=player2Mesh.userData;
+    parts.arms[0].rotation.x=sw2*.9;parts.arms[1].rotation.x=-sw2*.9;
+    parts.legs[0].rotation.x=-sw2*.8;parts.legs[1].rotation.x=sw2*.8;
+    player2Mesh.position.y=Math.abs(Math.sin(Game.state.player2.anim*4))*.1*clamp(spd2/8,0,1);
+  }
 
   for(const v of Game.state.villains){
     const view=villainView(v);
@@ -1129,13 +1203,16 @@ function loop(){
   syncGameplayMeshes(dt,time);
   if(Game.running||ALLOW_PAUSED_VISUAL_ANIMATION)envUpdate(dt,time);
   updateBursts(dt);
-  camTarget.set(Game.state.player.pos.x,Game.state.player.pos.y||0,Game.state.player.pos.z).add(currentCameraOffset());
+  const focus=Game.isRace()
+    ?plainPos((Game.state.player.pos.x+Game.state.player2.pos.x)/2,0,(Game.state.player.pos.z+Game.state.player2.pos.z)/2)
+    :Game.state.player.pos;
+  camTarget.set(focus.x,focus.y||0,focus.z).add(currentCameraOffset());
   camera.position.x=smooth(camera.position.x,camTarget.x,.18,dt);
   camera.position.y=smooth(camera.position.y,camTarget.y,.18,dt);
   camera.position.z=smooth(camera.position.z,camTarget.z,.18,dt);
-  camera.lookAt(Game.state.player.pos.x,Game.state.player.pos.y+1.2,Game.state.player.pos.z);
-  sun.position.set(Game.state.player.pos.x+30,45,Game.state.player.pos.z+20);
-  sun.target.position.copy(Game.state.player.pos);sun.target.updateMatrixWorld();
+  camera.lookAt(focus.x,(focus.y||0)+1.2,focus.z);
+  sun.position.set(focus.x+30,45,focus.z+20);
+  sun.target.position.set(focus.x,focus.y||0,focus.z);sun.target.updateMatrixWorld();
   renderer.render(scene,camera);
 }
 loop();
@@ -1176,6 +1253,7 @@ function showMenu(){
   $('joy').style.display='none';
   $('actBtn').style.display='none';
   $('prompt').style.display='none';
+  player2Mesh.visible=false;
 }
 async function exitGame(){
   Game.exit();
