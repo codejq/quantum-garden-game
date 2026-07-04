@@ -1,0 +1,12 @@
+Categories:
+  - Games
+License: Proprietary
+WebSite: https://qb-solutions.us/
+SourceCode: https://github.com/codejq/quantum-garden-game
+Name: Clean Garden
+Summary: Offline 3D garden cleanup game
+Description: |-
+  Clean Garden is an offline 3D garden cleanup and tree planting game
+  by Quantum Billing LLC. It supports single-player and simultaneous
+  two-player play, touch, mouse, keyboard, localized UI, score memory,
+  avatar customization, and replay-friendly seeded levels.
