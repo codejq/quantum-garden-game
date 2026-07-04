@@ -12,22 +12,26 @@
 
 <div id="hud">
   <div class="hud-top">
-    <div class="chip">⭐ <span class="n" id="uiScore">0</span></div>
-    <div class="chip">🌳 <span class="n" id="uiTrees">0</span></div>
-    <div class="chip">🗑️ <span class="n" id="uiTrash">0</span></div>
-    <div class="chip">🎯 <span id="uiLevelLabel">Level</span> <span class="n" id="uiLevel">1</span></div>
-    <div id="meterWrap">
-      <div class="lbl"><span id="cleanlinessLabel">Garden cleanliness</span><span id="meterPct">0%</span></div>
-      <div id="meterBar"><div id="meterFill"></div></div>
+    <div class="hud-actions">
+      <button id="exitBtn" aria-label="Exit game">Exit</button>
+      <button id="pauseBtn" aria-label="Pause game">Pause</button>
+      <button id="viewBtn" aria-label="Toggle camera view">View</button>
+      <button id="resetViewBtn" aria-label="Reset camera view">Reset</button>
+    </div>
+    <div class="hud-status">
+      <div class="chip">⭐ <span class="n" id="uiScore">0</span></div>
+      <div class="chip">🌳 <span class="n" id="uiTrees">0</span></div>
+      <div class="chip">🗑️ <span class="n" id="uiTrash">0</span></div>
+      <div class="chip">🎯 <span id="uiLevelLabel">Level</span> <span class="n" id="uiLevel">1</span></div>
+      <div id="meterWrap">
+        <div class="lbl"><span id="cleanlinessLabel">Garden cleanliness</span><span id="meterPct">0%</span></div>
+        <div id="meterBar"><div id="meterFill"></div></div>
+      </div>
     </div>
   </div>
   <div id="missionCard"></div>
   <div id="notes"></div>
   <div id="prompt">🌱 Press to plant a tree!</div>
-  <button id="viewBtn" aria-label="Toggle camera view">View</button>
-  <button id="resetViewBtn" aria-label="Reset camera view">Reset</button>
-  <button id="pauseBtn" aria-label="Pause game">Pause</button>
-  <button id="exitBtn" aria-label="Exit game">Exit</button>
 </div>
 
 <div id="joy"><div id="joyKnob"></div></div>

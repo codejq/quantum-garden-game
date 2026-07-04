@@ -11,7 +11,10 @@
 
   /* ---------- HUD ---------- */
   #hud{position:fixed;inset:0;pointer-events:none;z-index:5;display:none}
-  .hud-top{position:absolute;top:10px;inset-inline:10px;display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap}
+  .hud-top{position:absolute;top:10px;inset-inline:10px;display:grid;grid-template-columns:max-content minmax(0,1fr);
+    gap:8px;align-items:start}
+  .hud-actions{display:flex;gap:6px;align-items:center;pointer-events:auto;min-width:0;flex-wrap:nowrap}
+  .hud-status{display:flex;gap:8px;align-items:flex-start;justify-content:flex-end;min-width:0;flex-wrap:wrap}
   .chip{background:rgba(255,253,245,.92);border:3px solid var(--deep);border-radius:16px;
     padding:4px 12px;font-weight:800;color:var(--ink);font-size:15px;display:flex;gap:6px;align-items:center;
     box-shadow:0 3px 0 rgba(0,0,0,.25)}
@@ -52,34 +55,35 @@
   #actBtn:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.35)}
   #sndBtn{position:fixed;bottom:12px;inset-inline-start:50%;transform:translateX(-50%);z-index:8;background:rgba(255,253,245,.85);
     border:3px solid var(--deep);border-radius:14px;font-size:18px;padding:3px 12px;display:none;font-family:inherit}
-  #pauseBtn,#exitBtn,#viewBtn,#resetViewBtn{position:absolute;top:10px;z-index:9;pointer-events:auto;background:rgba(255,253,245,.94);
+  #pauseBtn,#exitBtn,#viewBtn,#resetViewBtn{position:static;z-index:9;pointer-events:auto;background:rgba(255,253,245,.94);
     border:3px solid var(--deep);border-radius:14px;color:var(--ink);font-family:inherit;font-size:15px;font-weight:900;
-    padding:5px 14px;box-shadow:0 3px 0 rgba(0,0,0,.25);display:none;cursor:pointer}
-  #exitBtn{inset-inline-start:10px}
-  #pauseBtn{inset-inline-start:82px}
-  #viewBtn{inset-inline-start:166px}
-  #resetViewBtn{inset-inline-start:246px}
+    padding:5px 14px;box-shadow:0 3px 0 rgba(0,0,0,.25);display:none;cursor:pointer;white-space:nowrap;line-height:1.1}
   #pauseBtn:active,#exitBtn:active,#viewBtn:active,#resetViewBtn:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.25)}
 
   @media (max-width:640px) and (orientation:portrait){
+    .hud-top{grid-template-columns:1fr;gap:6px}
+    .hud-actions{justify-content:flex-start;overflow-x:auto;max-width:100%;padding-bottom:3px;scrollbar-width:none}
+    .hud-actions::-webkit-scrollbar{display:none}
+    .hud-status{justify-content:flex-start;gap:5px}
     #pauseBtn,#exitBtn,#viewBtn,#resetViewBtn{font-size:12px;padding:4px 8px}
-    #exitBtn{inset-inline-start:8px}
-    #pauseBtn{inset-inline-start:62px}
-    #viewBtn{inset-inline-start:122px}
-    #resetViewBtn{inset-inline-start:176px}
-    #missionCard{top:96px}
+    .chip{font-size:12px;padding:3px 8px;border-width:2px;border-radius:12px}
+    .chip .n{font-size:14px;min-width:14px}
+    #meterWrap{min-width:150px;max-width:220px;padding:4px 8px;border-width:2px;border-radius:12px}
+    #missionCard{top:126px}
     #joy{width:112px;height:112px;bottom:max(18px,env(safe-area-inset-bottom));inset-inline-end:max(18px,env(safe-area-inset-right))}
     #actBtn{width:78px;height:78px;bottom:max(34px,calc(env(safe-area-inset-bottom) + 16px));inset-inline-start:max(18px,env(safe-area-inset-left))}
     #prompt{bottom:132px}
   }
 
   @media (max-height:480px) and (orientation:landscape){
+    .hud-top{grid-template-columns:max-content minmax(0,1fr);gap:6px}
+    .hud-actions{gap:5px}
+    .hud-status{gap:5px}
     #pauseBtn,#exitBtn,#viewBtn,#resetViewBtn{font-size:12px;padding:3px 8px}
-    #exitBtn{inset-inline-start:8px}
-    #pauseBtn{inset-inline-start:62px}
-    #viewBtn{inset-inline-start:122px}
-    #resetViewBtn{inset-inline-start:176px}
-    #missionCard{top:54px;max-width:190px}
+    .chip{font-size:12px;padding:3px 8px;border-width:2px;border-radius:12px}
+    .chip .n{font-size:14px;min-width:14px}
+    #meterWrap{min-width:150px;max-width:220px;padding:4px 8px;border-width:2px;border-radius:12px}
+    #missionCard{top:58px;max-width:190px}
     #joy{width:104px;height:104px;bottom:max(14px,env(safe-area-inset-bottom));inset-inline-end:max(14px,env(safe-area-inset-right))}
     #actBtn{width:72px;height:72px;bottom:max(28px,calc(env(safe-area-inset-bottom) + 12px));inset-inline-start:max(18px,env(safe-area-inset-left))}
     #prompt{bottom:112px}

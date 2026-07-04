@@ -9,18 +9,23 @@ const cssSource = readFileSync(new URL('../web/styles/main.css', import.meta.url
 test('active HUD exposes camera view and reset controls', () => {
   assert.match(htmlSource, /id="viewBtn"/);
   assert.match(htmlSource, /id="resetViewBtn"/);
-  assert.match(cssSource, /#pauseBtn,#exitBtn,#viewBtn,#resetViewBtn/);
+  assert.match(htmlSource, /<div class="hud-actions">[\s\S]*id="exitBtn"[\s\S]*id="pauseBtn"[\s\S]*id="viewBtn"[\s\S]*id="resetViewBtn"[\s\S]*<\/div>/);
+  assert.match(cssSource, /\.hud-actions\{display:flex/);
+  assert.match(cssSource, /#pauseBtn,#exitBtn,#viewBtn,#resetViewBtn\{position:static/);
   assert.match(mainSource, /\$\('viewBtn'\)\.onclick=\(\)=>toggleCameraView\(\)/);
   assert.match(mainSource, /\$\('resetViewBtn'\)\.onclick=\(\)=>resetCameraView\(\)/);
 });
 
 test('camera controls use compact mobile placement away from mission and touch controls', () => {
+  assert.match(cssSource, /\.hud-top\{position:absolute;top:10px;inset-inline:10px;display:grid/);
+  assert.match(cssSource, /\.hud-status\{display:flex/);
   assert.match(cssSource, /@media \(max-width:640px\) and \(orientation:portrait\)/);
+  assert.match(cssSource, /\.hud-top\{grid-template-columns:1fr;gap:6px\}/);
+  assert.match(cssSource, /\.hud-actions\{justify-content:flex-start;overflow-x:auto/);
   assert.match(cssSource, /#pauseBtn,#exitBtn,#viewBtn,#resetViewBtn\{font-size:12px;padding:4px 8px\}/);
-  assert.match(cssSource, /#resetViewBtn\{inset-inline-start:176px\}/);
-  assert.match(cssSource, /#missionCard\{top:96px\}/);
+  assert.match(cssSource, /#missionCard\{top:126px\}/);
   assert.match(cssSource, /@media \(max-height:480px\) and \(orientation:landscape\)/);
-  assert.match(cssSource, /#missionCard\{top:54px;max-width:190px\}/);
+  assert.match(cssSource, /#missionCard\{top:58px;max-width:190px\}/);
 });
 
 test('active game supports mouse camera and click planting controls', () => {

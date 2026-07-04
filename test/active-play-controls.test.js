@@ -34,9 +34,11 @@ test('active web and mobile exit returns to the main menu fallback', () => {
   assert.match(mainSource, /showMenu\(\)/);
 });
 
-test('exit and pause controls are positioned away from bottom touch controls', () => {
-  assert.match(cssSource, /#pauseBtn,#exitBtn,#viewBtn,#resetViewBtn\{position:absolute;top:10px/);
-  assert.match(cssSource, /#exitBtn\{inset-inline-start:10px\}/);
+test('exit and pause controls live in the top HUD away from bottom touch controls', () => {
+  assert.match(htmlSource, /<div class="hud-actions">[\s\S]*id="exitBtn"[\s\S]*id="pauseBtn"[\s\S]*id="viewBtn"[\s\S]*id="resetViewBtn"[\s\S]*<\/div>/);
+  assert.match(cssSource, /\.hud-top\{position:absolute;top:10px;inset-inline:10px;display:grid/);
+  assert.match(cssSource, /\.hud-actions\{display:flex/);
+  assert.match(cssSource, /#pauseBtn,#exitBtn,#viewBtn,#resetViewBtn\{position:static/);
   assert.match(cssSource, /#joy\{position:fixed;bottom:max/);
   assert.match(cssSource, /#actBtn\{position:fixed;bottom:max/);
 });
