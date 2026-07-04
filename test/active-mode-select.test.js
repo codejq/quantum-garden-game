@@ -57,3 +57,9 @@ test('active browser gameplay reads objectives and scores from the selected mode
   assert.doesNotMatch(mainSource, /this\.addScore\(25,plainToVector\(p\.pos,2\)\)/);
   assert.doesNotMatch(mainSource, /Game\.addScore\(10,plainToVector\(t\.pos,1\.4\)\)/);
 });
+
+test('simultaneous two-player mode renders player two as blue', () => {
+  assert.match(mainSource, /function tintNaqiBlue\(g\)\{/);
+  assert.match(mainSource, /\[mat\(0x39b54a\),mat\(0x228be6\)\]/);
+  assert.match(mainSource, /const player2Mesh=buildNaqi\(\);\s*tintNaqiBlue\(player2Mesh\);/);
+});

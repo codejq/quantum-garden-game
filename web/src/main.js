@@ -423,6 +423,20 @@ function buildNaqi(){
   g.userData={arms,legs};
   return g;}
 
+function tintNaqiBlue(g){
+  const swaps=new Map([
+    [mat(0x39b54a),mat(0x228be6)],
+    [mat(0x1d6b33),mat(0x1864ab)],
+    [mat(0x69db7c),mat(0x74c0fc)],
+    [mat(0xd8f3c4),mat(0xd0ebff)],
+    [mat(0x14532d),mat(0x0b4f8a)],
+  ]);
+  g.traverse(o=>{
+    if(o.isMesh&&swaps.has(o.material))o.material=swaps.get(o.material);
+  });
+  return g;
+}
+
 function buildMinion(){
   const g=new THREE.Group();
   const body=new THREE.Mesh(new THREE.SphereGeometry(.55,10,10),mat(0x9c6bd6));
@@ -624,6 +638,7 @@ function createActiveGameplayState(){
 const playerMesh=buildNaqi();
 scene.add(playerMesh);
 const player2Mesh=buildNaqi();
+tintNaqiBlue(player2Mesh);
 player2Mesh.visible=false;
 player2Mesh.scale.setScalar(.92);
 const player2Marker=new THREE.Mesh(new THREE.TorusGeometry(.72,.06,12,36),mat(0x4dabf7));
