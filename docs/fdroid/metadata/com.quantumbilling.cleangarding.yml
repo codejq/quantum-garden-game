@@ -1,8 +1,9 @@
 Categories:
   - Games
-License: Proprietary
+License: MIT
 WebSite: https://qb-solutions.us/
 SourceCode: https://github.com/codejq/quantum-garden-game
+IssueTracker: https://github.com/codejq/quantum-garden-game/issues
 Name: Clean Garden
 Summary: Offline 3D garden cleanup game
 Description: |-
