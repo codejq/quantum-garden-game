@@ -35,6 +35,11 @@ test('active gameplay notification lines are locale-aware', () => {
 test('active browser defines translation keys for visible UI strings', () => {
   assert.match(mainSource, /const ACTIVE_I18N_KEYS=\[/);
   assert.match(mainSource, /const ACTIVE_I18N_LINE_KEYS=\[/);
+  assert.match(mainSource, /prompt:'🌱 Press E to plant a tree!'/);
+  assert.match(mainSource, /promptTouch:'🌱 Tap the plant button to plant a tree!'/);
+  assert.match(mainSource, /function plantPromptText\(\)\{return tr\(hasTouchInput\(\)\?'promptTouch':'prompt'\);\}/);
+  assert.match(mainSource, /\$\('prompt'\)\.textContent=plantPromptText\(\)/);
+  assert.match(mainSource, /\$\('actBtn'\)\.setAttribute\('aria-label',tr\('promptTouch'\)\)/);
   assert.match(mainSource, /sound:'Sound'/);
   assert.match(mainSource, /sound:'الصوت'/);
   assert.match(mainSource, /sound:'Sonido'/);
