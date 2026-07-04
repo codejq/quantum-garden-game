@@ -2,7 +2,7 @@
 
 ## What This Is
 
-Clean Garden is an offline 3D garden cleanup game credited to Quantum Billing LLC. It is built with plain browser JavaScript, Three.js r128 vendored locally, and Tauri v2 packaging. The current working app lives in `web/` and is packaged for Windows through `src-tauri/`.
+Clean Garden is an offline 3D garden cleanup game credited to [Quantum Billing LLC](https://qb-solutions.us/). It is built with plain browser JavaScript, Three.js r128 vendored locally, and Tauri v2 packaging. The current working app lives in `web/` and is packaged for Windows through `src-tauri/`.
 
 The game supports English by default plus Arabic, Spanish, and French. It has single-player and simultaneous two-player modes, keyboard/mouse/touch controls, seeded level attempts, offline assets, generated WebAudio sound, and a browser LLM control hook.
 

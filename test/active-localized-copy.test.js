@@ -9,7 +9,7 @@ const cargoSource = readFileSync(new URL('../src-tauri/Cargo.toml', import.meta.
 test('active start title is rendered through i18n instead of hard-coded HTML', () => {
   assert.match(htmlSource, /<title>Clean Garden<\/title>/);
   assert.match(htmlSource, /id="gameTitle">Clean Garden<\/h1>/);
-  assert.match(htmlSource, /id="credit">By Quantum Billing LLC<\/div>/);
+  assert.match(htmlSource, /id="credit" href="https:\/\/qb-solutions\.us\/"[^>]*>By Quantum Billing LLC<\/a>/);
   assert.doesNotMatch(htmlSource, /الحديقة النظيفة/);
   assert.match(mainSource, /document\.title=tr\('title'\)/);
   assert.match(mainSource, /\$\('gameTitle'\)\.textContent=tr\('title'\)/);

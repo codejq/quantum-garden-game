@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 const root = fileURLToPath(new URL('..', import.meta.url));
 const checkedRoots = ['web/index.html', 'web/styles', 'web/src'];
 const remotePattern = /https?:\/\/|fetch\s*\(|XMLHttpRequest|WebSocket\s*\(/;
+const allowedCreditLinkPattern = /href="https:\/\/qb-solutions\.us\/"/g;
 const audioAssetPattern = /\.(?:mp3|wav|ogg|m4a)\b|<audio\b|new Audio\s*\(/;
 
 function filesUnder(path) {
@@ -24,7 +25,8 @@ function activeRuntimeFiles() {
 
 test('active runtime source does not introduce gameplay network calls', () => {
   for (const file of activeRuntimeFiles()) {
-    assert.doesNotMatch(readFileSync(file, 'utf8'), remotePattern, file);
+    const source = readFileSync(file, 'utf8').replace(allowedCreditLinkPattern, 'href=""');
+    assert.doesNotMatch(source, remotePattern, file);
   }
 });
 

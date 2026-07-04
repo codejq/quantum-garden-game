@@ -99,7 +99,8 @@
   .card h1{font-size:clamp(26px,7vw,40px);color:var(--deep);letter-spacing:.5px}
   .card h1 .vs{color:var(--grape)}
   .card .tag{font-size:15px;font-weight:800;color:#5a6b4f;margin:4px 0 12px}
-  .credit{font-size:13px;font-weight:900;color:var(--grape);margin:-6px 0 12px}
+  .credit{display:inline-block;font-size:13px;font-weight:900;color:var(--grape);margin:-6px 0 12px;text-decoration:none}
+  .credit:hover,.credit:focus-visible{text-decoration:underline}
   .howto{text-align:start;background:#eef5e6;border-radius:16px;padding:10px 14px;font-size:14px;font-weight:700;line-height:1.9;margin-bottom:14px}
   .howto b{color:var(--deep)}
   .howto .bad{color:var(--grape)}
