@@ -218,6 +218,7 @@ jobs:
           SourceCode: https://github.com/${{ github.repository }}
           IssueTracker: https://github.com/${{ github.repository }}/issues
           Changelog: https://github.com/${{ github.repository }}/releases
+
           AutoName: Clean Garden
           Summary: Offline 3D garden cleanup game
           Description: |-
@@ -233,14 +234,15 @@ jobs:
           Builds:
             - versionName: 0.1.0
               versionCode: 1000
-              commit: v0.1.0
+              commit: f9a42666d3728683c9b1c8e456a33681e39163c9
               subdir: src-tauri/gen/android
               sudo:
                 - apt-get update
                 - apt-get install -y build-essential curl npm pkg-config libssl-dev
               init:
                 - curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal
-                - $HOME/.cargo/bin/rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android
+                - $HOME/.cargo/bin/rustup target add aarch64-linux-android armv7-linux-androideabi
+                  i686-linux-android x86_64-linux-android
                 - npm ci
                 - npm run build
               gradle:
