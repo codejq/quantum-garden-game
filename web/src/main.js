@@ -52,16 +52,18 @@ function plainToVector(pos,y=pos.y||0){return new THREE.Vector3(pos.x,y,pos.z);}
 function setObjectPosition(obj,pos,y=pos.y||0){obj.position.set(pos.x,y,pos.z);}
 
 const ACTIVE_I18N={
-  en:{dir:'ltr',title:'Clean Garden',language:'Language',tagline:'A 3D adventure to save the garden! 🌍',howto:'🗑️ <b>Pick up trash</b> — walk over it to clean it up!<br>🌱 <b>Plant trees</b> — single player uses E; two-player uses P1 F and P2 L. Touch screens use the 🌱 button.<br>😈 <span class="bad">Stop Mtermish minions</span> — touch them to turn them into nature friends!<br>🎩 <span class="bad">Big Mtermish</span> needs <b>3 touches</b>... and runs fast!',start:'🚀 Start Adventure',keys:'💻 Arrow keys / WASD to move — E to plant<br>📱 Joystick right — tap 🌱 button left',keysRace:'💻 P1: WASD + F<br>💻 P2: Arrow keys + L',level:'Level',clean:'Garden cleanliness',prompt:'🌱 Press E to plant a tree!',promptRace:'🌱 P1 F | P2 L to plant trees!',promptTouch:'🌱 Tap the plant button to plant a tree!',exit:'Exit',pause:'Pause',paused:'Paused',resume:'Resume',retry:'Retry',menu:'Menu',next:'Next Level',trashLeft:'Trash left',trees:'Trees',minions:'Mtermish minions',boss:'Big Mtermish',time:'Time',best:'Best',view:'View',resetView:'Reset',sound:'Sound',mode:'Game mode',singlePlayer:'Single Player',twoPlayerRace:'Two Player Race',levelStart:n=>`Level ${n}: clean the garden and plant trees! 🌍`,levelDone:n=>`🎉 Level ${n} complete!`,exited:'Exited the game',lines:{pickup:['Nice! One less piece of trash.','The garden says thank you.','Sparkly clean!','Fresh and tidy.','Keep going!'],plant:['A new tree! 🌳','The birds will love this.','Free oxygen for everyone.','That green looks good.'],minion:['Turned into a nature friend!','They said sorry.','One less Mtermish minion.'],mtermishHit:['Mtermish: Ouch! My hat!','Mtermish: You will not catch me!','Mtermish: Fine... maybe I will litter less.'],mtermishDown:['Mtermish: I promise to use the bin!','Mtermish gave up. Next level!'],mtermishTaunt:['Mtermish: More trash!','Mtermish: Clean gardens are boring!','Mtermish: Try to catch me!'],quotes:['Plant a tree, plant hope.','Clean today, protect tomorrow.','Every bin helps the planet.','Trees are homes for birds.','You are the garden hero.']}},
-  ar:{dir:'rtl',title:'الحديقة النظيفة',language:'اللغة',tagline:'مغامرة ثلاثية الأبعاد لإنقاذ الحديقة! 🌍',howto:'🗑️ <b>التقط القمامة</b> — امشِ فوقها لتختفي!<br>🌱 <b>ازرع الأشجار</b> — اللاعب الواحد يستخدم E؛ في لاعبين: اللاعب 1 يستخدم F واللاعب 2 يستخدم L. شاشات اللمس تستخدم زر 🌱.<br>😈 <span class="bad">أوقف أتباع مترميش</span> — المسهم ليتحولوا إلى أصدقاء للطبيعة!<br>🎩 <span class="bad">مترميش الكبير</span> يحتاج <b>٣ لمسات</b>... وهو سريع الهرب!',start:'🚀 ابدأ المغامرة',keys:'💻 الأسهم / WASD للحركة — E للزراعة<br>📱 عصا التحكم يمين — المس زر 🌱 يسار',keysRace:'💻 اللاعب 1: WASD + F<br>💻 اللاعب 2: الأسهم + L',level:'مستوى',clean:'نظافة الحديقة',prompt:'🌱 اضغط E لتزرع شجرة!',promptRace:'🌱 اللاعب 1 F | اللاعب 2 L للزراعة!',promptTouch:'🌱 المس زر الزراعة لتزرع شجرة!',exit:'خروج',pause:'إيقاف',paused:'إيقاف مؤقت',resume:'متابعة',retry:'إعادة',menu:'القائمة',next:'المستوى التالي',trashLeft:'قمامة متبقية',trees:'أشجار',minions:'أتباع مترميش',boss:'مترميش الكبير',time:'الوقت',best:'الأفضل',view:'العرض',resetView:'إعادة',sound:'الصوت',mode:'نمط اللعب',singlePlayer:'لاعب واحد',twoPlayerRace:'سباق لاعبين',levelStart:n=>`المستوى ${n}: نظّف الحديقة وازرع الأشجار! 🌍`,levelDone:n=>`🎉 المستوى ${n} اكتمل!`,exited:'تم الخروج من اللعبة',lines:{pickup:['رائع! قطعة أقل 🗑️','الحديقة تشكرك!','لمعان ✨','نظيف تمام!','هيّا نكمل!'],plant:['شجرة جديدة! 🌳','الطيور ستحب هذه!','أوكسجين مجاني للجميع 😄','يا سلام على الخضرة!'],minion:['تحوّل إلى صديق للطبيعة! 💚','قال: آسف يا نقي! 😅','واحد أقل من عصابة مترميش!'],mtermishHit:['مترميش: آي! قبعتي! 🎩','مترميش: لن تمسكني!! 😤','مترميش: حسناً حسناً... ربما أرمي أقل!'],mtermishDown:['مترميش: أعدك... سأستخدم سلة المهملات! 😭','مترميش استسلم! إلى المستوى القادم!'],mtermishTaunt:['مترميش: هاهاها! المزيد من القمامة! 😈','مترميش: النظافة مملّة! 🗑️','مترميش: حاول أن تمسكني يا نقي!'],quotes:['من زرع شجرة، زرع أملاً.','نظّفنا اليوم... ونحمي الأرض غداً.','كل قطعة قمامة في مكانها = كوكب أسعد.','الأشجار بيوت العصافير.','بطل البيئة الحقيقي هو أنت.']}},
-  es:{dir:'ltr',title:'Jardin Limpio',language:'Idioma',tagline:'Una aventura 3D para salvar el jardin. 🌍',howto:'🗑️ <b>Recoge basura</b> — pasa por encima para limpiarla.<br>🌱 <b>Planta arboles</b> — en solitario usa E; en dos jugadores, P1 usa F y P2 usa L. En pantallas tactiles usa el boton 🌱.<br>😈 <span class="bad">Deten a los secuaces de Mtermish</span> — tocalos para convertirlos en amigos de la naturaleza.<br>🎩 <span class="bad">Gran Mtermish</span> necesita <b>3 toques</b>... y corre rapido.',start:'🚀 Iniciar aventura',keys:'💻 Flechas / WASD para moverte — E para plantar<br>📱 Joystick derecha — toca el boton 🌱 izquierda',keysRace:'💻 P1: WASD + F<br>💻 P2: flechas + L',level:'Nivel',clean:'Limpieza del jardin',prompt:'🌱 Pulsa E para plantar un arbol.',promptRace:'🌱 P1 F | P2 L para plantar arboles.',promptTouch:'🌱 Toca el boton de plantar para plantar un arbol.',exit:'Salir',pause:'Pausa',paused:'Pausa',resume:'Continuar',retry:'Reintentar',menu:'Menu',next:'Siguiente nivel',trashLeft:'Basura restante',trees:'Arboles',minions:'Secuaces de Mtermish',boss:'Gran Mtermish',time:'Tiempo',best:'Mejor',view:'Vista',resetView:'Reiniciar',sound:'Sonido',mode:'Modo de juego',singlePlayer:'Un jugador',twoPlayerRace:'Carrera de dos',levelStart:n=>`Nivel ${n}: limpia el jardin y planta arboles. 🌍`,levelDone:n=>`🎉 Nivel ${n} completado.`,exited:'Saliste del juego',lines:{pickup:['Bien! Una basura menos.','El jardin te da las gracias.','Todo brilla.','Limpio y listo.','Sigamos!'],plant:['Un arbol nuevo! 🌳','A los pajaros les encantara.','Oxigeno gratis para todos.','Que verde tan bonito.'],minion:['Se convirtio en amigo de la naturaleza!','Pidio perdon.','Un secuaz menos de Mtermish.'],mtermishHit:['Mtermish: Ay! Mi sombrero!','Mtermish: No me atraparas!','Mtermish: Bueno... tirare menos basura.'],mtermishDown:['Mtermish: Prometo usar el bote!','Mtermish se rindio. Siguiente nivel!'],mtermishTaunt:['Mtermish: Mas basura!','Mtermish: La limpieza es aburrida!','Mtermish: Intenta atraparme!'],quotes:['Plantar un arbol es plantar esperanza.','Limpia hoy, protege manana.','Cada bote ayuda al planeta.','Los arboles son casas para aves.','Eres el heroe del jardin.']}},
-  fr:{dir:'ltr',title:'Jardin Propre',language:'Langue',tagline:'Une aventure 3D pour sauver le jardin. 🌍',howto:'🗑️ <b>Ramasse les dechets</b> — marche dessus pour les nettoyer.<br>🌱 <b>Plante des arbres</b> — en solo utilise E; a deux, P1 utilise F et P2 utilise L. Sur ecran tactile, utilise le bouton 🌱.<br>😈 <span class="bad">Arrete les sbires de Mtermish</span> — touche-les pour en faire des amis de la nature.<br>🎩 <span class="bad">Grand Mtermish</span> demande <b>3 touches</b>... et court vite.',start:"🚀 Lancer l'aventure",keys:'💻 Fleches / WASD pour bouger — E pour planter<br>📱 Joystick a droite — touche le bouton 🌱 a gauche',keysRace:'💻 P1 : WASD + F<br>💻 P2 : fleches + L',level:'Niveau',clean:'Proprete du jardin',prompt:'🌱 Appuie sur E pour planter un arbre.',promptRace:'🌱 P1 F | P2 L pour planter.',promptTouch:'🌱 Touche le bouton planter pour planter un arbre.',exit:'Quitter',pause:'Pause',paused:'Pause',resume:'Reprendre',retry:'Rejouer',menu:'Menu',next:'Niveau suivant',trashLeft:'Dechets restants',trees:'Arbres',minions:'Sbires de Mtermish',boss:'Grand Mtermish',time:'Temps',best:'Meilleur',view:'Vue',resetView:'Recentrer',sound:'Son',mode:'Mode de jeu',singlePlayer:'Solo',twoPlayerRace:'Course a deux',levelStart:n=>`Niveau ${n} : nettoie le jardin et plante des arbres. 🌍`,levelDone:n=>`🎉 Niveau ${n} termine.`,exited:'Partie quittee',lines:{pickup:['Super! Un dechet en moins.','Le jardin te remercie.','Ca brille.','Propre et net.','On continue!'],plant:['Un nouvel arbre! 🌳','Les oiseaux vont adorer.','De l oxygene pour tout le monde.','Cette verdure est belle.'],minion:['Transforme en ami de la nature!','Il a dit pardon.','Un sbire de Mtermish en moins.'],mtermishHit:['Mtermish: Aie! Mon chapeau!','Mtermish: Tu ne m attraperas pas!','Mtermish: Bon... je jetterai moins.'],mtermishDown:['Mtermish: Je promets d utiliser la poubelle!','Mtermish abandonne. Niveau suivant!'],mtermishTaunt:['Mtermish: Encore des dechets!','Mtermish: La proprete, quel ennui!','Mtermish: Essaie de m attraper!'],quotes:['Planter un arbre, c est planter l espoir.','Nettoyer aujourd hui, proteger demain.','Chaque poubelle aide la planete.','Les arbres sont des maisons pour les oiseaux.','Tu es le heros du jardin.']}}
+  en:{dir:'ltr',title:'Clean Garden',language:'Language',tagline:'A 3D adventure to save the garden! 🌍',howto:'🗑️ <b>Pick up trash</b> — walk over it to clean it up!<br>🌱 <b>Plant trees</b> — single player uses E; two-player uses P1 F and P2 L. Touch screens use the 🌱 button.<br>😈 <span class="bad">Stop Mtermish minions</span> — touch them to turn them into nature friends!<br>🎩 <span class="bad">Big Mtermish</span> needs <b>3 touches</b>... and runs fast!',start:'🚀 Start Adventure',keys:'💻 Arrow keys / WASD to move — E to plant<br>📱 Joystick right — tap 🌱 button left',keysRace:'💻 P1: WASD + F<br>💻 P2: Arrow keys + L',level:'Level',clean:'Garden cleanliness',prompt:'🌱 Press E to plant a tree!',promptRace:'🌱 P1 F | P2 L to plant trees!',promptTouch:'🌱 Tap the plant button to plant a tree!',exit:'Exit',pause:'Pause',paused:'Paused',resume:'Resume',retry:'Retry',menu:'Menu',next:'Next Level',trashLeft:'Trash left',trees:'Trees',minions:'Mtermish minions',boss:'Big Mtermish',time:'Time',best:'Best',view:'View',resetView:'Reset',sound:'Sound',mode:'Game mode',singlePlayer:'Single Player',twoPlayerRace:'Two Player Race',gender:'Avatar',genderMale:'Male',genderFemale:'Female',clothes:'Clothes',clothesGreen:'Green',clothesBlue:'Blue',clothesPink:'Pink',clothesOrange:'Orange',savedScore:s=>`Best score: ${s.best} | Last: ${s.last} | Total: ${s.total}`,levelStart:n=>`Level ${n}: clean the garden and plant trees! 🌍`,levelDone:n=>`🎉 Level ${n} complete!`,exited:'Exited the game',lines:{pickup:['Nice! One less piece of trash.','The garden says thank you.','Sparkly clean!','Fresh and tidy.','Keep going!'],plant:['A new tree! 🌳','The birds will love this.','Free oxygen for everyone.','That green looks good.'],minion:['Turned into a nature friend!','They said sorry.','One less Mtermish minion.'],mtermishHit:['Mtermish: Ouch! My hat!','Mtermish: You will not catch me!','Mtermish: Fine... maybe I will litter less.'],mtermishDown:['Mtermish: I promise to use the bin!','Mtermish gave up. Next level!'],mtermishTaunt:['Mtermish: More trash!','Mtermish: Clean gardens are boring!','Mtermish: Try to catch me!'],quotes:['Plant a tree, plant hope.','Clean today, protect tomorrow.','Every bin helps the planet.','Trees are homes for birds.','You are the garden hero.']}},
+  ar:{dir:'rtl',title:'الحديقة النظيفة',language:'اللغة',tagline:'مغامرة ثلاثية الأبعاد لإنقاذ الحديقة! 🌍',howto:'🗑️ <b>التقط القمامة</b> — امشِ فوقها لتختفي!<br>🌱 <b>ازرع الأشجار</b> — اللاعب الواحد يستخدم E؛ في لاعبين: اللاعب 1 يستخدم F واللاعب 2 يستخدم L. شاشات اللمس تستخدم زر 🌱.<br>😈 <span class="bad">أوقف أتباع مترميش</span> — المسهم ليتحولوا إلى أصدقاء للطبيعة!<br>🎩 <span class="bad">مترميش الكبير</span> يحتاج <b>٣ لمسات</b>... وهو سريع الهرب!',start:'🚀 ابدأ المغامرة',keys:'💻 الأسهم / WASD للحركة — E للزراعة<br>📱 عصا التحكم يمين — المس زر 🌱 يسار',keysRace:'💻 اللاعب 1: WASD + F<br>💻 اللاعب 2: الأسهم + L',level:'مستوى',clean:'نظافة الحديقة',prompt:'🌱 اضغط E لتزرع شجرة!',promptRace:'🌱 اللاعب 1 F | اللاعب 2 L للزراعة!',promptTouch:'🌱 المس زر الزراعة لتزرع شجرة!',exit:'خروج',pause:'إيقاف',paused:'إيقاف مؤقت',resume:'متابعة',retry:'إعادة',menu:'القائمة',next:'المستوى التالي',trashLeft:'قمامة متبقية',trees:'أشجار',minions:'أتباع مترميش',boss:'مترميش الكبير',time:'الوقت',best:'الأفضل',view:'العرض',resetView:'إعادة',sound:'الصوت',mode:'نمط اللعب',singlePlayer:'لاعب واحد',twoPlayerRace:'سباق لاعبين',gender:'الشخصية',genderMale:'ذكر',genderFemale:'أنثى',clothes:'الملابس',clothesGreen:'أخضر',clothesBlue:'أزرق',clothesPink:'وردي',clothesOrange:'برتقالي',savedScore:s=>`أفضل نقاط: ${s.best} | آخر نتيجة: ${s.last} | المجموع: ${s.total}`,levelStart:n=>`المستوى ${n}: نظّف الحديقة وازرع الأشجار! 🌍`,levelDone:n=>`🎉 المستوى ${n} اكتمل!`,exited:'تم الخروج من اللعبة',lines:{pickup:['رائع! قطعة أقل 🗑️','الحديقة تشكرك!','لمعان ✨','نظيف تمام!','هيّا نكمل!'],plant:['شجرة جديدة! 🌳','الطيور ستحب هذه!','أوكسجين مجاني للجميع 😄','يا سلام على الخضرة!'],minion:['تحوّل إلى صديق للطبيعة! 💚','قال: آسف يا نقي! 😅','واحد أقل من عصابة مترميش!'],mtermishHit:['مترميش: آي! قبعتي! 🎩','مترميش: لن تمسكني!! 😤','مترميش: حسناً حسناً... ربما أرمي أقل!'],mtermishDown:['مترميش: أعدك... سأستخدم سلة المهملات! 😭','مترميش استسلم! إلى المستوى القادم!'],mtermishTaunt:['مترميش: هاهاها! المزيد من القمامة! 😈','مترميش: النظافة مملّة! 🗑️','مترميش: حاول أن تمسكني يا نقي!'],quotes:['من زرع شجرة، زرع أملاً.','نظّفنا اليوم... ونحمي الأرض غداً.','كل قطعة قمامة في مكانها = كوكب أسعد.','الأشجار بيوت العصافير.','بطل البيئة الحقيقي هو أنت.']}},
+  es:{dir:'ltr',title:'Jardin Limpio',language:'Idioma',tagline:'Una aventura 3D para salvar el jardin. 🌍',howto:'🗑️ <b>Recoge basura</b> — pasa por encima para limpiarla.<br>🌱 <b>Planta arboles</b> — en solitario usa E; en dos jugadores, P1 usa F y P2 usa L. En pantallas tactiles usa el boton 🌱.<br>😈 <span class="bad">Deten a los secuaces de Mtermish</span> — tocalos para convertirlos en amigos de la naturaleza.<br>🎩 <span class="bad">Gran Mtermish</span> necesita <b>3 toques</b>... y corre rapido.',start:'🚀 Iniciar aventura',keys:'💻 Flechas / WASD para moverte — E para plantar<br>📱 Joystick derecha — toca el boton 🌱 izquierda',keysRace:'💻 P1: WASD + F<br>💻 P2: flechas + L',level:'Nivel',clean:'Limpieza del jardin',prompt:'🌱 Pulsa E para plantar un arbol.',promptRace:'🌱 P1 F | P2 L para plantar arboles.',promptTouch:'🌱 Toca el boton de plantar para plantar un arbol.',exit:'Salir',pause:'Pausa',paused:'Pausa',resume:'Continuar',retry:'Reintentar',menu:'Menu',next:'Siguiente nivel',trashLeft:'Basura restante',trees:'Arboles',minions:'Secuaces de Mtermish',boss:'Gran Mtermish',time:'Tiempo',best:'Mejor',view:'Vista',resetView:'Reiniciar',sound:'Sonido',mode:'Modo de juego',singlePlayer:'Un jugador',twoPlayerRace:'Carrera de dos',gender:'Avatar',genderMale:'Masculino',genderFemale:'Femenino',clothes:'Ropa',clothesGreen:'Verde',clothesBlue:'Azul',clothesPink:'Rosa',clothesOrange:'Naranja',savedScore:s=>`Mejor puntuacion: ${s.best} | Ultima: ${s.last} | Total: ${s.total}`,levelStart:n=>`Nivel ${n}: limpia el jardin y planta arboles. 🌍`,levelDone:n=>`🎉 Nivel ${n} completado.`,exited:'Saliste del juego',lines:{pickup:['Bien! Una basura menos.','El jardin te da las gracias.','Todo brilla.','Limpio y listo.','Sigamos!'],plant:['Un arbol nuevo! 🌳','A los pajaros les encantara.','Oxigeno gratis para todos.','Que verde tan bonito.'],minion:['Se convirtio en amigo de la naturaleza!','Pidio perdon.','Un secuaz menos de Mtermish.'],mtermishHit:['Mtermish: Ay! Mi sombrero!','Mtermish: No me atraparas!','Mtermish: Bueno... tirare menos basura.'],mtermishDown:['Mtermish: Prometo usar el bote!','Mtermish se rindio. Siguiente nivel!'],mtermishTaunt:['Mtermish: Mas basura!','Mtermish: La limpieza es aburrida!','Mtermish: Intenta atraparme!'],quotes:['Plantar un arbol es plantar esperanza.','Limpia hoy, protege manana.','Cada bote ayuda al planeta.','Los arboles son casas para aves.','Eres el heroe del jardin.']}},
+  fr:{dir:'ltr',title:'Jardin Propre',language:'Langue',tagline:'Une aventure 3D pour sauver le jardin. 🌍',howto:'🗑️ <b>Ramasse les dechets</b> — marche dessus pour les nettoyer.<br>🌱 <b>Plante des arbres</b> — en solo utilise E; a deux, P1 utilise F et P2 utilise L. Sur ecran tactile, utilise le bouton 🌱.<br>😈 <span class="bad">Arrete les sbires de Mtermish</span> — touche-les pour en faire des amis de la nature.<br>🎩 <span class="bad">Grand Mtermish</span> demande <b>3 touches</b>... et court vite.',start:"🚀 Lancer l'aventure",keys:'💻 Fleches / WASD pour bouger — E pour planter<br>📱 Joystick a droite — touche le bouton 🌱 a gauche',keysRace:'💻 P1 : WASD + F<br>💻 P2 : fleches + L',level:'Niveau',clean:'Proprete du jardin',prompt:'🌱 Appuie sur E pour planter un arbre.',promptRace:'🌱 P1 F | P2 L pour planter.',promptTouch:'🌱 Touche le bouton planter pour planter un arbre.',exit:'Quitter',pause:'Pause',paused:'Pause',resume:'Reprendre',retry:'Rejouer',menu:'Menu',next:'Niveau suivant',trashLeft:'Dechets restants',trees:'Arbres',minions:'Sbires de Mtermish',boss:'Grand Mtermish',time:'Temps',best:'Meilleur',view:'Vue',resetView:'Recentrer',sound:'Son',mode:'Mode de jeu',singlePlayer:'Solo',twoPlayerRace:'Course a deux',gender:'Avatar',genderMale:'Masculin',genderFemale:'Feminin',clothes:'Tenue',clothesGreen:'Vert',clothesBlue:'Bleu',clothesPink:'Rose',clothesOrange:'Orange',savedScore:s=>`Meilleur score : ${s.best} | Dernier : ${s.last} | Total : ${s.total}`,levelStart:n=>`Niveau ${n} : nettoie le jardin et plante des arbres. 🌍`,levelDone:n=>`🎉 Niveau ${n} termine.`,exited:'Partie quittee',lines:{pickup:['Super! Un dechet en moins.','Le jardin te remercie.','Ca brille.','Propre et net.','On continue!'],plant:['Un nouvel arbre! 🌳','Les oiseaux vont adorer.','De l oxygene pour tout le monde.','Cette verdure est belle.'],minion:['Transforme en ami de la nature!','Il a dit pardon.','Un sbire de Mtermish en moins.'],mtermishHit:['Mtermish: Aie! Mon chapeau!','Mtermish: Tu ne m attraperas pas!','Mtermish: Bon... je jetterai moins.'],mtermishDown:['Mtermish: Je promets d utiliser la poubelle!','Mtermish abandonne. Niveau suivant!'],mtermishTaunt:['Mtermish: Encore des dechets!','Mtermish: La proprete, quel ennui!','Mtermish: Essaie de m attraper!'],quotes:['Planter un arbre, c est planter l espoir.','Nettoyer aujourd hui, proteger demain.','Chaque poubelle aide la planete.','Les arbres sont des maisons pour les oiseaux.','Tu es le heros du jardin.']}}
 };
 const ACTIVE_I18N_KEYS=[
   'title','language','tagline','howto','start','keys','keysRace','level','clean','prompt','promptRace','promptTouch',
   'exit','pause','paused','resume','retry','menu','next','trashLeft','trees',
   'minions','boss','time','best','view','resetView','sound','mode',
-  'singlePlayer','twoPlayerRace','levelStart','levelDone','exited'
+  'singlePlayer','twoPlayerRace','gender','genderMale','genderFemale',
+  'clothes','clothesGreen','clothesBlue','clothesPink','clothesOrange','savedScore',
+  'levelStart','levelDone','exited'
 ];
 const ACTIVE_I18N_LINE_KEYS=[
   'pickup','plant','minion','mtermishHit','mtermishDown','mtermishTaunt','quotes'
@@ -69,6 +71,46 @@ const ACTIVE_I18N_LINE_KEYS=[
 const requestedLocale=new URLSearchParams(location.search).get('locale');
 let activeLocale=ACTIVE_I18N[requestedLocale]?requestedLocale:(localStorage.getItem('cleanGarden.locale')||'en');
 let activeMode=normalizeActiveMode(localStorage.getItem('cleanGarden.mode'));
+const AVATAR_CLOTHES={
+  green:{body:0x39b54a,dark:0x1d6b33,leaf:0x69db7c,belly:0xd8f3c4,pants:0x2b7fd4,sole:0xe03131},
+  blue:{body:0x228be6,dark:0x1864ab,leaf:0x74c0fc,belly:0xd0ebff,pants:0x0b7285,sole:0x364fc7},
+  pink:{body:0xe64980,dark:0xa61e4d,leaf:0xf783ac,belly:0xffdeeb,pants:0x7048e8,sole:0xc2255c},
+  orange:{body:0xf76707,dark:0xd9480f,leaf:0xff922b,belly:0xffe8cc,pants:0x2b8a3e,sole:0xe8590c},
+};
+function normalizedAvatarGender(value){return value==='female'?'female':'male';}
+function normalizedAvatarClothes(value){return AVATAR_CLOTHES[value]?value:'green';}
+function readAvatarSettings(){return {
+  gender:normalizedAvatarGender(localStorage.getItem('cleanGarden.avatar.gender')),
+  clothes:normalizedAvatarClothes(localStorage.getItem('cleanGarden.avatar.clothes')),
+};}
+let avatarSettings=readAvatarSettings();
+function saveAvatarSettings(settings=avatarSettings){
+  avatarSettings={gender:normalizedAvatarGender(settings.gender),clothes:normalizedAvatarClothes(settings.clothes)};
+  localStorage.setItem('cleanGarden.avatar.gender',avatarSettings.gender);
+  localStorage.setItem('cleanGarden.avatar.clothes',avatarSettings.clothes);
+  return avatarSettings;
+}
+function readScoreMemory(){
+  return {
+    last:Math.max(0,Number(localStorage.getItem('cleanGarden.score.last'))||0),
+    best:Math.max(0,Number(localStorage.getItem('cleanGarden.score.best'))||0),
+    total:Math.max(0,Number(localStorage.getItem('cleanGarden.score.total'))||0),
+  };
+}
+function updateSavedScoreUi(memory=readScoreMemory()){
+  const el=$('savedScore');
+  if(el)el.textContent=tr('savedScore',memory);
+}
+function rememberScore(score){
+  const safe=Math.max(0,Math.round(Number(score)||0));
+  const prev=readScoreMemory();
+  const memory={last:safe,best:Math.max(prev.best,safe),total:prev.total+safe};
+  localStorage.setItem('cleanGarden.score.last',String(memory.last));
+  localStorage.setItem('cleanGarden.score.best',String(memory.best));
+  localStorage.setItem('cleanGarden.score.total',String(memory.total));
+  updateSavedScoreUi(memory);
+  return memory;
+}
 function tr(k,...args){const pack=ACTIVE_I18N[activeLocale]||ACTIVE_I18N.en;const v=pack[k]??ACTIVE_I18N.en[k]??k;return typeof v==='function'?v(...args):v;}
 function hasTouchInput(){return 'ontouchstart' in window||navigator.maxTouchPoints>0;}
 function raceModeActive(){return currentActiveModeDefinition().simultaneous===true;}
@@ -84,6 +126,11 @@ function applyLocale(locale=activeLocale){
   $('howto').innerHTML=tr('howto');$('startBtn').textContent=tr('start');$('keysHint').innerHTML=controlsHelpText();
   $('modeSelect').setAttribute('aria-label',tr('mode'));$('singleModeBtn').textContent=tr('singlePlayer');$('raceModeBtn').textContent=tr('twoPlayerRace');
   $('singleModeBtn').setAttribute('aria-label',tr('singlePlayer'));$('raceModeBtn').setAttribute('aria-label',tr('twoPlayerRace'));
+  $('genderLabel').textContent=tr('gender');$('clothesLabel').textContent=tr('clothes');
+  $('genderSelect').options[0].textContent=tr('genderMale');$('genderSelect').options[1].textContent=tr('genderFemale');
+  $('clothesSelect').options[0].textContent=tr('clothesGreen');$('clothesSelect').options[1].textContent=tr('clothesBlue');
+  $('clothesSelect').options[2].textContent=tr('clothesPink');$('clothesSelect').options[3].textContent=tr('clothesOrange');
+  $('genderSelect').setAttribute('aria-label',tr('gender'));$('clothesSelect').setAttribute('aria-label',tr('clothes'));updateSavedScoreUi();
   $('uiLevelLabel').textContent=tr('level');$('cleanlinessLabel').textContent=tr('clean');$('prompt').textContent=plantPromptText();
   $('exitBtn').textContent=tr('exit');$('pauseBtn').textContent=tr('pause');$('pauseTitle').textContent=tr('paused');
   $('resumeBtn').textContent=tr('resume');$('retryBtn').textContent=tr('retry');$('menuBtn').textContent=tr('menu');$('nextBtn').textContent=tr('next');
@@ -366,10 +413,10 @@ function buildNaqi(){
 
   // --- soft rounded body ---
   const body=new THREE.Mesh(new THREE.SphereGeometry(.54,24,20),mat(GREEN));
-  body.scale.set(1,1.28,.98);body.position.y=.86;body.castShadow=true;g.add(body);
+  body.userData.avatarRole='body';body.userData.avatarPart='torso';body.scale.set(1,1.28,.98);body.position.y=.86;body.castShadow=true;g.add(body);
   // lighter belly
   const belly=new THREE.Mesh(new THREE.SphereGeometry(.42,22,18),mat(0xd8f3c4));
-  belly.scale.set(.78,1.05,.52);belly.position.set(0,.8,.3);g.add(belly);
+  belly.userData.avatarRole='belly';belly.scale.set(.78,1.05,.52);belly.position.set(0,.8,.3);g.add(belly);
   // two little buttons
   [.02,-.14].forEach(y=>{const bt=new THREE.Mesh(new THREE.SphereGeometry(.035,10,10),mat(0xffd166));
     bt.position.set(0,.88+y,.42);g.add(bt);});
@@ -406,17 +453,17 @@ function buildNaqi(){
 
   // --- explorer cap with leaf sprout ---
   const cap=new THREE.Mesh(new THREE.SphereGeometry(.48,26,22,0,Math.PI*2,0,Math.PI/2),mat(GREEN_D));
-  cap.position.y=1.86;g.add(cap);
+  cap.userData.avatarRole='dark';cap.position.y=1.86;g.add(cap);
   const capBand=new THREE.Mesh(new THREE.TorusGeometry(.47,.045,12,26),mat(0x14532d));
-  capBand.position.y=1.86;capBand.rotation.x=Math.PI/2;g.add(capBand);
+  capBand.userData.avatarRole='dark';capBand.position.y=1.86;capBand.rotation.x=Math.PI/2;g.add(capBand);
   const brim=new THREE.Mesh(new THREE.CylinderGeometry(.22,.22,.05,20),mat(GREEN_D));
-  brim.position.set(0,1.85,.46);brim.scale.set(1.5,1,1);g.add(brim);
+  brim.userData.avatarRole='dark';brim.position.set(0,1.85,.46);brim.scale.set(1.5,1,1);g.add(brim);
   const sproutStem=new THREE.Mesh(new THREE.CylinderGeometry(.02,.026,.18,6),mat(0x2f7d3a));
   sproutStem.position.set(0,2.28,0);g.add(sproutStem);
   const sl1=new THREE.Mesh(new THREE.SphereGeometry(.1,16,16),mat(LEAF));
-  sl1.scale.set(1.4,.4,1);sl1.position.set(.07,2.38,0);sl1.rotation.z=.6;g.add(sl1);
+  sl1.userData.avatarRole='leaf';sl1.scale.set(1.4,.4,1);sl1.position.set(.07,2.38,0);sl1.rotation.z=.6;g.add(sl1);
   const sl2=new THREE.Mesh(new THREE.SphereGeometry(.085,16,16),mat(LEAF));
-  sl2.scale.set(1.4,.4,1);sl2.position.set(-.06,2.34,0);sl2.rotation.z=-.7;g.add(sl2);
+  sl2.userData.avatarRole='leaf';sl2.scale.set(1.4,.4,1);sl2.position.set(-.06,2.34,0);sl2.rotation.z=-.7;g.add(sl2);
 
   // --- backpack with sapling ---
   const pack=new THREE.Mesh(new THREE.BoxGeometry(.5,.55,.26),mat(0xf76707));
@@ -437,7 +484,7 @@ function buildNaqi(){
   [-.58,.58].forEach(x=>{
     const arm=new THREE.Group();arm.position.set(x,1.18,0);
     const sleeve=new THREE.Mesh(new THREE.CylinderGeometry(.11,.1,.42,16),mat(GREEN));
-    sleeve.position.y=-.22;sleeve.castShadow=true;arm.add(sleeve);
+    sleeve.userData.avatarRole='body';sleeve.position.y=-.22;sleeve.castShadow=true;arm.add(sleeve);
     const hand=new THREE.Mesh(new THREE.SphereGeometry(.14,18,18),mat(SKIN));
     hand.position.y=-.48;hand.castShadow=true;arm.add(hand);
     g.add(arm);arms.push(arm);
@@ -448,11 +495,11 @@ function buildNaqi(){
   [-.22,.22].forEach(x=>{
     const leg=new THREE.Group();leg.position.set(x,.5,0);
     const pant=new THREE.Mesh(new THREE.CylinderGeometry(.14,.12,.42,16),mat(0x2b7fd4));
-    pant.position.y=-.21;pant.castShadow=true;leg.add(pant);
+    pant.userData.avatarRole='pants';pant.position.y=-.21;pant.castShadow=true;leg.add(pant);
     const shoe=new THREE.Mesh(new THREE.SphereGeometry(.15,18,16),mat(0xffffff));
     shoe.scale.set(1,.65,1.5);shoe.position.set(0,-.44,.08);shoe.castShadow=true;leg.add(shoe);
     const sole=new THREE.Mesh(new THREE.SphereGeometry(.15,18,16),mat(0xe03131));
-    sole.scale.set(1.02,.3,1.52);sole.position.set(0,-.5,.08);leg.add(sole);
+    sole.userData.avatarRole='sole';sole.scale.set(1.02,.3,1.52);sole.position.set(0,-.5,.08);leg.add(sole);
     g.add(leg);legs.push(leg);
   });
 
@@ -470,6 +517,42 @@ function tintNaqiBlue(g){
   g.traverse(o=>{
     if(o.isMesh&&swaps.has(o.material))o.material=swaps.get(o.material);
   });
+  return g;
+}
+
+function applyAvatarStyle(g,settings=avatarSettings){
+  const saved=saveAvatarSettings(settings);
+  const colors=AVATAR_CLOTHES[saved.clothes]||AVATAR_CLOTHES.green;
+  g.traverse(o=>{
+    if(!o.isMesh)return;
+    if(o.userData.avatarRole==='body')o.material=mat(colors.body);
+    if(o.userData.avatarRole==='dark')o.material=mat(colors.dark);
+    if(o.userData.avatarRole==='leaf')o.material=mat(colors.leaf);
+    if(o.userData.avatarRole==='belly')o.material=mat(colors.belly);
+    if(o.userData.avatarRole==='pants')o.material=mat(colors.pants);
+    if(o.userData.avatarRole==='sole')o.material=mat(colors.sole);
+    if(o.userData.avatarPart==='torso')o.scale.y=saved.gender==='female'?1.18:1.28;
+  });
+  if(g.userData.avatarExtra){
+    const old=g.userData.avatarExtra;
+    g.remove(old);
+    old.traverse(o=>{if(o.isMesh&&o.geometry)o.geometry.dispose();});
+  }
+  const extra=new THREE.Group();
+  if(saved.gender==='female'){
+    const hairMat=mat(0x5c3a1e);
+    [-.36,.36].forEach(x=>{
+      const bun=new THREE.Mesh(new THREE.SphereGeometry(.14,14,12),hairMat);
+      bun.position.set(x,1.88,.02);bun.castShadow=true;extra.add(bun);
+    });
+    const skirt=new THREE.Mesh(new THREE.ConeGeometry(.6,.34,24),mat(colors.dark));
+    skirt.userData.avatarRole='dark';skirt.position.y=.55;skirt.rotation.y=Math.PI/8;skirt.castShadow=true;extra.add(skirt);
+  }else{
+    const scarf=new THREE.Mesh(new THREE.TorusGeometry(.38,.035,10,24),mat(colors.leaf));
+    scarf.userData.avatarRole='leaf';scarf.position.y=1.34;scarf.rotation.x=Math.PI/2;extra.add(scarf);
+  }
+  g.userData.avatarExtra=extra;
+  g.add(extra);
   return g;
 }
 
@@ -673,6 +756,7 @@ function createActiveGameplayState(){
   };
 }
 const playerMesh=buildNaqi();
+applyAvatarStyle(playerMesh,avatarSettings);
 scene.add(playerMesh);
 const player2Mesh=buildNaqi();
 tintNaqiBlue(player2Mesh);
@@ -985,6 +1069,7 @@ return {
       }else this.addScore(completionBonus);
       const raceWinner=this.isRace()?(this.playerScores[0]===this.playerScores[1]?'Tie':(this.playerScores[0]>this.playerScores[1]?'P1 wins':'P2 wins')):null;
       const result=recordBestTime(this.level,this.elapsed);
+      rememberScore(this.score);
       $('stScore').textContent=this.score;
       $('stTrees').textContent=this.trees;
       $('stTrash').textContent=this.trashGot;
@@ -1347,6 +1432,14 @@ function setActiveMode(mode){
     btn.setAttribute('aria-pressed',String(selected));
   });
 }
+function syncAvatarControls(){
+  $('genderSelect').value=avatarSettings.gender;
+  $('clothesSelect').value=avatarSettings.clothes;
+}
+function setAvatarFromMenu(){
+  applyAvatarStyle(playerMesh,{gender:$('genderSelect').value,clothes:$('clothesSelect').value});
+  syncAvatarControls();
+}
 $('startBtn').onclick=()=>{
   Snd.init();
   requestFullscreen();
@@ -1369,6 +1462,8 @@ $('nextBtn').onclick=()=>{
   Game.startLevel(Game.level+1);
 };
 $('languageSelect').onchange=e=>applyLocale(e.target.value);
+$('genderSelect').onchange=setAvatarFromMenu;
+$('clothesSelect').onchange=setAvatarFromMenu;
 document.querySelectorAll('.modeOption').forEach(btn=>{
   btn.onclick=()=>{
     if(btn.getAttribute('aria-disabled')==='true')return;
@@ -1381,6 +1476,8 @@ $('retryBtn').onclick=()=>retryLevel();
 $('menuBtn').onclick=()=>exitGame();
 applyLocale(activeLocale);
 setActiveMode(activeMode);
+syncAvatarControls();
+updateSavedScoreUi();
 
 /* ---------------- Browser LLM/agent hook ---------------- */
 const agentIds=new WeakMap();

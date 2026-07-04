@@ -54,6 +54,23 @@
       <button type="button" class="modeOption active" id="singleModeBtn" data-mode="single-player" aria-label="Single player mode" aria-pressed="true">Single Player</button>
       <button type="button" class="modeOption" id="raceModeBtn" data-mode="two-player-race" aria-label="Two player race mode" aria-pressed="false">Two Player Race</button>
     </div>
+    <div class="avatarPick" id="avatarPick">
+      <label for="genderSelect"><span id="genderLabel">Avatar</span>
+        <select id="genderSelect" aria-label="Avatar gender">
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+      </label>
+      <label for="clothesSelect"><span id="clothesLabel">Clothes</span>
+        <select id="clothesSelect" aria-label="Avatar clothes">
+          <option value="green">Green</option>
+          <option value="blue">Blue</option>
+          <option value="pink">Pink</option>
+          <option value="orange">Orange</option>
+        </select>
+      </label>
+    </div>
+    <div class="savedScore" id="savedScore"></div>
     <div class="howto" id="howto"></div>
     <button class="bigbtn" id="startBtn" aria-label="Start adventure">🚀 Start Adventure</button>
     <div id="keysHint"></div>

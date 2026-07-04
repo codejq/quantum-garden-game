@@ -105,6 +105,11 @@
   .langPick{display:inline-flex;align-items:center;gap:8px;background:#eef5e6;border:3px solid var(--deep);
     border-radius:14px;padding:5px 10px;margin:0 0 10px;font-weight:900}
   .langPick select{font:inherit;font-weight:800;border:0;background:transparent;color:var(--ink);outline:none}
+  .avatarPick{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 12px}
+  .avatarPick label{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#eef5e6;border:3px solid var(--deep);
+    border-radius:14px;padding:5px 10px;font-weight:900;min-width:0}
+  .avatarPick select{font:inherit;font-size:13px;font-weight:800;border:0;background:transparent;color:var(--ink);outline:none;min-width:0}
+  .savedScore{font-size:13px;font-weight:900;color:#4f6246;margin:0 0 10px}
   .modePick{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:0 0 12px}
   .modeOption{font:inherit;font-size:14px;font-weight:900;color:var(--ink);background:#eef5e6;border:3px solid var(--deep);
     border-radius:14px;padding:6px 12px;cursor:pointer;box-shadow:0 3px 0 rgba(0,0,0,.22)}
@@ -126,3 +131,4 @@
   .conf{position:fixed;top:-16px;width:10px;height:14px;z-index:30;pointer-events:none;animation:fall linear forwards}
   @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
   #keysHint{font-size:12px;color:#7d8a70;margin-top:10px;font-weight:700}
+  @media (max-width:460px){.avatarPick{grid-template-columns:1fr}.avatarPick label{justify-content:center}}
