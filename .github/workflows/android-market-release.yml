@@ -1,4 +1,4 @@
-name: Android Market Release Postponed Draft
+name: Android Market Release
 
 on:
   push:
