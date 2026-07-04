@@ -1,17 +1,17 @@
 export const PLAYER_INPUT_MAPS = {
   player1: {
-    moveUp: ['KeyW', 'ArrowUp'],
-    moveDown: ['KeyS', 'ArrowDown'],
-    moveLeft: ['KeyA', 'ArrowLeft'],
-    moveRight: ['KeyD', 'ArrowRight'],
-    plant: ['Space', 'KeyE'],
+    moveUp: ['KeyW'],
+    moveDown: ['KeyS'],
+    moveLeft: ['KeyA'],
+    moveRight: ['KeyD'],
+    plant: ['Space'],
   },
   player2: {
-    moveUp: ['KeyI', 'Numpad8'],
-    moveDown: ['KeyK', 'Numpad5'],
-    moveLeft: ['KeyJ', 'Numpad4'],
-    moveRight: ['KeyL', 'Numpad6'],
-    plant: ['Enter', 'Numpad0'],
+    moveUp: ['ArrowUp'],
+    moveDown: ['ArrowDown'],
+    moveLeft: ['ArrowLeft'],
+    moveRight: ['ArrowRight'],
+    plant: ['Enter', 'NumpadEnter'],
   },
 };
 
