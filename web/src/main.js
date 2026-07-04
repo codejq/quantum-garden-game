@@ -155,8 +155,9 @@ scene.add(sun);
 const COL={skyClean:new THREE.Color(0x8ecae6),skyDirty:new THREE.Color(0x9aa38a),
   grassClean:new THREE.Color(0x59b25f),grassDirty:new THREE.Color(0x8a8f57),
   fogClean:new THREE.Color(0xbfe3f2),fogDirty:new THREE.Color(0xaab098)};
-scene.background=COL.skyDirty.clone();
-scene.fog=new THREE.Fog(COL.fogDirty.clone(),60,160);
+let worldColors=COL;
+scene.background=worldColors.skyDirty.clone();
+scene.fog=new THREE.Fog(worldColors.fogDirty.clone(),60,160);
 
 /* ---------------- Materials helper ---------------- */
 const MAT={};
@@ -292,27 +293,62 @@ function scatter(n,maker,rMin=6,rMax=WORLD_R+6,collect){
 const flowers=[];
 const clouds=[];
 const worldObjects=[];
+const WORLD_THEMES=[
+  {id:'meadow',grassClean:0x59b25f,grassDirty:0x8a8f57,skyClean:0x8ecae6,skyDirty:0x9aa38a,fogClean:0xbfe3f2,fogDirty:0xaab098,sea:0x2f7fb8,sand:0xd9c07a,path:0xb08a5a,rock:0x9aa0a6,flowers:70,shrubs:16,trees:10,clouds:7,treeTypes:['broadleaf','broadleaf','pine','palm'],landmark:'broadleaf'},
+  {id:'pine-forest',grassClean:0x3f8f4e,grassDirty:0x546f45,skyClean:0x9bd6d2,skyDirty:0x778b7d,fogClean:0xcbe7df,fogDirty:0x8c9b88,sea:0x285f7f,sand:0xb8a46a,path:0x7b6747,rock:0x6f7b78,flowers:38,shrubs:28,trees:20,clouds:5,treeTypes:['pine','pine','pine','broadleaf'],landmark:'pine'},
+  {id:'flower-coast',grassClean:0x74b96d,grassDirty:0x9a9861,skyClean:0x93d5ff,skyDirty:0xa7a27c,fogClean:0xd3edf9,fogDirty:0xb4ae8a,sea:0x1f8cc5,sand:0xe8cf86,path:0xc19b62,rock:0xaab0b8,flowers:96,shrubs:12,trees:8,clouds:9,treeTypes:['palm','palm','broadleaf'],landmark:'palm'},
+  {id:'rocky-grove',grassClean:0x6ca65c,grassDirty:0x747353,skyClean:0x9fc5df,skyDirty:0x8b8d80,fogClean:0xcbdce8,fogDirty:0x9b9d91,sea:0x326e9b,sand:0xc7b279,path:0x8a7352,rock:0x7d8187,flowers:44,shrubs:20,trees:14,clouds:6,treeTypes:['broadleaf','pine'],landmark:'broadleaf'},
+  {id:'moon-garden',grassClean:0x5da98f,grassDirty:0x596a78,skyClean:0x8fb8ff,skyDirty:0x687189,fogClean:0xc8dcff,fogDirty:0x7d8499,sea:0x315889,sand:0xc4c1a5,path:0x77728d,rock:0x8c93a4,flowers:62,shrubs:18,trees:12,clouds:10,treeTypes:['pine','broadleaf','palm'],landmark:'pine'},
+];
+function worldThemeForLevel(level){
+  return WORLD_THEMES[(Math.max(1,level)-1)%WORLD_THEMES.length];
+}
+function themeColors(theme){
+  return {
+    skyClean:new THREE.Color(theme.skyClean),skyDirty:new THREE.Color(theme.skyDirty),
+    grassClean:new THREE.Color(theme.grassClean),grassDirty:new THREE.Color(theme.grassDirty),
+    fogClean:new THREE.Color(theme.fogClean),fogDirty:new THREE.Color(theme.fogDirty),
+  };
+}
+function themedTree(theme){
+  const type=pick(theme.treeTypes||['broadleaf']);
+  if(type==='pine')return makePine();
+  if(type==='palm')return makePalm();
+  return makeBroadleaf();
+}
+function applyWorldTheme(theme){
+  worldColors=themeColors(theme);
+  groundMat.color.copy(worldColors.grassDirty);
+  sea.material=mat(theme.sea);
+  sand.material=mat(theme.sand);
+  path.material=mat(theme.path);
+  scene.background.copy(worldColors.skyDirty);
+  scene.fog.color.copy(worldColors.fogDirty);
+}
 
-function buildDecorativeWorld(){
+function buildDecorativeWorld(level=1){
+  const theme=worldThemeForLevel(level);
+  applyWorldTheme(theme);
   flowers.length=0;
   clouds.length=0;
-  worldObjects.push(...scatter(14,()=>{const s=rand(.5,1.6);
-    const m=new THREE.Mesh(new THREE.DodecahedronGeometry(s,0),mat(0x9aa0a6));
+  const decorScale=Math.min(1.7,1+level*.08);
+  worldObjects.push(...scatter(Math.round(14*decorScale),()=>{const s=rand(.5,1.6);
+    const m=new THREE.Mesh(new THREE.DodecahedronGeometry(s,0),mat(theme.rock));
     m.position.y=s*.5;m.castShadow=m.receiveShadow=true;m.scale.y=.7;return m;}));
-  worldObjects.push(...scatter(70,makeFlower,5,WORLD_R+4,flowers));
-  worldObjects.push(...scatter(16,()=>{const g=new THREE.Group();
+  worldObjects.push(...scatter(Math.round(theme.flowers*decorScale),makeFlower,5,WORLD_R+4,flowers));
+  worldObjects.push(...scatter(Math.round(theme.shrubs*decorScale),()=>{const g=new THREE.Group();
     for(let i=0;i<3;i++){const s=rand(.5,.9);
       const b=new THREE.Mesh(new THREE.SphereGeometry(s,8,8),leafMat(pick(GREEN_MID)));
       b.position.set(rand(-.5,.5),s*.7,rand(-.5,.5));b.castShadow=true;g.add(b);}return g;},8));
-  worldObjects.push(...scatter(10,makeTree,20,WORLD_R+5));
-  for(let i=0;i<7;i++){const g=new THREE.Group();
+  worldObjects.push(...scatter(Math.round(theme.trees*decorScale),()=>themedTree(theme),20,WORLD_R+5));
+  for(let i=0;i<Math.round(theme.clouds*decorScale);i++){const g=new THREE.Group();
     for(let j=0;j<4;j++){const s=rand(1.4,3);
       const c=new THREE.Mesh(new THREE.SphereGeometry(s,8,8),
         new THREE.MeshStandardMaterial({color:0xffffff,roughness:1,transparent:true,opacity:.9}));
       c.position.set(j*2.2-3+rand(-.5,.5),rand(-.4,.4),rand(-1,1));g.add(c);}
     g.position.set(rand(-70,70),rand(22,32),rand(-70,70));
     g.userData.spd=rand(.5,1.2);scene.add(g);clouds.push(g);worldObjects.push(g);}
-  const landmark=makeBroadleaf();
+  const landmark=theme.landmark==='pine'?makePine():(theme.landmark==='palm'?makePalm():makeBroadleaf());
   landmark.scale.setScalar(2.4);landmark.position.set(0,0,0);scene.add(landmark);worldObjects.push(landmark);
 }
 
@@ -817,7 +853,7 @@ function recordBestTime(level,seconds){
   }
   return { best:prev, isNew:false, previous:prev };
 }
-buildDecorativeWorld();
+buildDecorativeWorld(1);
 
 /* ---------------- Game state ---------------- */
 function createActiveGameRuntime(state){
@@ -875,13 +911,13 @@ return {
     console.info(`[CleanGarden] level ${n} seed: ${seed}`);
     cleanupLevelAttempt();
     cleanupDecorativeWorld();
-    buildDecorativeWorld();
+    buildDecorativeWorld(n);
     this.level=n;this.converted=0;this.spawned=0;this.spawnTimer=2;this.trees=0;this.nearPatch=null;this.nearPatch2=null;this.plantCd=0;this.plantCd2=0;this.elapsed=0;
     this.score=0;this.playerScores=[0,0];$('uiScore').textContent=this.playerScoreLabel();
     const nTrash=9+n*3, nPatch=2+Math.min(n,5);
     for(let i=0;i<nTrash;i++)spawnTrash();
     for(let i=0;i<nPatch;i++)spawnPatch();
-    this.quota=1+Math.min(n,5);
+    this.quota=Math.min(18,1+n*2);
     this.spawnedBoss=false;
     this.bossDelay=4;
     this.polMax=nTrash*3+nPatch*6+18;
@@ -1095,7 +1131,7 @@ function villainsUpdate(dt){
   }
   if(Game.spawned<Game.quota){
     Game.spawnTimer-=dt;
-    if(Game.spawnTimer<=0){Game.spawnTimer=rand(5,8);Game.spawned++;spawnVillain(false);}
+    if(Game.spawnTimer<=0){Game.spawnTimer=rand(Math.max(2.5,5-Game.level*.2),Math.max(3.6,8-Game.level*.28));Game.spawned++;spawnVillain(false);}
   }
 }
 
@@ -1190,9 +1226,9 @@ function syncGameplayMeshes(dt,time){
 
 function updatePollutionVisuals(){
   const pol=Game.pollution()/100;
-  groundMat.color.lerpColors(COL.grassClean,COL.grassDirty,pol);
-  scene.background.lerpColors(COL.skyClean,COL.skyDirty,pol);
-  scene.fog.color.lerpColors(COL.fogClean,COL.fogDirty,pol);
+  groundMat.color.lerpColors(worldColors.grassClean,worldColors.grassDirty,pol);
+  scene.background.lerpColors(worldColors.skyClean,worldColors.skyDirty,pol);
+  scene.fog.color.lerpColors(worldColors.fogClean,worldColors.fogDirty,pol);
   const pct=Math.round((1-pol)*100);
   $('meterPct').textContent=pct+'%';
   const f=$('meterFill');f.style.width=pct+'%';

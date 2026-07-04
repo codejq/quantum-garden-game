@@ -9,7 +9,7 @@ test('active level start tears down previous gameplay objects', () => {
   assert.match(source, /Game.state\.trash\.forEach\(t=>removeAttemptObject\(trashMesh\(t\)\)\)/);
   assert.match(source, /Game.state\.villains\.forEach\(v=>removeAttemptObject\(villainView\(v\)\?\.mesh\)\)/);
   assert.match(source, /const view=patchView\(p\);\s*removeAttemptObject\(view\?\.tree\);\s*removeAttemptObject\(view\?\.mesh\);/);
-  assert.match(source, /cleanupLevelAttempt\(\);\s*cleanupDecorativeWorld\(\);\s*buildDecorativeWorld\(\);\s*this\.level=n/);
+  assert.match(source, /cleanupLevelAttempt\(\);\s*cleanupDecorativeWorld\(\);\s*buildDecorativeWorld\(n\);\s*this\.level=n/);
 });
 
 test('active gameplay disposes collected and converted objects when they leave play', () => {

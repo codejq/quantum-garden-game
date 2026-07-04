@@ -11,7 +11,10 @@ test('level registry exposes the first level and supports registration', () => {
       .map((level) => level.id),
     ['level-001', 'level-002', 'level-003'],
   );
-  assert.deepEqual(getLevel('level-003').spawnRules, { trash: 18, patches: 5, minionQuota: 4 });
+  assert.deepEqual(getLevel('level-003').spawnRules, { trash: 18, patches: 5, minionQuota: 7 });
+  assert.equal(getLevel('level-001').world.theme, 'meadow');
+  assert.equal(getLevel('level-002').world.theme, 'pine-forest');
+  assert.equal(getLevel('level-003').world.theme, 'flower-coast');
   registerLevel({ id: 'test-level', difficulty: 99 });
   assert.equal(getLevel('test-level').difficulty, 99);
   assert.ok(listLevels().some((level) => level.id === 'level-001'));
@@ -23,7 +26,8 @@ test('level registry generates levels after authored levels', () => {
   assert.equal(generated.id, 'level-004');
   assert.equal(generated.difficulty, 4);
   assert.equal(generated.randomization.generated, true);
-  assert.deepEqual(generated.spawnRules, { trash: 21, patches: 6, minionQuota: 5 });
+  assert.deepEqual(generated.spawnRules, { trash: 21, patches: 6, minionQuota: 9 });
+  assert.equal(generated.world.theme, 'rocky-grove');
   assert.equal(generatedLevel('level-003'), null);
   assert.throws(() => getLevel('bonus-stage'), /Unknown level/);
 });

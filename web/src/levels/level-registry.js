@@ -1,5 +1,5 @@
 import { level001, level002, level003 } from './level-001.js';
-import { cleanupObjectives, levelCounts } from './templates.js';
+import { cleanupObjectives, levelCounts, levelWorld } from './templates.js';
 
 const levels = new Map([
   [level001.id, level001],
@@ -36,9 +36,7 @@ export function generatedLevel(id) {
     id,
     nameKey: 'levels.generated.name',
     difficulty,
-    world: {
-      radius: 42,
-    },
+    world: levelWorld(difficulty),
     objectives: cleanupObjectives(),
     spawnRules: levelCounts(difficulty),
     timer: {

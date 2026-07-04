@@ -1,12 +1,10 @@
-import { cleanupObjectives, levelCounts } from './templates.js';
+import { cleanupObjectives, levelCounts, levelWorld } from './templates.js';
 
 export const level001 = {
   id: 'level-001',
   nameKey: 'levels.level001.name',
   difficulty: 1,
-  world: {
-    radius: 42,
-  },
+  world: levelWorld(1),
   objectives: cleanupObjectives(),
   spawnRules: levelCounts(1),
   timer: {
@@ -29,6 +27,7 @@ export const level002 = {
   id: 'level-002',
   nameKey: 'levels.level002.name',
   difficulty: 2,
+  world: levelWorld(2),
   spawnRules: levelCounts(2),
 };
 
@@ -37,5 +36,6 @@ export const level003 = {
   id: 'level-003',
   nameKey: 'levels.level003.name',
   difficulty: 3,
+  world: levelWorld(3),
   spawnRules: levelCounts(3),
 };
