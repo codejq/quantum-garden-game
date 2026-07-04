@@ -22,6 +22,6 @@ test('Playwright browser harness can call the in-page LLM agent API', () => {
   assert.equal(result.apiVersion, 1);
   assert.equal(result.seed, 'browser-agent-harness');
   assert.equal(result.steps.length, 8);
-  assert.ok(result.steps.every((step) => step.ok));
+  assert.ok(result.steps.every((step) => step.ok), JSON.stringify(result.steps, null, 2));
   assert.equal(typeof result.steps[0].player.x, 'number');
 });

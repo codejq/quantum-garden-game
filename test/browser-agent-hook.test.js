@@ -17,3 +17,9 @@ test('browser agent hook is scoped to gameplay and reports demo determinism limi
   assert.doesNotMatch(agentSource, /__TAURI__|invoke\(|fs\.|child_process/);
   assert.match(agentSource, /rate_limited/);
 });
+
+test('browser agent fixed-frame step bypasses wall-clock action rate limit', () => {
+  assert.match(source, /function actAgent\(action=\{\},options=\{\}\)/);
+  assert.match(source, /if\(!options\.skipRateLimit\)/);
+  assert.match(source, /actAgent\(action,\{ skipRateLimit:true \}\)/);
+});

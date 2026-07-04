@@ -1559,10 +1559,12 @@ function moveTowardAgent(target,durationMs){
   moveAgent(dx,dz,durationMs);
   return true;
 }
-function actAgent(action={}){
+function actAgent(action={},options={}){
   const now=performance.now();
-  if(now-agentState.lastActAt<agentState.minActMs)return { ok:false, reason:'rate_limited', observation:observeAgent() };
-  agentState.lastActAt=now;
+  if(!options.skipRateLimit){
+    if(now-agentState.lastActAt<agentState.minActMs)return { ok:false, reason:'rate_limited', observation:observeAgent() };
+    agentState.lastActAt=now;
+  }
   const type=action.type||action.action;
   if(type==='move')moveAgent(Number(action.x)||0,Number(action.z)||Number(action.y)||0,action.durationMs);
   else if(type==='moveToward'){
@@ -1602,7 +1604,7 @@ function resetAgent(options={}){
   return { ok:true, seedApplied:!!options.seed, observation:observeAgent() };
 }
 function stepAgent(action){
-  const result=action?actAgent(action):{ ok:true, observation:observeAgent() };
+  const result=action?actAgent(action,{ skipRateLimit:true }):{ ok:true, observation:observeAgent() };
   const frames=clamp(Number(action&&action.frames)||1,1,agentState.maxStepFrames);
   for(let i=0;i<frames;i++)tickGameplay(1/60,clock.elapsedTime+i/60);
   envUpdate(1/60,clock.elapsedTime);
