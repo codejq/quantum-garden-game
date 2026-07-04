@@ -37,7 +37,7 @@ Use this checklist for each release candidate. The current verified release targ
 - Build command: `npm run tauri:android:build`.
 - Dev command: `npm run tauri:android:dev`.
 - Latest host check: symbolic links can now be created on this Windows host.
-- Latest build attempts: `npm run tauri:android:build` and `src-tauri/gen/android/gradlew.bat :app:assembleUniversalDebug` on 2026-07-04 advanced into Android packaging intermediates but timed out before producing an APK or AAB.
+- Latest build attempts: `npm run tauri:android:build` and `src-tauri/gen/android/gradlew.bat :app:assembleUniversalDebug` on 2026-07-04 advanced into Android packaging intermediates but timed out before producing an APK or AAB. A follow-up 15-minute `:app:assembleUniversalDebug --no-daemon --stacktrace` attempt also timed out with no APK/AAB emitted.
 - Release remains blocked until the Android Gradle package build completes and a WebView smoke run is verified on an emulator or device.
 - Do not release until emulator and physical-device smoke tests pass.
 - No Android device is connected and `emulator -list-avds` currently returns no configured AVD.
