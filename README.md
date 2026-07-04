@@ -4,6 +4,8 @@ Clean Garden is an offline 3D garden cleanup and tree planting game credited to 
 
 The game is built with plain browser JavaScript, local Three.js r128 assets, Vite, and Tauri v2. It supports desktop, mobile touch, keyboard, mouse, single-player, simultaneous two-player play, localized UI, seeded level attempts, score memory, avatar customization, and an LLM-friendly browser control hook.
 
+Project page: [https://codejq.github.io/quantum-garden-game/](https://codejq.github.io/quantum-garden-game/)
+
 Live web build: [https://codejq.github.io/quantum-garden-game/game/](https://codejq.github.io/quantum-garden-game/game/)
 
 ![Clean Garden gameplay screenshot](docs/images/clean-garden-gameplay.png)
