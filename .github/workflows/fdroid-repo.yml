@@ -129,7 +129,7 @@ jobs:
         run: |
           cat > fdroid-work/metadata/com.quantumbilling.cleangarding.yml << 'EOF'
           Categories:
-            - Games
+            - Casual Game
           License: MIT
           WebSite: https://qb-solutions.us/
           SourceCode: https://github.com/${{ github.repository }}
@@ -211,7 +211,7 @@ jobs:
           mkdir -p fdroiddata-submission/metadata
           cat > fdroiddata-submission/metadata/com.quantumbilling.cleangarding.yml << 'EOF'
           Categories:
-            - Games
+            - Casual Game
           License: MIT
           AuthorName: Quantum Billing LLC
           WebSite: https://qb-solutions.us/
@@ -246,8 +246,8 @@ jobs:
               gradle:
                 - yes
 
-          AutoUpdateMode: Version
-          UpdateCheckMode: Tags
+          AutoUpdateMode: None
+          UpdateCheckMode: None
           CurrentVersion: 0.1.0
           CurrentVersionCode: 1000
           EOF
