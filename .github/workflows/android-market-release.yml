@@ -49,30 +49,51 @@ jobs:
         run: npm ci
 
       - name: Decode Android release keystore
+        id: signing
         env:
           KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 || secrets.KEYSTORE_BASE64 }}
           KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD || secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS || secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD || secrets.KEY_PASSWORD }}
         run: |
-          if [ -z "$KEYSTORE_BASE64" ] || [ -z "$KEYSTORE_PASSWORD" ]; then
-            echo "Android signing secrets are missing. Configure ANDROID_KEYSTORE_BASE64/ANDROID_KEYSTORE_PASSWORD or KEYSTORE_BASE64/KEYSTORE_PASSWORD."
+          KS_PATH="$GITHUB_WORKSPACE/clean-garden-release.jks"
+          if [ -n "$KEYSTORE_BASE64" ] && [ -n "$KEYSTORE_PASSWORD" ] && [ -n "$KEY_ALIAS" ] && [ -n "$KEY_PASSWORD" ]; then
+            printf '%s' "$KEYSTORE_BASE64" | tr -d ' \r\n' | base64 --decode > /tmp/clean-garden-orig.keystore
+            keytool -importkeystore \
+              -srckeystore /tmp/clean-garden-orig.keystore \
+              -srcstorepass "$KEYSTORE_PASSWORD" \
+              -destkeystore "$KS_PATH" \
+              -deststoretype JKS \
+              -deststorepass "$KEYSTORE_PASSWORD" \
+              -noprompt
+          elif [ -z "$KEYSTORE_BASE64" ] && [ -z "$KEYSTORE_PASSWORD" ] && [ -z "$KEY_ALIAS" ] && [ -z "$KEY_PASSWORD" ]; then
+            echo "Android signing secrets are missing. Generating a temporary CI release key for this release only."
+            KEYSTORE_PASSWORD="temporary-clean-garden-release"
+            KEY_ALIAS="clean-garden"
+            KEY_PASSWORD="$KEYSTORE_PASSWORD"
+            keytool -genkeypair \
+              -keystore "$KS_PATH" \
+              -storetype JKS \
+              -alias "$KEY_ALIAS" \
+              -keyalg RSA \
+              -keysize 2048 \
+              -validity 10000 \
+              -dname "CN=Clean Garden Temporary Release" \
+              -storepass "$KEYSTORE_PASSWORD" \
+              -keypass "$KEY_PASSWORD"
+          else
+            echo "Android signing secrets are partially configured. Provide all four signing values or none to use the temporary fallback."
             exit 1
           fi
-          printf '%s' "$KEYSTORE_BASE64" | tr -d ' \r\n' | base64 --decode > /tmp/clean-garden-orig.keystore
-          keytool -importkeystore \
-            -srckeystore /tmp/clean-garden-orig.keystore \
-            -srcstorepass "$KEYSTORE_PASSWORD" \
-            -destkeystore "$GITHUB_WORKSPACE/clean-garden-release.jks" \
-            -deststoretype JKS \
-            -deststorepass "$KEYSTORE_PASSWORD" \
-            -noprompt
+          {
+            echo "ANDROID_KEYSTORE_PATH=$KS_PATH"
+            echo "ANDROID_KEYSTORE_PASSWORD=$KEYSTORE_PASSWORD"
+            echo "ANDROID_KEY_ALIAS=$KEY_ALIAS"
+            echo "ANDROID_KEY_PASSWORD=$KEY_PASSWORD"
+          } >> "$GITHUB_ENV"
 
       - name: Build signed Android APK and AAB
         run: npm run tauri:android:build
-        env:
-          ANDROID_KEYSTORE_PATH: ${{ github.workspace }}/clean-garden-release.jks
-          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD || secrets.KEYSTORE_PASSWORD }}
-          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS || secrets.KEY_ALIAS }}
-          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD || secrets.KEY_PASSWORD }}
 
       - name: Collect release artifacts
         run: |

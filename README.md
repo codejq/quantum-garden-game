@@ -77,6 +77,8 @@ Android signing:
 
 The Android release workflow also accepts the legacy names from the copied workflow: `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, and `KEY_PASSWORD`.
 
+If Android signing secrets are absent, CI generates a temporary release key so a first APK can still be produced. Configure real signing secrets before relying on app updates, because Android requires every future update to use the same signing key.
+
 Google Play publishing:
 
 - `GOOGLE_PLAY_JSON_KEY`: Google Play service account JSON.
@@ -85,6 +87,8 @@ F-Droid repository signing:
 
 - `FDROID_KEYSTORE_BASE64`: base64 encoded F-Droid repo keystore.
 - `FDROID_KEYSTORE_PASS`: F-Droid repo keystore password.
+
+If F-Droid repo signing secrets are absent, CI generates a temporary repo key for the current publication. Configure the real F-Droid repo key before giving the repo URL to users.
 
 The Android package id and iOS bundle id are `com.quantumbilling.cleangarding`.
 

@@ -52,26 +52,44 @@ jobs:
           FDROID_B64: ${{ secrets.FDROID_KEYSTORE_BASE64 }}
           FDROID_PASS_RAW: ${{ secrets.FDROID_KEYSTORE_PASS }}
         run: |
+          KS_PATH="$GITHUB_WORKSPACE/fdroid-work/keystore.jks"
           FDROID_PASS=$(printf '%s' "$FDROID_PASS_RAW" | tr -d '\r\n')
-          printf '%s' "$FDROID_B64" | tr -d ' \r\n' | base64 --decode > /tmp/fdroid-orig.jks
-
-          keytool -importkeystore \
-            -srckeystore /tmp/fdroid-orig.jks \
-            -srcstoretype PKCS12 \
-            -srcstorepass "$FDROID_PASS" \
-            -destkeystore "$GITHUB_WORKSPACE/fdroid-work/keystore.jks" \
-            -deststoretype JKS \
-            -deststorepass "$FDROID_PASS" \
-            -noprompt
-          rm -f /tmp/fdroid-orig.jks
+          if [ -n "$FDROID_B64" ] && [ -n "$FDROID_PASS" ]; then
+            printf '%s' "$FDROID_B64" | tr -d ' \r\n' | base64 --decode > /tmp/fdroid-orig.jks
+            keytool -importkeystore \
+              -srckeystore /tmp/fdroid-orig.jks \
+              -srcstoretype PKCS12 \
+              -srcstorepass "$FDROID_PASS" \
+              -destkeystore "$KS_PATH" \
+              -deststoretype JKS \
+              -deststorepass "$FDROID_PASS" \
+              -noprompt
+            rm -f /tmp/fdroid-orig.jks
+          elif [ -z "$FDROID_B64" ] && [ -z "$FDROID_PASS" ]; then
+            echo "F-Droid repo signing secrets are missing. Generating a temporary CI repo key for this release only."
+            FDROID_PASS="temporary-clean-garden-fdroid"
+            keytool -genkeypair \
+              -keystore "$KS_PATH" \
+              -storetype JKS \
+              -alias fdroid \
+              -keyalg RSA \
+              -keysize 4096 \
+              -sigalg SHA256withRSA \
+              -validity 10000 \
+              -dname "CN=Clean Garden Temporary F-Droid Repo" \
+              -storepass "$FDROID_PASS" \
+              -keypass "$FDROID_PASS"
+          else
+            echo "F-Droid repo signing secrets are partially configured. Provide both FDROID_KEYSTORE_BASE64 and FDROID_KEYSTORE_PASS or neither."
+            exit 1
+          fi
+          echo "FDROID_KEYSTORE_PASS_EFFECTIVE=$FDROID_PASS" >> "$GITHUB_ENV"
 
           keytool -list \
-            -keystore "$GITHUB_WORKSPACE/fdroid-work/keystore.jks" \
+            -keystore "$KS_PATH" \
             -storepass "$FDROID_PASS" 2>&1 | grep -E "Keystore type|Your keystore contains|Alias"
 
       - name: Write fdroid config
-        env:
-          PASS: ${{ secrets.FDROID_KEYSTORE_PASS }}
         run: |
           REPO_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/fdroid/repo"
           KS_PATH="$GITHUB_WORKSPACE/fdroid-work/keystore.jks"
@@ -81,8 +99,8 @@ jobs:
           repo_description: "Clean Garden - offline 3D garden cleanup game"
           archive_older: 5
           keystore: "${KS_PATH}"
-          keystorepass: "${PASS}"
-          keypass: "${PASS}"
+          keystorepass: "${FDROID_KEYSTORE_PASS_EFFECTIVE}"
+          keypass: "${FDROID_KEYSTORE_PASS_EFFECTIVE}"
           repo_keyalias: fdroid
           keydname: "CN=Clean Garden F-Droid Repo"
           EOF
