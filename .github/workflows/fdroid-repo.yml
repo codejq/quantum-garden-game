@@ -208,7 +208,8 @@ jobs:
       - name: Prepare official fdroiddata metadata
         if: steps.fdroid_secrets.outputs.configured == 'true'
         run: |
-          mkdir -p fdroiddata-submission/metadata
+          mkdir -p fdroiddata-submission/metadata/com.quantumbilling.cleangarding/en-US
+          echo "Offline 3D garden cleanup game" > fdroiddata-submission/metadata/com.quantumbilling.cleangarding/en-US/summary.txt
           cat > fdroiddata-submission/metadata/com.quantumbilling.cleangarding.yml << 'EOF'
           Categories:
             - Casual Game
@@ -220,7 +221,6 @@ jobs:
           Changelog: https://github.com/${{ github.repository }}/releases
 
           AutoName: Clean Garden
-          Summary: Offline 3D garden cleanup game
           Description: |-
             Clean Garden is an offline 3D garden cleanup and tree planting game
             by Quantum Billing LLC. It supports single-player and simultaneous
@@ -291,9 +291,11 @@ jobs:
           git fetch upstream master
           git checkout -B "$BRANCH" upstream/master
           cp ../fdroiddata-submission/metadata/com.quantumbilling.cleangarding.yml metadata/com.quantumbilling.cleangarding.yml
+          rm -rf metadata/com.quantumbilling.cleangarding
+          cp -R ../fdroiddata-submission/metadata/com.quantumbilling.cleangarding metadata/com.quantumbilling.cleangarding
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add metadata/com.quantumbilling.cleangarding.yml
+          git add metadata/com.quantumbilling.cleangarding.yml metadata/com.quantumbilling.cleangarding
 
           if git diff --staged --quiet; then
             echo "Official F-Droid metadata branch is already up-to-date."
