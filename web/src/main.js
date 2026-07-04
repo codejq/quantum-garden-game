@@ -975,7 +975,7 @@ function currentCameraOffset(){
 camera.position.copy(currentCameraOffset());
 
 function playerInputVector(playerIndex){
-  let ix=0,iz=0;
+  let ix=0,iz=0,worldX=0,worldZ=0;
   if(playerIndex===1){
     if(keys.ArrowUp)iz-=1;
     if(keys.ArrowDown)iz+=1;
@@ -987,19 +987,26 @@ function playerInputVector(playerIndex){
     if(keys.KeyA||(!Game.isRace()&&keys.ArrowLeft))ix-=1;
     if(keys.KeyD||(!Game.isRace()&&keys.ArrowRight))ix+=1;
     ix+=joy.x;iz+=joy.y;
-    if(performance.now()<agentInput.until){ix+=agentInput.x;iz+=agentInput.z;}
+    if(performance.now()<agentInput.until){worldX+=agentInput.x;worldZ+=agentInput.z;}
     else{agentInput.x=0;agentInput.z=0;}
     if(ix||iz)mouseMoveTarget.active=false;
     if(mouseMoveTarget.active){
       const dx=mouseMoveTarget.pos.x-Game.state.player.pos.x,dz=mouseMoveTarget.pos.z-Game.state.player.pos.z;
       const dist=Math.hypot(dx,dz);
       if(dist<.45)mouseMoveTarget.active=false;
-      else{ix+=dx/dist;iz+=dz/dist;}
+      else{worldX+=dx/dist;worldZ+=dz/dist;}
     }
   }
   const L=Math.hypot(ix,iz);
   if(L>1){ix/=L;iz/=L;}
-  return {ix,iz};
+  if(ix||iz){
+    const yaw=cameraState.mode==='top'?0:cameraState.yaw;
+    worldX+=ix*Math.cos(yaw)+iz*Math.sin(yaw);
+    worldZ+=-ix*Math.sin(yaw)+iz*Math.cos(yaw);
+  }
+  const WL=Math.hypot(worldX,worldZ);
+  if(WL>1){worldX/=WL;worldZ/=WL;}
+  return {ix:worldX,iz:worldZ};
 }
 function updatePlayerState(player,dt,playerIndex=0){
   const {ix,iz}=playerInputVector(playerIndex);

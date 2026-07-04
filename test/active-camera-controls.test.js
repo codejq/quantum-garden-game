@@ -54,6 +54,14 @@ test('active camera supports persisted follow, close, and top-down views', () =>
   assert.match(mainSource, /Math\.sin\(cameraState\.yaw\)\*dist/);
 });
 
+test('active movement stays screen-relative when camera perspective changes', () => {
+  assert.match(mainSource, /const yaw=cameraState\.mode==='top'\?0:cameraState\.yaw/);
+  assert.match(mainSource, /worldX\+=ix\*Math\.cos\(yaw\)\+iz\*Math\.sin\(yaw\)/);
+  assert.match(mainSource, /worldZ\+=-ix\*Math\.sin\(yaw\)\+iz\*Math\.cos\(yaw\)/);
+  assert.match(mainSource, /worldX\+=agentInput\.x;worldZ\+=agentInput\.z/);
+  assert.match(mainSource, /worldX\+=dx\/dist;worldZ\+=dz\/dist/);
+});
+
 test('browser agent observation exposes camera metadata and actions', () => {
   assert.match(mainSource, /camera:\{\s*mode:cameraState\.mode/);
   assert.match(mainSource, /actions:\['toggleCamera','resetCamera','setCamera'\]/);
