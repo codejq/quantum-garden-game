@@ -2,6 +2,7 @@
     <style name="Theme.clean_garden" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
         <item name="android:windowSplashScreenBackground">#0B2818</item>
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/clean_garden_splash_icon</item>
         <item name="android:colorAccent">#3FA34D</item>

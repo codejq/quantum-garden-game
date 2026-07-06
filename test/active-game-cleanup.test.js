@@ -31,8 +31,17 @@ test('active trash spawns report cap failures explicitly', () => {
   assert.match(source, /dropResult\.spawned/);
 });
 
+test('active trash placement avoids tree-blocked pockets', () => {
+  assert.match(source, /TRASH_TREE_CLEARANCE=3\.6/);
+  assert.match(source, /TRASH_PATCH_CLEARANCE=3\.6/);
+  assert.match(source, /function isTrashSpawnSafe\(pos\)/);
+  assert.match(source, /o\.userData\?\.trashBlocker&&plainDistanceXZ\(pos,o\.position\)<TRASH_TREE_CLEARANCE/);
+  assert.match(source, /if\(!trashPos\)return \{ spawned:false, reason:'blocked' \}/);
+  assert.match(source, /for\(let i=0;i<nPatch;i\+\+\)spawnPatch\(\);\s*for\(let i=0;i<nTrash;i\+\+\)spawnTrash\(\);/);
+});
+
 test('active trash gameplay reads plain position data instead of mesh-owned state', () => {
-  assert.match(source, /const trashPos=plainPos\(\)/);
+  assert.match(source, /const trashPos=findSafeTrashPos\(pos\)/);
   assert.match(source, /const trashMeshes=new WeakMap\(\)/);
   assert.match(source, /function setTrashMesh\(item,mesh\)\{trashMeshes\.set\(item,mesh\);return item;\}/);
   assert.match(source, /const item=\{pos:trashPos,spin:random\(\)\*Math\.PI\*2\}/);

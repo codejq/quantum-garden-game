@@ -55,3 +55,16 @@ test('active game preserves desktop and mobile play controls after the split', (
   assert.match(mainSource, /\$\('actBtn'\)\.addEventListener\('touchstart'/);
   assert.match(mainSource, /\$\('actBtn'\)\.addEventListener\('click'/);
 });
+
+test('active game hides HUD chrome while movement input is held', () => {
+  assert.match(cssSource, /body\.play-ui-hidden \.hud-top/);
+  assert.match(cssSource, /body\.play-ui-hidden #missionCard/);
+  assert.match(cssSource, /body\.play-ui-hidden #joy/);
+  assert.match(cssSource, /body\.play-ui-hidden #actBtn/);
+  assert.match(mainSource, /const UI_REVEAL_DELAY=500/);
+  assert.match(mainSource, /const MOVE_KEY_CODES=new Set/);
+  assert.match(mainSource, /if\(MOVE_KEY_CODES\.has\(e\.code\)\)hidePlayUiForInput\(\)/);
+  assert.match(mainSource, /if\(MOVE_KEY_CODES\.has\(e\.code\)&&!anyMoveKeyDown\(\)\)schedulePlayUiReveal\(UI_REVEAL_DELAY\)/);
+  assert.match(mainSource, /joyEl\.addEventListener\('touchstart',e=>\{e\.preventDefault\(\);hidePlayUiForInput\(\)/);
+  assert.match(mainSource, /schedulePlayUiReveal\(0\)/);
+});

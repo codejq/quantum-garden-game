@@ -261,6 +261,7 @@ function makeBroadleaf(){
   clump(g, .55,cy+.20, .62, .72,mid);
   clump(g,-.62,cy-.18,-.52, .78,dark);
   clump(g, .10,cy+.15, .05, .70,lt);
+  g.userData.trashBlocker=true;
   return g;}
 
 function makePine(){
@@ -276,6 +277,7 @@ function makePine(){
     cone.position.y=th+.15+i*.6;cone.rotation.y=rand(0,1);cone.castShadow=true;g.add(cone);}
   const tip=new THREE.Mesh(new THREE.ConeGeometry(.32,.75,10),leafMat(a));
   tip.position.y=th+.15+layers*.6;tip.castShadow=true;g.add(tip);
+  g.userData.trashBlocker=true;
   return g;}
 
 function makePalm(){
@@ -295,6 +297,7 @@ function makePalm(){
     frond.scale.set(1,1,.35);frond.castShadow=true;g.add(frond);}
   for(let i=0;i<5;i++){const d=new THREE.Mesh(new THREE.SphereGeometry(.11,6,6),mat(0x8a4b2a));
     d.position.set(topX+rand(-.22,.22),topY-.22,topZ+rand(-.22,.22));g.add(d);}
+  g.userData.trashBlocker=true;
   return g;}
 
 function makeTree(){
@@ -606,11 +609,39 @@ const trashBuilders=[
 
 /* ---------------- Input ---------------- */
 const keys={};
+const MOVE_KEY_CODES=new Set(['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight']);
+const UI_REVEAL_DELAY=500;
+let playUiRevealTimer=0;
+function setPlayUiHidden(hidden){
+  document.body.classList.toggle('play-ui-hidden',Boolean(hidden&&Game.running));
+}
+function hidePlayUiForInput(){
+  if(playUiRevealTimer)clearTimeout(playUiRevealTimer);
+  playUiRevealTimer=0;
+  if(Game.running)setPlayUiHidden(true);
+}
+function schedulePlayUiReveal(delay=UI_REVEAL_DELAY){
+  if(playUiRevealTimer)clearTimeout(playUiRevealTimer);
+  playUiRevealTimer=setTimeout(()=>{playUiRevealTimer=0;setPlayUiHidden(false);},delay);
+}
+function revealPlayUiNow(){
+  if(playUiRevealTimer)clearTimeout(playUiRevealTimer);
+  playUiRevealTimer=0;
+  document.body.classList.remove('play-ui-hidden');
+}
+function anyMoveKeyDown(){
+  for(const code of MOVE_KEY_CODES)if(keys[code])return true;
+  return false;
+}
 addEventListener('keydown',e=>{keys[e.code]=true;
+  if(MOVE_KEY_CODES.has(e.code))hidePlayUiForInput();
   if(Game.isRace()&&e.code==='KeyF'){e.preventDefault();Game.tryPlant(0);}
   else if(Game.isRace()&&e.code==='KeyL'){e.preventDefault();Game.tryPlant(1);}
   else if(!Game.isRace()&&(e.code==='Space'||e.code==='KeyE')){e.preventDefault();Game.tryPlant(0);}});
-addEventListener('keyup',e=>keys[e.code]=false);
+addEventListener('keyup',e=>{
+  keys[e.code]=false;
+  if(MOVE_KEY_CODES.has(e.code)&&!anyMoveKeyDown())schedulePlayUiReveal(UI_REVEAL_DELAY);
+});
 const joy={active:false,x:0,y:0,id:null};
 const agentInput={x:0,z:0,until:0};
 const mouseMoveTarget={active:false,pos:new THREE.Vector3()};
@@ -621,11 +652,13 @@ function joyMove(t){const r=joyEl.getBoundingClientRect();
   if(L>max){dx*=max/L;dy*=max/L;}
   knob.style.transform=`translate(calc(-50% + ${dx}px),calc(-50% + ${dy}px))`;
   joy.x=dx/max;joy.y=dy/max;}
-joyEl.addEventListener('touchstart',e=>{e.preventDefault();joy.active=true;joy.id=e.changedTouches[0].identifier;joyMove(e.changedTouches[0]);},{passive:false});
+joyEl.addEventListener('touchstart',e=>{e.preventDefault();hidePlayUiForInput();joy.active=true;joy.id=e.changedTouches[0].identifier;joyMove(e.changedTouches[0]);},{passive:false});
 addEventListener('touchmove',e=>{if(!joy.active)return;
-  for(const t of e.changedTouches)if(t.identifier===joy.id){e.preventDefault();joyMove(t);}},{passive:false});
+  for(const t of e.changedTouches)if(t.identifier===joy.id){e.preventDefault();hidePlayUiForInput();joyMove(t);}},{passive:false});
 addEventListener('touchend',e=>{for(const t of e.changedTouches)if(t.identifier===joy.id){
-  joy.active=false;joy.x=joy.y=0;knob.style.transform='translate(-50%,-50%)';}});
+  joy.active=false;joy.x=joy.y=0;knob.style.transform='translate(-50%,-50%)';schedulePlayUiReveal(0);}});
+addEventListener('touchcancel',e=>{for(const t of e.changedTouches)if(t.identifier===joy.id){
+  joy.active=false;joy.x=joy.y=0;knob.style.transform='translate(-50%,-50%)';schedulePlayUiReveal(0);}});
 $('actBtn').addEventListener('touchstart',e=>{e.preventDefault();Game.tryPlant();},{passive:false});
 $('actBtn').addEventListener('click',()=>Game.tryPlant());
 const CAMERA_DEFAULT={mode:'follow',yaw:0,zoom:1};
@@ -847,12 +880,56 @@ function renderActiveMissionHtml(rows){
   return rows.map(row=>`<div class="${row.done?'done':''}">${row.icon} ${row.label}${row.value?`: <b>${row.value}</b>`:''}</div>`).join('');
 }
 
+const TRASH_TREE_CLEARANCE=3.6;
+const TRASH_PATCH_CLEARANCE=3.6;
+const TRASH_STACK_CLEARANCE=1.35;
+function trashWithinWorld(pos){
+  const d=Math.hypot(pos.x,pos.z);
+  return d>=3.2&&d<=WORLD_R-2;
+}
+function clampTrashToWorld(pos){
+  const d=Math.hypot(pos.x,pos.z);
+  if(d>WORLD_R-2){const s=(WORLD_R-2)/d;pos.x*=s;pos.z*=s;}
+  if(d<3.2){const s=3.2/Math.max(d,.001);pos.x*=s;pos.z*=s;}
+  return pos;
+}
+function isTrashSpawnSafe(pos){
+  if(!trashWithinWorld(pos))return false;
+  for(const p of Game.state.patches){
+    if(plainDistanceXZ(pos,p.pos)<TRASH_PATCH_CLEARANCE)return false;
+  }
+  for(const t of Game.state.trash){
+    if(plainDistanceXZ(pos,t.pos)<TRASH_STACK_CLEARANCE)return false;
+  }
+  for(const o of worldObjects){
+    if(o.userData?.trashBlocker&&plainDistanceXZ(pos,o.position)<TRASH_TREE_CLEARANCE)return false;
+  }
+  return true;
+}
+function randomTrashPos(){
+  const a=random()*Math.PI*2,r=rand(4,WORLD_R-2);
+  return plainPos(Math.cos(a)*r,0,Math.sin(a)*r);
+}
+function findSafeTrashPos(source){
+  if(source){
+    const exact=clampTrashToWorld(plainPos(source.x,0,source.z));
+    if(isTrashSpawnSafe(exact))return exact;
+    for(let i=0;i<20;i++){
+      const a=random()*Math.PI*2,r=2.5+(i%5)*.75+Math.floor(i/5)*.45;
+      const candidate=clampTrashToWorld(plainPos(source.x+Math.cos(a)*r,0,source.z+Math.sin(a)*r));
+      if(isTrashSpawnSafe(candidate))return candidate;
+    }
+  }
+  for(let i=0;i<36;i++){
+    const candidate=randomTrashPos();
+    if(isTrashSpawnSafe(candidate))return candidate;
+  }
+  return null;
+}
 function spawnTrash(pos){
   if(Game.state.trash.length>=45)return { spawned:false, reason:'cap' };
-  const trashPos=plainPos();
-  if(pos)setPlainPos(trashPos,pos.x,0,pos.z);
-  else{const a=random()*Math.PI*2,r=rand(4,WORLD_R-2);
-    setPlainPos(trashPos,Math.cos(a)*r,0,Math.sin(a)*r);}
+  const trashPos=findSafeTrashPos(pos);
+  if(!trashPos)return { spawned:false, reason:'blocked' };
   const item={pos:trashPos,spin:random()*Math.PI*2};
   createTrashView(item);
   Game.state.trash.push(item);
@@ -999,8 +1076,8 @@ return {
     this.level=n;this.converted=0;this.spawned=0;this.spawnTimer=2;this.trees=0;this.nearPatch=null;this.nearPatch2=null;this.plantCd=0;this.plantCd2=0;this.elapsed=0;
     this.score=0;this.playerScores=[0,0];$('uiScore').textContent=this.playerScoreLabel();
     const nTrash=9+n*3, nPatch=2+Math.min(n,5);
-    for(let i=0;i<nTrash;i++)spawnTrash();
     for(let i=0;i<nPatch;i++)spawnPatch();
+    for(let i=0;i<nTrash;i++)spawnTrash();
     this.quota=Math.min(18,1+n*2);
     this.spawnedBoss=false;
     this.bossDelay=4;
@@ -1388,6 +1465,7 @@ async function closeTauriWindowAfterConfirm(){
   }
 }
 function showMenu(){
+  revealPlayUiNow();
   $('startOverlay').style.display='flex';
   $('pauseOverlay').style.display='none';
   $('hud').style.display='none';
@@ -1411,14 +1489,17 @@ async function exitGame(){
 function pauseGame(){
   if(!Game.running)return;
   Game.pause();
+  revealPlayUiNow();
   $('pauseOverlay').style.display='flex';
 }
 function resumeGame(){
   $('pauseOverlay').style.display='none';
   Game.resume();
+  revealPlayUiNow();
 }
 function retryLevel(){
   $('pauseOverlay').style.display='none';
+  revealPlayUiNow();
   Game.startLevel(Game.level);
 }
 function setActiveMode(mode){
@@ -1451,6 +1532,7 @@ $('startBtn').onclick=()=>{
   $('viewBtn').style.display='block';
   $('resetViewBtn').style.display='block';
   if(isTouch){$('joy').style.display='block';$('actBtn').style.display='flex';}
+  revealPlayUiNow();
   Game.startLevel(1);
 };
 $('nextBtn').onclick=()=>{
@@ -1459,6 +1541,7 @@ $('nextBtn').onclick=()=>{
   $('pauseBtn').style.display='block';
   $('viewBtn').style.display='block';
   $('resetViewBtn').style.display='block';
+  revealPlayUiNow();
   Game.startLevel(Game.level+1);
 };
 $('languageSelect').onchange=e=>applyLocale(e.target.value);
@@ -1610,6 +1693,9 @@ function resetAgent(options={}){
   $('sndBtn').style.display='block';
   $('exitBtn').style.display='block';
   $('pauseBtn').style.display='block';
+  $('viewBtn').style.display='block';
+  $('resetViewBtn').style.display='block';
+  revealPlayUiNow();
   const levelId=Number(options.levelId||options.level||1);
   Game.startLevel(Number.isFinite(levelId)&&levelId>0?levelId:1,{ seed:options.seed });
   return { ok:true, seedApplied:!!options.seed, observation:observeAgent() };

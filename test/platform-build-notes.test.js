@@ -62,6 +62,26 @@ test('Android app icons, splash, and release signing are configured', () => {
   assert.match(releaseChecklist, /ANDROID_KEYSTORE_PATH/);
 });
 
+test('Android game shell hides system navigation during play', () => {
+  const androidActivity = readFileSync(
+    new URL('../src-tauri/gen/android/app/src/main/java/com/quantumbilling/cleangarding/MainActivity.kt', import.meta.url),
+    'utf8',
+  );
+  const androidTheme = readFileSync(new URL('../src-tauri/gen/android/app/src/main/res/values/themes.xml', import.meta.url), 'utf8');
+  const androidNightTheme = readFileSync(new URL('../src-tauri/gen/android/app/src/main/res/values-night/themes.xml', import.meta.url), 'utf8');
+  const androidV31Theme = readFileSync(new URL('../src-tauri/gen/android/app/src/main/res/values-v31/themes.xml', import.meta.url), 'utf8');
+
+  assert.match(androidActivity, /private fun enterImmersiveMode\(\)/);
+  assert.match(androidActivity, /WindowInsets\.Type\.statusBars\(\) or WindowInsets\.Type\.navigationBars\(\)/);
+  assert.match(androidActivity, /BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE/);
+  assert.match(androidActivity, /SYSTEM_UI_FLAG_IMMERSIVE_STICKY/);
+  assert.match(androidActivity, /override fun onWindowFocusChanged\(hasFocus: Boolean\)/);
+  assert.match(androidActivity, /override fun onResume\(\)/);
+  assert.match(androidTheme, /android:windowFullscreen">true/);
+  assert.match(androidNightTheme, /android:windowFullscreen">true/);
+  assert.match(androidV31Theme, /android:windowFullscreen">true/);
+});
+
 test('Tauri identifier defines Android package id and iOS bundle id', () => {
   assert.equal(tauriConfig.identifier, 'com.quantumbilling.cleangarding');
   assert.match(notes, /Tauri identifier `com\.quantumbilling\.cleangarding` is the shared Android package id and iOS bundle id/);
